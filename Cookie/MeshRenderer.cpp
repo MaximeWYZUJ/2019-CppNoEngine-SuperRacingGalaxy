@@ -69,6 +69,26 @@ namespace Cookie
 
 	void MeshRenderer::Draw(Engine const& engine) // oof... is it normal that each renderer needs a ref to the engine?
 	{
+		static float x = 0.0f;
+		static float z = 0.0f;
+		static float sign = 1.0f;
+		static bool isGrowing = true;
+
+		if (!isGrowing && x < -5.0f)
+		{
+			sign = 1.0f;
+			z += 1.0f;
+			isGrowing = true;
+		}
+		if (isGrowing && x > 10.0f)
+		{
+			sign = -1.0f;
+			z += 1.0f;
+			isGrowing = false;
+		}
+		
+		x += 0.05f * sign;
+		
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
 		pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -85,12 +105,12 @@ namespace Cookie
 			XMMatrixTranslation(Transform->Pos.X, Transform->Pos.Y, Transform->Pos.Z);
 		sp.matWorldViewProj = m * viewProj;
 		sp.matWorld = m;
-		sp.vLumiere = XMVectorSet(5.0f, 10.0f, 5.0f, 1.0f);
-		sp.vCamera = XMVectorSet(-5.0f, 10.0f, -5.0f, 1.0f);
+		sp.vLumiere = XMVectorSet(x, 10.0f, z, 1.0f);
+		sp.vCamera = XMVectorSet(-5.0f, -10.0f, -5.0f, 1.0f);
 		sp.vAEcl = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);
 		sp.vAMat = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
-		sp.vDEcl = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
-		sp.vDMat = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
+		sp.vDEcl = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+		sp.vDMat = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 
 		material->Activate(sp);
 		
