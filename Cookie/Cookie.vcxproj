@@ -97,6 +97,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>./include_PhysX;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,6 +118,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./include_PhysX;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +141,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>./include_PhysX;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,6 +166,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./include_PhysX;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -191,6 +195,7 @@
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="ExportMacro.h" />
     <ClInclude Include="Horloge.h" />
+    <ClInclude Include="incopiable.h" />
     <ClInclude Include="IndexedTriangle.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -206,6 +211,7 @@
     <ClInclude Include="PhysicBoxComponent.h" />
     <ClInclude Include="PhysicCollisionFiltering.h" />
     <ClInclude Include="PhysicComponent.h" />
+    <ClInclude Include="PhysicEngine.h" />
     <ClInclude Include="PhysicMaterial.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="resource.h" />
@@ -252,6 +258,7 @@
     </ClCompile>
     <ClCompile Include="PhysicBoxComponent.cpp" />
     <ClCompile Include="PhysicComponent.cpp" />
+    <ClCompile Include="PhysicEngine.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />

@@ -32,11 +32,10 @@ namespace Cookie
 		vector<FilterGroup> selfGroup;
 		vector<FilterGroup> mask;
 
-		physx::PxActor* actor;
-		physx::PxRigidBody* body;
+		physx::PxRigidActor* actor = nullptr;
 
 	public:
-		PhysicComponent(Vector3<float> pos, Quaternion rot, bodyType type);
+		PhysicComponent(Vector3<float> pos, Quaternion rot, PhysicMaterial mat, bodyType type);
 		~PhysicComponent() = default;
 
 		virtual void addForce() = 0;
