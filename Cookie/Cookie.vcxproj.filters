@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{1b05635e-b915-4fa9-9f50-317d95de46a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -129,6 +132,9 @@
     <ClInclude Include="Vector4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -219,6 +225,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Vector4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Test_API_PhysX.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
