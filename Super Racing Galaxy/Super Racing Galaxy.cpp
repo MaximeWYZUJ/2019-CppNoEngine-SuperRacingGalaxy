@@ -50,6 +50,8 @@ int APIENTRY _tWinMain(
 		smgr->AddMeshRenderer(mesh, mat, firstNode);
 
 		SceneNode* secondNode = smgr->AddSceneNode(firstNode);
+		secondNode->Transform.Pos.X = 5.0f;
+		secondNode->Transform.Scale.Z = 2.0f;
 		smgr->AddMeshRenderer(mesh, mat, secondNode);
 
 		// We should set the camera here
