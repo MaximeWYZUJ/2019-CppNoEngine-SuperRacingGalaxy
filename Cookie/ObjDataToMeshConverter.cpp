@@ -48,8 +48,8 @@ namespace Cookie
 			{
 				auto& oVertex = source.vertices[i];
 				auto& oNormal = source.normals[n];
-				vertices.emplace_back(Vector3<> { .X = oVertex.X, .Y = oVertex.Y, .Z = oVertex.Z });
-				normals.emplace_back(Vector3<> {.X = oNormal.X, .Y = oNormal.Y, .Z = oNormal.Z });
+				vertices.emplace_back(Vector3<>(oVertex));
+				normals.emplace_back(Vector3<>(oNormal));
 
 				remap.insert({ (i << 32) + n, vertices.size() - 1 });
 			}

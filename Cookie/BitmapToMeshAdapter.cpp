@@ -24,9 +24,9 @@ namespace Cookie
 				vertices.push_back(
 					Vector3<>
 					{
-						.X = static_cast<float>(x),
-						.Y = static_cast<float>(y),
-						.Z = static_cast<float>(source[x + y * mapSize.Width] / 10.0f)
+						static_cast<float>(x),
+						static_cast<float>(y),
+						static_cast<float>(source[x + y * mapSize.Width] / 10.0f)
 					});
 			}
 		}
@@ -59,13 +59,13 @@ namespace Cookie
 			auto& v2 = vertices[triangles[i].B];
 			auto& v3 = vertices[triangles[i].C];
 
-			Vector3<> dir1{ .X = v1.X - v2.X, .Y = v1.Y - v2.Y, .Z = v1.Z - v2.Z };
-			Vector3<> dir2{ .X = v3.X - v2.X, .Y = v3.Y - v2.Y, .Z = v3.Z - v2.Z };
+			Vector3<> dir1(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
+			Vector3<> dir2(v3.X - v2.X, v3.Y - v2.Y, v3.Z - v2.Z);
 
 			Vector3<> crossProduct = {
-				.X = dir1.Y * dir2.Z - dir1.Z * dir2.Y,
-				.Y = dir1.Z * dir2.X - dir1.X * dir2.Z,
-				.Z = dir1.X * dir2.Y - dir1.Y * dir2.X };
+				dir1.Y * dir2.Z - dir1.Z * dir2.Y,
+				dir1.Z * dir2.X - dir1.X * dir2.Z,
+				dir1.X * dir2.Y - dir1.Y * dir2.X };
 
 			double length = sqrt(crossProduct.X * crossProduct.X + crossProduct.Y * crossProduct.Y + crossProduct.Z * crossProduct.Z);
 			crossProduct.X /= length;
