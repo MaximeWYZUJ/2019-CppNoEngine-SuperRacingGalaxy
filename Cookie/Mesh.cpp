@@ -2,7 +2,7 @@
 #include <vector>
 #include "Mesh.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

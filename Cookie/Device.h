@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SmallEngine
+namespace Cookie
 {
 	struct Color;
 
@@ -53,9 +53,12 @@ namespace SmallEngine
 		virtual int Init(CdsMode cdsMode, HMODULE hModule) = 0;
 
 		virtual BufferPointer CreateBuffer(BufferDescription const& bufferDescription, void const* data) = 0;
+				
+		// Mesh
 		virtual void SetTopology() = 0;
 		virtual void SetVertexBuffer(BufferPointer ) = 0;
 		virtual void SetIndexBuffer() = 0;
+		
 		virtual void Draw(int32_t nbIndices) = 0;
 		
 		virtual void Clear(Color const& clearColor) = 0;

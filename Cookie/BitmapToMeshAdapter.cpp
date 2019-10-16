@@ -4,7 +4,7 @@
 #include <array>
 #include "BitmapToMeshAdapter.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

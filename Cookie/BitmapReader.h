@@ -5,7 +5,7 @@
 #include <string>
 #include "Bitmap.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API BitmapReader
 	{

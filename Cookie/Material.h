@@ -2,7 +2,7 @@
 
 #include "ExportMacro.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class Device;
 	struct ShadersParams;

@@ -6,11 +6,11 @@
 #include <unordered_set>
 #include "ObjDataToMeshConverter.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 
-	Mesh ObjDataToMeshConverter::Convert(ObjData const& source)
+	auto ObjDataToMeshConverter::Convert(ObjData const& source) -> MeshPtr
 	{
 		vector<Vector3<>> vertices;
 		vertices.reserve(source.vertices.size());
@@ -69,6 +69,6 @@ namespace SmallEngine
 			});
 		}
 
-		return Mesh{ move(vertices), move(normals), move(triangles) };
+		return new Mesh{ move(vertices), move(normals), move(triangles) };
 	}
 }

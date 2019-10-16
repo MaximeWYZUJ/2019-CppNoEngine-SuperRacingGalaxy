@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TextureManager.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	Texture const* TextureManager::GetNewTexture(const std::wstring& fileName, Device* device)
 	{

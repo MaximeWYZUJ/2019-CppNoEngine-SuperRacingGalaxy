@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Bitmap.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

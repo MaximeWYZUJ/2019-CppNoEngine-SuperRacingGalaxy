@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "Bitmap.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API BitmapToMeshAdapter
 	{

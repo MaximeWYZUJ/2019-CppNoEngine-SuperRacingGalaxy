@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Device.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	uint32_t Device::GetWidth() const
 	{

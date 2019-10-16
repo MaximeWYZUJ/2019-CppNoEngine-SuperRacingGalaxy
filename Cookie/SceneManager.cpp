@@ -3,18 +3,16 @@
 #include "ObjReader.h"
 #include "ObjDataToMeshConverter.h"
 #include "Device.h"
-#include "DeviceD3D11.h"
 #include "MeshRenderer.h"
 #include "Engine.h"
+#include <algorithm>
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 
 	SceneManager::SceneManager()
 	{
-		// Todo: Need a multi-segment vector (no copy when growing)
-		sceneNodes.reserve(1024);
 		meshes.reserve(1024);
 	}
 
@@ -26,33 +24,51 @@ namespace SmallEngine
 	Mesh* SceneManager::GetMesh(string const& filePath)
 	{
 		ObjData res = ObjReader::Read(filePath);
-		Mesh meshRes = ObjDataToMeshConverter::Convert(res);
-		Mesh* mesh = &meshes.emplace_back(meshRes);
+		MeshPtr meshRes = ObjDataToMeshConverter::Convert(res);
+		Mesh* mesh = meshes.emplace_back(meshRes);
 
 		return mesh;
 	}
 
-	SceneNode* SceneManager::GetRoot()
+	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
+	{
+		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
+		parent->Components.emplace_back(renderer);
+		renderer->Parent = parent;
+		renderer->Transform = &parent->Transform;
+		return renderer;
+	}
+
+	auto SceneManager::GetRoot() -> SceneNodePtr
 	{
 		return &root;
 	}
 
-	SceneNode* SceneManager::CreateSceneNode()
+	auto SceneManager::AddSceneNode(SceneNodePtr parent) -> SceneNodePtr
 	{
-		return &sceneNodes.emplace_back(SceneNode{});
+		SceneNode* node = nodes.emplace_back(new SceneNode());
+		parent->Children.push_back(node);
+		// Todo: update matrices
+		return node;
 	}
 
-	bool SceneManager::AnimateAll()
+	void SceneManager::RemoveSceneNode(SceneNodePtr node)
 	{
-		return true;
+		for (auto it = begin(nodes); it != end(nodes); ++it)
+		{
+			if (*it == node)
+			{
+				delete *it;
+				nodes.erase(it);
+				break;
+			}
+		}
 	}
 
 	bool SceneManager::DrawAll(Engine const& engine)
 	{
-		for (auto& child : root.GetChildren())
+		for(auto& renderer : meshRenderers)
 		{
-			vector<Component*> components = child->GetComponents();
-			MeshRenderer* renderer = static_cast<MeshRenderer*>(components[0]);
 			renderer->Draw(engine);
 		}
 		return true;

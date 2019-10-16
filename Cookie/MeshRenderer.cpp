@@ -2,13 +2,11 @@
 #include "MeshRenderer.h"
 #include "DeviceD3D11.h"
 #include "SommetBloc.h"
-#include "util.h"
-#include "resource.h"
 #include "Engine.h"
 #include "ShaderParams.h"
 #include "Material.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;
@@ -21,14 +19,14 @@ namespace SmallEngine
 
 	UINT MeshRenderer::nbElements = ARRAYSIZE(MeshRenderer::layout);
 
-	MeshRenderer::MeshRenderer(Mesh const& mesh, Material const& material, Device* device)
+	MeshRenderer::MeshRenderer(Mesh* mesh, Material* material, Device* device)
 		: mesh{ mesh }, material{ material }, device{ device }
 	{
 		BufferDescription desc;
 		
 		{
-			auto& vertices = mesh.GetVertices();
-			auto& normals = mesh.GetNormals();
+			auto& vertices = mesh->GetVertices();
+			auto& normals = mesh->GetNormals();
 			unique_ptr<CSommetBloc[]> sommets = make_unique<CSommetBloc[]>(vertices.size());
 
 			for (auto i = 0; i < vertices.size(); ++i)
@@ -51,7 +49,7 @@ namespace SmallEngine
 		}
 
 		{
-			auto& triangleSources = mesh.GetTriangles();
+			auto& triangleSources = mesh->GetTriangles();
 			unique_ptr<uint32_t[]> triangles = make_unique<uint32_t[]>(triangleSources.size() * 3);
 			for (auto i = 0; i < triangleSources.size(); ++i)
 			{
@@ -67,14 +65,10 @@ namespace SmallEngine
 
 			pIndexBuffer = device->CreateBuffer(desc, triangles.get());
 		}
-
-		matWorld = XMMatrixIdentity();
 	}
 
 	void MeshRenderer::Draw(Engine const& engine) // oof... is it normal that each renderer needs a ref to the engine?
 	{
-		static float z = -10.0f;
-		z+=0.02f;
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
 		pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -85,17 +79,21 @@ namespace SmallEngine
 
 		ShadersParams sp;
 		XMMATRIX const viewProj = engine.GetMatViewProj();
-		sp.matWorldViewProj = matWorld * viewProj;
-		sp.matWorld = matWorld;
-		sp.vLumiere = XMVectorSet(z, 10.0f, 5.0f, 1.0f);
+		XMMATRIX m = 
+			XMMatrixScaling(Transform->Scale.X, Transform->Scale.Y, Transform->Scale.Z) *
+			XMMatrixRotationQuaternion(reinterpret_cast<FXMVECTOR>(Transform->Quat)) *
+			XMMatrixTranslation(Transform->Pos.X, Transform->Pos.Y, Transform->Pos.Z);
+		sp.matWorldViewProj = m * viewProj;
+		sp.matWorld = m;
+		sp.vLumiere = XMVectorSet(5.0f, 10.0f, 5.0f, 1.0f);
 		sp.vCamera = XMVectorSet(-5.0f, 10.0f, -5.0f, 1.0f);
 		sp.vAEcl = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);
 		sp.vAMat = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 		sp.vDEcl = XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
 		sp.vDMat = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 
-		material.Activate(sp);
+		material->Activate(sp);
 		
-		pImmediateContext->DrawIndexed(mesh.GetTriangles().size() * 3, 0, 0);
+		pImmediateContext->DrawIndexed(mesh->GetTriangles().size() * 3, 0, 0);
 	}
 }

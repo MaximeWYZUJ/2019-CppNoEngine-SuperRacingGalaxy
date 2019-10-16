@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "Horloge.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 
 Horloge::Horloge()
@@ -24,4 +24,4 @@ double Horloge::GetTimeBetweenCounts(int64_t start, int64_t stop) const
 	return static_cast<double>(stop - start) * m_SecPerCount;
 }
 
-} // namespace SmallEngine
+} // namespace Cookie

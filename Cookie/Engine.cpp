@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;
@@ -34,7 +34,17 @@ namespace SmallEngine
 
 	bool Engine::Update()
 	{
-		return Animation();
+		int64_t const TempsCompteurCourant = device->GetTimeSpecific();
+		double const TempsEcoule = device->GetTimeIntervalsInSec(TempsCompteurPrecedent, TempsCompteurCourant);
+
+		if (TempsEcoule > EcartTemps)
+		{
+			device->Present();
+			RenderScene();
+			TempsCompteurPrecedent = TempsCompteurCourant;
+		}
+
+		return true;
 	}
 
 	int Engine::Initialisations()
@@ -46,22 +56,6 @@ namespace SmallEngine
 		InitScene();
 		InitAnimation();
 		return 0;
-	}
-
-	bool Engine::Animation()
-	{
-		int64_t const TempsCompteurCourant = device->GetTimeSpecific();
-		double const TempsEcoule = device->GetTimeIntervalsInSec(TempsCompteurPrecedent, TempsCompteurCourant);
-
-		if (TempsEcoule > EcartTemps)
-		{
-			device->Present();
-			AnimeScene(TempsEcoule);
-			RenderScene();
-			TempsCompteurPrecedent = TempsCompteurCourant;
-		}
-
-		return true;
 	}
 
 	const XMMATRIX& Engine::GetMatView() const
@@ -108,11 +102,6 @@ namespace SmallEngine
 		RenderScene();
 
 		return true;
-	}
-
-	bool Engine::AnimeScene(float tempsEcoule)
-	{
-		return smgr->AnimateAll();
 	}
 
 	bool Engine::RenderScene()

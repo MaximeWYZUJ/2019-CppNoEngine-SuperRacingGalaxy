@@ -196,6 +196,7 @@
     <ClInclude Include="Objet3D.h" />
     <ClInclude Include="ObjReader.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="SommetBloc.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
@@ -238,11 +240,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="SommetBloc.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Vector3.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 }

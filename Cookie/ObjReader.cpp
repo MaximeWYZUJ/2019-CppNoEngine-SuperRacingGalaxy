@@ -7,7 +7,7 @@
 #include <iterator>
 #include "ObjReader.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

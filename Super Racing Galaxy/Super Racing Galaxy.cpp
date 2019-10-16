@@ -3,8 +3,6 @@
 #include <fstream>
 #include "EntryPoint.h"
 #include "BitmapToMeshAdapter.h"
-#include "BitmapReader.h"
-#include "MeshToObjConverter.h"
 #include "SceneManager.h"
 #include <MeshRenderer.h>
 #include <DeviceD3D11.h>
@@ -18,7 +16,7 @@ int APIENTRY _tWinMain(
 	LPTSTR    lpCmdLine,
 	int       nCmdShow)
 {
-	using namespace SmallEngine;
+	using namespace Cookie;
 	using namespace std;
 
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -45,12 +43,14 @@ int APIENTRY _tWinMain(
 		SceneManager* smgr = engine->GetSceneManager();
 
 		Mesh* mesh = smgr->GetMesh("cube.obj");
-		MeshRenderer* renderer = new MeshRenderer(*mesh, Material(device), device);
 
 		SceneNode* root = smgr->GetRoot();
-		SceneNode* map = smgr->CreateSceneNode();
-		map->AddComponent(renderer);
-		root->AddChild(map);
+		SceneNode* firstNode = smgr->AddSceneNode(root);
+		Material* mat = new Material(device);
+		smgr->AddMeshRenderer(mesh, mat, firstNode);
+
+		SceneNode* secondNode = smgr->AddSceneNode(firstNode);
+		smgr->AddMeshRenderer(mesh, mat, secondNode);
 
 		// We should set the camera here
 

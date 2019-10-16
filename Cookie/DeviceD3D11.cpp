@@ -5,7 +5,7 @@
 #include "DeviceInfo.h"
 #include "Color.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	HINSTANCE DeviceD3D11::hAppInstance;
 

@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include "Device.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class DeviceD3D11;
 

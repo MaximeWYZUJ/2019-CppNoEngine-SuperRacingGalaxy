@@ -5,11 +5,12 @@
 #include "Mesh.h"
 #include "ObjData.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API ObjDataToMeshConverter
 	{
 	public:
-		static Mesh Convert(ObjData const& source);
+		using MeshPtr = Mesh::MeshPtr;
+		static MeshPtr Convert(ObjData const& source);
 	};
 }

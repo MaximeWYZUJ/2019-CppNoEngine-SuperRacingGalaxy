@@ -7,7 +7,7 @@
 #include "SceneManager.h"
 #include "TextureManager.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class Device;
 
@@ -27,7 +27,6 @@ namespace SmallEngine
 		bool Run();
 		bool Update();
 		int Initialisations();
-		bool Animation();
 
 		DirectX::XMMATRIX const& GetMatView() const;
 		DirectX::XMMATRIX const& GetMatProj() const;
@@ -36,7 +35,6 @@ namespace SmallEngine
 	private:
 		int InitScene();
 		int InitAnimation();
-		bool AnimeScene(float tempsEcoule);
 		bool RenderScene();
 
 	private:
