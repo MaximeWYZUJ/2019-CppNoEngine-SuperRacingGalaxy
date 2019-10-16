@@ -5,8 +5,8 @@
 #include "PhysicComponent.h"
 
 namespace Cookie {
-	PhysicComponent::PhysicComponent(Vector3<float> pos, Quaternion rot, bodyType _type)
-		: position(pos), rotation(rot), type(_type)
+	PhysicComponent::PhysicComponent(Vector3<float> pos, Quaternion rot, PhysicMaterial mat, bodyType _type)
+		: position(pos), rotation(rot), material(mat), type(_type), actor(nullptr)
 	{
 
 	}
