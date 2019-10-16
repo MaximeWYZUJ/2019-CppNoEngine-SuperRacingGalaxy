@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SmallEngine
+namespace Cookie
 {
 	struct Color;
 

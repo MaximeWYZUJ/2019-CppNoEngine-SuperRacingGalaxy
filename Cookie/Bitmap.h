@@ -5,7 +5,7 @@
 #include <vector>
 #include "Size.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API Bitmap
 	{

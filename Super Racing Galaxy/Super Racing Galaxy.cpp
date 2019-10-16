@@ -18,7 +18,7 @@ int APIENTRY _tWinMain(
 	LPTSTR    lpCmdLine,
 	int       nCmdShow)
 {
-	using namespace SmallEngine;
+	using namespace Cookie;
 	using namespace std;
 
 	UNREFERENCED_PARAMETER(hPrevInstance);

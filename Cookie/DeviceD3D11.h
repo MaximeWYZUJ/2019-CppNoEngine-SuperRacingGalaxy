@@ -5,7 +5,7 @@
 
 #define MAX_LOADSTRING 100
 
-namespace SmallEngine
+namespace Cookie
 {
 	class DeviceD3D11 final : public Device
 	{

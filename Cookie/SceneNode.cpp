@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SceneNode.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

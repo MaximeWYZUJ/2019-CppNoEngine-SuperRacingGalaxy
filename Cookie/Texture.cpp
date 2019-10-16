@@ -5,7 +5,7 @@
 #include "DeviceD3D11.h"
 #include "resource.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;

@@ -5,7 +5,7 @@
 #include <string>
 #include "Mesh.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API MeshToObjConverter
 	{

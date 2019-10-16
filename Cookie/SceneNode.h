@@ -5,7 +5,7 @@
 
 class Component;
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API SceneNode
 	{

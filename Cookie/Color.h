@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	struct Color
 	{

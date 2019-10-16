@@ -7,7 +7,7 @@
 #include "SceneManager.h"
 #include "TextureManager.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class Device;
 

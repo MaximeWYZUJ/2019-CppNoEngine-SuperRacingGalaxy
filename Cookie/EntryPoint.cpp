@@ -3,7 +3,7 @@
 #include "EntryPoint.h"
 #include "DeviceD3D11.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

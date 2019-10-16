@@ -7,7 +7,7 @@
 #include "Engine.h"
 #include "Material.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API MeshRenderer : public Component
 	{

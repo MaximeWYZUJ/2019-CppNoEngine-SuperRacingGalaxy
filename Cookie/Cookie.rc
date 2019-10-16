@@ -29,7 +29,7 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH_CANADIAN
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_SMALLENGINE         ICON                    "Cookie.ico"
+IDI_Cookie         ICON                    "Cookie.ico"
 
 IDI_SMALL               ICON                    "small.ico"
 
@@ -39,7 +39,7 @@ IDI_SMALL               ICON                    "small.ico"
 // Menu
 //
 
-IDC_SMALLENGINE MENU
+IDC_Cookie MENU
 BEGIN
     POPUP "&Fichier"
     BEGIN
@@ -57,7 +57,7 @@ END
 // Accelerator
 //
 
-IDC_SMALLENGINE ACCELERATORS
+IDC_Cookie ACCELERATORS
 BEGIN
     "?",            IDM_ABOUT,              ASCII,  ALT
     "/",            IDM_ABOUT,              ASCII,  ALT
@@ -74,7 +74,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "À propos de"
 FONT 8, "System"
 BEGIN
-    ICON            IDI_SMALLENGINE,IDC_MYICON,14,9,16,16
+    ICON            IDI_Cookie,IDC_MYICON,14,9,16,16
     LTEXT           "Cookie version 1.0",IDC_STATIC,49,10,119,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2007",IDC_STATIC,49,20,119,8
     DEFPUSHBUTTON   "OK",IDOK,195,6,30,11,WS_GROUP
@@ -124,7 +124,7 @@ BEGIN
                             "Erreur dans la création du render target view"
     DXE_CREATIONVERTEXBUFFER "Erreur dans la création du vertex buffer"
     DXE_CREATIONINDEXBUFFER "Erreur dans la création de l'index buffer"
-    IDC_SMALLENGINE         "Cookie"
+    IDC_Cookie         "Cookie"
     DXE_FICHIER_VS          "Erreur compilation ou existence du fichier VS"
     DXE_CREATION_VS         "Erreur création du VS"
 END

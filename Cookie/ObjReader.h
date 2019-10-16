@@ -4,7 +4,7 @@
 #include "ExportMacro.h"
 #include "ObjData.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class COOKIE_API ObjReader
 	{

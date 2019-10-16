@@ -5,7 +5,7 @@
 #include "DeviceInfo.h"
 #include "util.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

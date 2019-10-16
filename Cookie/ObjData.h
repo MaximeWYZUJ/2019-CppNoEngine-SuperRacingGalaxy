@@ -4,7 +4,7 @@
 #include "Vector4.h"
 #include "Vector3.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	struct ObjTriangle
 	{

@@ -8,7 +8,7 @@
 #include "ShaderParams.h"
 #include "Material.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;

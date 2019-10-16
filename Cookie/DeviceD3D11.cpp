@@ -5,7 +5,7 @@
 #include "DeviceInfo.h"
 #include "Color.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	HINSTANCE DeviceD3D11::hAppInstance;
 
@@ -237,10 +237,10 @@ namespace SmallEngine
 		wcex.cbClsExtra = 0;
 		wcex.cbWndExtra = 0;
 		wcex.hInstance = hInstance;
-		wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALLENGINE));
+		wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_Cookie));
 		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 		wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-		wcex.lpszMenuName = MAKEINTRESOURCE(IDC_SMALLENGINE);
+		wcex.lpszMenuName = MAKEINTRESOURCE(IDC_Cookie);
 		wcex.lpszClassName = szWindowClass;
 		wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -252,7 +252,7 @@ namespace SmallEngine
 		TCHAR szTitle[MAX_LOADSTRING];
 
 		LoadString(hAppInstance, IDS_APP_TITLE, static_cast<TCHAR*>(szTitle), MAX_LOADSTRING);
-		LoadString(hAppInstance, IDC_SMALLENGINE, static_cast<TCHAR*>(szWindowClass), MAX_LOADSTRING);
+		LoadString(hAppInstance, IDC_Cookie, static_cast<TCHAR*>(szWindowClass), MAX_LOADSTRING);
 
 		if (!MyRegisterClass(hAppInstance))
 		{
@@ -269,7 +269,7 @@ namespace SmallEngine
 			return false;
 		}
 
-		hAccelTable = LoadAccelerators(hAppInstance, MAKEINTRESOURCE(IDC_SMALLENGINE));
+		hAccelTable = LoadAccelerators(hAppInstance, MAKEINTRESOURCE(IDC_Cookie));
 
 		return true;
 	}

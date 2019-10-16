@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Engine.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;

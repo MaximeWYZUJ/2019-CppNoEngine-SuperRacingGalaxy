@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SommetBloc.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace DirectX;
 	

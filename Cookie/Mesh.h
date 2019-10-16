@@ -5,7 +5,7 @@
 #include "IndexedTriangle.h"
 #include "Component.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	/* Mesh that supports a maximum of std::numeric_limits<int>::max() vertices */
 	class Mesh : public Component

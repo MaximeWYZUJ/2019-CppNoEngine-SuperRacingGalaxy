@@ -5,7 +5,7 @@
 
 #include "Texture.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class Device;
 	class TextureManager

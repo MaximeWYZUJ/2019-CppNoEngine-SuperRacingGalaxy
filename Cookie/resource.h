@@ -1,9 +1,9 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by SmallEngine.rc
+// Used by Cookie.rc
 //
 #define IDC_MYICON                      2
-#define IDD_SMALLENGINE_DIALOG          102
+#define IDD_Cookie_DIALOG          102
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
@@ -11,12 +11,12 @@
 #define IDM_EXIT                        105
 #define DXE_ERREUROBTENTIONBUFFER       105
 #define DXE_ERREURCREATIONRENDERTARGET  106
-#define IDI_SMALLENGINE                 107
+#define IDI_Cookie                 107
 #define DXE_CREATIONVERTEXBUFFER        107
 #define IDI_SMALL                       108
 #define DXE_CREATIONINDEXBUFFER         108
-#define IDC_PSMALLENGINE                109
-#define IDC_SMALLENGINE                 109
+#define IDC_PCookie                109
+#define IDC_Cookie                 109
 #define DXE_FICHIER_VS                  110
 #define DXE_CREATION_VS                 111
 #define DXE_CREATIONLAYOUT              112

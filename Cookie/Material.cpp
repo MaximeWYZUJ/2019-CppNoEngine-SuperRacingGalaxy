@@ -6,7 +6,7 @@
 #include "ShaderParams.h"
 #include "SommetBloc.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;

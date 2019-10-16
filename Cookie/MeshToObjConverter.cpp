@@ -4,7 +4,7 @@
 #include <vector>
 #include "MeshToObjConverter.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

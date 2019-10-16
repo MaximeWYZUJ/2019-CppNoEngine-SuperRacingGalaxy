@@ -2,7 +2,7 @@
 
 #include "DirectXMath.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	struct ShadersParams
 	{

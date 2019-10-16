@@ -5,7 +5,7 @@
 #include "BitmapReader.h"
 #include "Size.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 

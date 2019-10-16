@@ -6,7 +6,7 @@
 #include "SceneNode.h"
 #include "Device.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	class Engine;
 

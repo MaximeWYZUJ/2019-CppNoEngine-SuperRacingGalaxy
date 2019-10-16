@@ -7,7 +7,7 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 
-namespace SmallEngine
+namespace Cookie
 {
 	using namespace std;
 
