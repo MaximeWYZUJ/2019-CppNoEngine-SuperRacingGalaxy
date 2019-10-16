@@ -2,6 +2,6 @@
 #include "Transform.h"
 
 Cookie::Transform::Transform()
-	: Pos{}, Scale()
+	: Scale(1.0f, 1.0f, 1.0f)
 {
 }
