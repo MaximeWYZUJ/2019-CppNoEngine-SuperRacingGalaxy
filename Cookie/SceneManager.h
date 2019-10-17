@@ -50,6 +50,6 @@ namespace Cookie
 	inline void SceneManager::AddComponent(MeshRenderer* component, SceneNodePtr parent)
 	{
 		meshRenderers.push_back(component);
-		parent->Components.push_back(component);
+		parent->components.push_back(component);
 	}
 }

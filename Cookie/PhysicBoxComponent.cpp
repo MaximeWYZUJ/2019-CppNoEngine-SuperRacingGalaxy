@@ -5,11 +5,11 @@
 using namespace physx;
 
 namespace Cookie {
-	PhysicBoxComponent::PhysicBoxComponent(Vector3<float> pos, Quaternion rot, PhysicMaterial mat, bodyType type, float _dx, float _dy, float _dz) 
+	PhysicBoxComponent::PhysicBoxComponent(Vector3<float> pos, Quaternion<> rot, PhysicMaterial mat, bodyType type, float _dx, float _dy, float _dz)
 					  : PhysicComponent(pos, rot, mat, type), dx(_dx), dy(_dy), dz(_dz)
 	{
 		auto& engine= PhysicEngine::getInstance();
-		PxTransform transform(PxVec3(-pos.X, pos.Y, pos.Z));
+		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z));
 		PxMaterial* material = engine.gPhysics->createMaterial(mat.staticFriction, mat.dynamicFriction, mat.bounce);
 
 		if (type == DYNAMIC)

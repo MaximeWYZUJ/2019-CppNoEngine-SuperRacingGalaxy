@@ -75,8 +75,8 @@ namespace Cookie
 
 	int Engine::InitScene()
 	{
-		m_MatView = XMMatrixLookAtLH(XMVectorSet(-5.0f, -10.0f, -5.0f, 1.0f),
-			XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f),
+		m_MatView = XMMatrixLookAtLH(XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f),
+			XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f),
 			XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
 		float champDeVision = XM_PI / 3; // 45 degrés
 		const float ratioDAspect = static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight());

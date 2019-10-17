@@ -3,7 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <charconv>
-#include <algorithm>
 #include <iterator>
 #include "ObjReader.h"
 
@@ -56,7 +55,7 @@ namespace Cookie
 				}
 
 				Vector4<>& point = res.vertices.emplace_back(Vector4<>{});
-				point.W = 1.0f;
+				point.w = 1.0f;
 
 				for (int i = 1; i < segments.size(); ++i)
 				{
@@ -111,7 +110,7 @@ namespace Cookie
 				{
 					Split(*it, '/', subSegments);
 
-					auto val = (&t.vertexIndices.X) + offset;
+					auto val = (&t.vertexIndices.x) + offset;
 					if (subSegments.size() == 0) return {};
 					if (auto [p, ec] = from_chars(subSegments[0].data(), subSegments[0].data() + subSegments[0].length(), *val);
 						ec != std::errc::invalid_argument)
@@ -121,7 +120,7 @@ namespace Cookie
 
 					if (subSegments.size() > 1)
 					{
-						auto val = (&t.textureIndices.X) + offset;
+						auto val = (&t.textureIndices.x) + offset;
 						if (auto [p, ec] = from_chars(subSegments[1].data(), subSegments[1].data() + subSegments[1].length(), *val);
 							ec != std::errc::invalid_argument)
 						{
@@ -131,7 +130,7 @@ namespace Cookie
 
 					if (subSegments.size() > 2)
 					{
-						auto val = (&t.normalIndices.X) + offset;
+						auto val = (&t.normalIndices.x) + offset;
 						if (auto [p, ec] = from_chars(subSegments[2].data(), subSegments[2].data() + subSegments[2].length(), *val);
 							ec != std::errc::invalid_argument)
 						{

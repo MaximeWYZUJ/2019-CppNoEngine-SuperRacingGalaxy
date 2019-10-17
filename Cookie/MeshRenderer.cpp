@@ -32,7 +32,7 @@ namespace Cookie
 			for (auto i = 0; i < vertices.size(); ++i)
 			{
 				sommets[i] = CSommetBloc(
-					XMFLOAT3(vertices[i].X, vertices[i].Z, vertices[i].Y),
+					XMFLOAT3(vertices[i].x, vertices[i].z, vertices[i].y),
 					*reinterpret_cast<XMFLOAT3 const*>(&normals[i]),
 					XMFLOAT2(0.0f, 0.0f));
 			}
@@ -99,14 +99,11 @@ namespace Cookie
 
 		ShadersParams sp;
 		XMMATRIX const viewProj = engine.GetMatViewProj();
-		XMMATRIX m = 
-			XMMatrixScaling(Transform->Scale.X, Transform->Scale.Y, Transform->Scale.Z) *
-			XMMatrixRotationQuaternion(reinterpret_cast<FXMVECTOR>(Transform->Quat)) *
-			XMMatrixTranslation(Transform->Pos.X, Transform->Pos.Y, Transform->Pos.Z);
+		XMMATRIX m = XMMATRIX(reinterpret_cast<float const*>(matrix));
 		sp.matWorldViewProj = m * viewProj;
 		sp.matWorld = m;
 		sp.vLumiere = XMVectorSet(x, 10.0f, z, 1.0f);
-		sp.vCamera = XMVectorSet(-5.0f, -10.0f, -5.0f, 1.0f);
+		sp.vCamera = XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f);
 		sp.vAEcl = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);
 		sp.vAMat = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 		sp.vDEcl = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);

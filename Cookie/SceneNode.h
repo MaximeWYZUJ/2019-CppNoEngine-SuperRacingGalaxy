@@ -3,6 +3,7 @@
 #include <vector>
 #include "ExportMacro.h"
 #include "Transform.h"
+#include "Matrix4x4.h"
 
 namespace Cookie
 {
@@ -11,9 +12,11 @@ namespace Cookie
 	struct COOKIE_API SceneNode
 	{
 		using SceneNodePtr = SceneNode*;
-		SceneNodePtr Parent;
-		Transform Transform;
-		std::vector<SceneNode*> Children;
-		std::vector<Component*> Components;
+		SceneNodePtr parent;
+		Transform<> localTransform;
+		Matrix4x4<> localMatrix;
+		Matrix4x4<> matrix;
+		std::vector<SceneNode*> children;
+		std::vector<Component*> components;
 	};
 }

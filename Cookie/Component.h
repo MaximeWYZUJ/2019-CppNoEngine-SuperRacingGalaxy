@@ -7,7 +7,7 @@ namespace Cookie
 {
 	struct COOKIE_API Component
 	{
-		SceneNode* Parent;
-		Transform* Transform;
+		SceneNode* parent;
+		Matrix4x4<>* matrix;
 	};
 }

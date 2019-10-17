@@ -9,10 +9,10 @@ namespace Cookie
 	class Vector3
 	{
 	public:
-		Vector3<T>() : X(0), Y(0), Z(0) {}
-		Vector3<T>(T X, T Y, T Z) : X(X), Y(Y), Z(Z) {}
-		Vector3<T>(const Vector3<T>& v) : X(v.X), Y(v.Y), Z(v.Z) {}
-		Vector3<T>(const Vector4<T>& v) : X(v.X), Y(v.Y), Z(v.Z) {}
+		Vector3<T>() : x(0), y(0), z(0) {}
+		Vector3<T>(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
+		Vector3<T>(const Vector3<T>& v) : x(v.x), y(v.y), z(v.z) {}
+		Vector3<T>(const Vector4<T>& v) : x(v.x), y(v.y), z(v.z) {}
 
 		float distance(const Vector3<T>& v) const;
 		float squareDistance(const Vector3<T>& v) const;
@@ -45,54 +45,53 @@ namespace Cookie
 
 		friend Vector3<T> operator+ (T d, const Vector3<T>& v)
 		{
-			return Vector3<T>(v.X + d, v.Y + d, v.Z + d);
+			return Vector3<T>(v.x + d, v.y + d, v.z + d);
 		}
 
 		friend Vector3<T> operator* (T d, const Vector3<T>& v)
 		{
-			return Vector3<T>(v.X * d, v.Y * d, v.Z * d);
+			return Vector3<T>(v.x * d, v.y * d, v.z * d);
 		}
 
 		friend std::ostream& operator<< (std::ostream& os, const Vector3<T>& v)
 		{
-			return os << v.X << ", " << v.Y << ", " << v.Z;
+			return os << v.x << ", " << v.y << ", " << v.z;
 		}
 
 		float length() const;
 
-
-		T X, Y, Z;
+		T x, y, z;
 	};
 
 	template<typename T>
 	float Vector3<T>::operator% (const Vector3<T>& v) const
 	{
-		return X * v.X + Y * v.Y + Z * v.Z;
+		return x * v.x + y * v.y + z * v.z;
 	}
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator^ (const Vector3<T>& v) const
 	{
-		return Vector3<T>(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
+		return Vector3<T>(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 	}
 
 
 	template<typename T>
 	void Vector3<T>::normalize()
 	{
-		float len = static_cast<float>(sqrt(X * X + Y * Y + Z * Z));
+		float len = static_cast<float>(sqrt(x * x + y * y + z * z));
 
 		if (len == 0)
 		{
-			X = 0;
-			Y = 0;
-			Z = 0;
+			x = 0;
+			y = 0;
+			z = 0;
 		}
 		else
 		{
-			X /= len;
-			Y /= len;
-			Z /= len;
+			x /= len;
+			y /= len;
+			z /= len;
 		}
 	}
 
@@ -100,112 +99,112 @@ namespace Cookie
 	template<typename T>
 	Vector3<T> Vector3<T>::operator+ (const Vector3<T>& v) const
 	{
-		return Vector3<T>(X + v.X, Y + v.Y, Z + v.Z);
+		return Vector3<T>(x + v.x, y + v.y, z + v.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator+ (T d) const
 	{
-		return Vector3<T>(X + d, Y + d, Z + d);
+		return Vector3<T>(x + d, y + d, z + d);
 	}
 
 
 	template<typename T>
 	Vector3<T> operator+ (const Vector3<T>& v1, const Vector3<T>& v2)
 	{
-		return Vector3<T>(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
+		return Vector3<T>(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator- (const Vector3<T>& v) const
 	{
-		return Vector3<T>(X - v.X, Y - v.Y, Z - v.Z);
+		return Vector3<T>(x - v.x, y - v.y, z - v.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator- (T d) const
 	{
-		return Vector3<T>(X - d, Y - d, Z - d);
+		return Vector3<T>(x - d, y - d, z - d);
 	}
 
 
 	template<typename T>
 	Vector3<T> operator- (const Vector3<T>& v1, const Vector3<T>& v2)
 	{
-		return Vector3<T>(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
+		return Vector3<T>(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator- () const
 	{
-		return Vector3<T>(-X, -Y, -Z);
+		return Vector3<T>(-x, -y, -z);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator* (const Vector3<T>& v) const
 	{
-		return Vector3<T>(X * v.X, Y * v.Y, Z * v.Z);
+		return Vector3<T>(x * v.x, y * v.y, z * v.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> operator* (const Vector3<T>& v1, const Vector3<T>& v2)
 	{
-		return Vector3<T>(v1.X * v2.X, v1.Y * v2.Y, v1.Z * v2.Z);
+		return Vector3<T>(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator* (T d) const
 	{
-		return Vector3<T>(X * d, Y * d, Z * d);
+		return Vector3<T>(x * d, y * d, z * d);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator/ (T d) const
 	{
-		return Vector3<T>(X / d, Y / d, Z / d);
+		return Vector3<T>(x / d, y / d, z / d);
 	}
 
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator/ (const Vector3<T>& v) const
 	{
-		return Vector3<T>(X / v.X, Y / v.Y, Z / v.Z);
+		return Vector3<T>(x / v.x, y / v.y, z / v.z);
 	}
 
 
 	template<typename T>
 	Vector3<T> operator/ (const Vector3<T>& v1, const Vector3<T>& v2)
 	{
-		return Vector3<T>(v1.X / v2.X, v1.Y / v2.Y, v1.Z / v2.Z);
+		return Vector3<T>(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
 	}
 
 
 	template<typename T>
 	bool Vector3<T>::operator== (const Vector3<T>& v) const
 	{
-		return((X == v.X) && (Y == v.Y) && (Z == v.Z));
+		return((x == v.x) && (y == v.y) && (z == v.z));
 	}
 
 	template<typename T>
 	bool Vector3<T>::operator!= (const Vector3<T>& v) const
 	{
-		return((X != v.X) || (Y != v.Y) || (Z != v.Z));
+		return((x != v.x) || (y != v.y) || (z != v.z));
 	}
 
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator= (const Vector3<T>& v)
 	{
-		X = v.X;
-		Y = v.Y;
-		Z = v.Z;
+		x = v.x;
+		y = v.y;
+		z = v.z;
 		return *this;
 	}
 
@@ -213,18 +212,18 @@ namespace Cookie
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator+= (const Vector3<T>& v)
 	{
-		X += v.X;
-		Y += v.Y;
-		Z += v.Z;
+		x += v.x;
+		y += v.y;
+		z += v.z;
 		return *this;
 	}
 
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator-= (const Vector3<T>& v)
 	{
-		X -= v.X;
-		Y -= v.Y;
-		Z -= v.Z;
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
 		return *this;
 	}
 
@@ -232,9 +231,9 @@ namespace Cookie
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator+= (T d)
 	{
-		X += d;
-		Y += d;
-		Z += d;
+		x += d;
+		y += d;
+		z += d;
 		return *this;
 	}
 
@@ -242,9 +241,9 @@ namespace Cookie
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator-= (T d)
 	{
-		X -= d;
-		Y -= d;
-		Z -= d;
+		x -= d;
+		y -= d;
+		z -= d;
 		return *this;
 	}
 
@@ -252,9 +251,9 @@ namespace Cookie
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator*= (T d)
 	{
-		X *= d;
-		Y *= d;
-		Z *= d;
+		x *= d;
+		y *= d;
+		z *= d;
 		return *this;
 	}
 
@@ -262,9 +261,9 @@ namespace Cookie
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator/= (T d)
 	{
-		X /= d;
-		Y /= d;
-		Z /= d;
+		x /= d;
+		y /= d;
+		z /= d;
 		return *this;
 	}
 
@@ -272,19 +271,19 @@ namespace Cookie
 	template<typename T>
 	float Vector3<T>::length() const
 	{
-		return static_cast<float>(sqrt(X * X + Y * Y + Z * Z));
+		return static_cast<float>(sqrt(x * x + y * y + z * z));
 	}
 
 
 	template<typename T>
 	float Vector3<T>::distance(const Vector3<T>& v) const
 	{
-		return static_cast<float>(sqrt((X - v.X) * (X - v.X) + (Y - v.Y) * (Y - v.Y) + (Z - v.Z) * (Z - v.Z)));
+		return static_cast<float>(sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y) + (z - v.z) * (z - v.z)));
 	}
 
 	template<typename T>
 	float Vector3<T>::squareDistance(const Vector3<T>& v) const
 	{
-		return static_cast<float>((X - v.X) * (X - v.X) + (Y - v.Y) * (Y - v.Y) + (Z - v.Z) * (Z - v.Z));
+		return static_cast<float>((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y) + (z - v.z) * (z - v.z));
 	}
 }

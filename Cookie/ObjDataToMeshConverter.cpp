@@ -35,9 +35,9 @@ namespace Cookie
 			Vector3<int32_t> vIndices = e.vertexIndices;
 			Vector3<int32_t> nIndices = e.normalIndices;
 
-			vnIndices[vIndices.X].insert(nIndices.X);
-			vnIndices[vIndices.Y].insert(nIndices.Y);
-			vnIndices[vIndices.Z].insert(nIndices.Z);
+			vnIndices[vIndices.x].insert(nIndices.x);
+			vnIndices[vIndices.y].insert(nIndices.y);
+			vnIndices[vIndices.z].insert(nIndices.z);
 		}
 
 		// Remap indices
@@ -63,9 +63,9 @@ namespace Cookie
 
 			// .OBJ are in CCW but our engine is in CW, swap Y <-> Z
 			triangles.emplace_back(IndexedTriangle{
-				.A = remap[(static_cast<int64_t>(vIndices.X) << 32) + nIndices.X],
-				.B = remap[(static_cast<int64_t>(vIndices.Z) << 32) + nIndices.Z],
-				.C = remap[(static_cast<int64_t>(vIndices.Y) << 32) + nIndices.Y]
+				.A = remap[(static_cast<int64_t>(vIndices.x) << 32) + nIndices.x],
+				.B = remap[(static_cast<int64_t>(vIndices.z) << 32) + nIndices.z],
+				.C = remap[(static_cast<int64_t>(vIndices.y) << 32) + nIndices.y]
 			});
 		}
 

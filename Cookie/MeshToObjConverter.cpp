@@ -17,13 +17,13 @@ namespace Cookie
 		vector<Vector3<>> const& points = mesh.GetVertices();
 		for (int i = 0; i < points.size(); ++i)
 		{
-			ss << "v " << points[i].X << " " << points[i].Y << " " << points[i].Z << "\n";
+			ss << "v " << points[i].x << " " << points[i].y << " " << points[i].z << "\n";
 		}
 
 		vector<Vector3<>> const& normals = mesh.GetNormals();
 		for (int i = 0; i < normals.size(); ++i)
 		{
-			ss << "vn " << normals[i].X << " " << normals[i].Y << " " << normals[i].Z << "\n";
+			ss << "vn " << normals[i].x << " " << normals[i].y << " " << normals[i].z << "\n";
 		}
 
 		vector<IndexedTriangle> const& triangles = mesh.GetTriangles();

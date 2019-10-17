@@ -197,7 +197,9 @@
     <ClInclude Include="Horloge.h" />
     <ClInclude Include="incopiable.h" />
     <ClInclude Include="IndexedTriangle.h" />
+    <ClInclude Include="Layout.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="MeshRendererEffect.h" />
@@ -243,7 +245,9 @@
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="Horloge.cpp" />
     <ClCompile Include="IndexedTriangle.cpp" />
+    <ClCompile Include="Layout.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="MeshRendererEffect.cpp" />

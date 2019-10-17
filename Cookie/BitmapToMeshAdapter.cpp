@@ -59,18 +59,18 @@ namespace Cookie
 			auto& v2 = vertices[triangles[i].B];
 			auto& v3 = vertices[triangles[i].C];
 
-			Vector3<> dir1(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
-			Vector3<> dir2(v3.X - v2.X, v3.Y - v2.Y, v3.Z - v2.Z);
+			Vector3<> dir1(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+			Vector3<> dir2(v3.x - v2.x, v3.y - v2.y, v3.z - v2.z);
 
 			Vector3<> crossProduct = {
-				dir1.Y * dir2.Z - dir1.Z * dir2.Y,
-				dir1.Z * dir2.X - dir1.X * dir2.Z,
-				dir1.X * dir2.Y - dir1.Y * dir2.X };
+				dir1.y * dir2.z - dir1.z * dir2.y,
+				dir1.z * dir2.x - dir1.x * dir2.z,
+				dir1.x * dir2.y - dir1.y * dir2.x };
 
-			double length = sqrt(crossProduct.X * crossProduct.X + crossProduct.Y * crossProduct.Y + crossProduct.Z * crossProduct.Z);
-			crossProduct.X /= length;
-			crossProduct.Y /= length;
-			crossProduct.Z /= length;
+			double length = sqrt(crossProduct.x * crossProduct.x + crossProduct.y * crossProduct.y + crossProduct.z * crossProduct.z);
+			crossProduct.x /= length;
+			crossProduct.y /= length;
+			crossProduct.z /= length;
 
 			triangleNormals.push_back(crossProduct);
 		}
@@ -107,15 +107,15 @@ namespace Cookie
 				Vector3<> avgNormal{};
 				for (auto& normal : neighborNormals)
 				{
-					avgNormal.X += normal.X;
-					avgNormal.Y += normal.Y;
-					avgNormal.Z += normal.Z;
+					avgNormal.x += normal.x;
+					avgNormal.y += normal.y;
+					avgNormal.z += normal.z;
 				}
 
-				double length = sqrt(avgNormal.X * avgNormal.X + avgNormal.Y * avgNormal.Y + avgNormal.Z * avgNormal.Z);
-				avgNormal.X /= length;
-				avgNormal.Y /= length;
-				avgNormal.Z /= length;
+				double length = sqrt(avgNormal.x * avgNormal.x + avgNormal.y * avgNormal.y + avgNormal.z * avgNormal.z);
+				avgNormal.x /= length;
+				avgNormal.y /= length;
+				avgNormal.z /= length;
 
 				normals[x + y * mapSize.Height] = avgNormal;
 			}

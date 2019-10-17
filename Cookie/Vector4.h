@@ -3,11 +3,12 @@
 namespace Cookie
 {
 	template <class T = float>
-	struct Vector4
+	class Vector4
 	{
-		T X;
-		T Y;
-		T Z;
-		T W;
+	public:
+		T x;
+		T y;
+		T z;
+		T w;
 	};
 }

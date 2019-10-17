@@ -23,6 +23,8 @@ int APIENTRY _tWinMain(
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nCmdShow);
 
+	// scale, rotate, translate
+
 	/*ifstream f("heightmap128.obj");
 	if (!f.good())
 	{
@@ -46,12 +48,13 @@ int APIENTRY _tWinMain(
 
 		SceneNode* root = smgr->GetRoot();
 		SceneNode* firstNode = smgr->AddSceneNode(root);
+		firstNode->localTransform.pos.z = 2.0f;
 		Material* mat = new Material(device);
 		smgr->AddMeshRenderer(mesh, mat, firstNode);
 
 		SceneNode* secondNode = smgr->AddSceneNode(firstNode);
-		secondNode->Transform.Pos.X = 5.0f;
-		secondNode->Transform.Scale.Z = 2.0f;
+		secondNode->localTransform.pos.x = 5.0f;
+		secondNode->localTransform.scale.z = 2.0f;
 		smgr->AddMeshRenderer(mesh, mat, secondNode);
 
 		// We should set the camera here

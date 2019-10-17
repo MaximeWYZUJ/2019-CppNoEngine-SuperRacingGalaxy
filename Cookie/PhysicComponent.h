@@ -21,7 +21,7 @@ namespace Cookie
 
 	protected:
 		Vector3<float> position;
-		Quaternion rotation;
+		Quaternion<> rotation;
 		float mass = 1;
 		Vector3<float> velocity{};
 		Vector3<float> massCenter{};
@@ -35,7 +35,7 @@ namespace Cookie
 		physx::PxRigidActor* actor = nullptr;
 
 	public:
-		PhysicComponent(Vector3<float> pos, Quaternion rot, PhysicMaterial mat, bodyType type);
+		PhysicComponent(Vector3<float> pos, Quaternion<> rot, PhysicMaterial mat, bodyType type);
 		~PhysicComponent() = default;
 
 		virtual void addForce() = 0;

@@ -6,6 +6,8 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 #include <algorithm>
+#include <stack>
+using namespace DirectX;
 
 namespace Cookie
 {
@@ -14,6 +16,8 @@ namespace Cookie
 	SceneManager::SceneManager()
 	{
 		meshes.reserve(1024);
+		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);
+		root.matrix = root.localMatrix;
 	}
 
 	void SceneManager::SetDevice(Device* device)
@@ -33,9 +37,9 @@ namespace Cookie
 	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
 	{
 		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
-		parent->Components.emplace_back(renderer);
-		renderer->Parent = parent;
-		renderer->Transform = &parent->Transform;
+		parent->components.emplace_back(renderer);
+		renderer->parent = parent;
+		renderer->matrix = &parent->matrix;
 		return renderer;
 	}
 
@@ -47,8 +51,9 @@ namespace Cookie
 	auto SceneManager::AddSceneNode(SceneNodePtr parent) -> SceneNodePtr
 	{
 		SceneNode* node = nodes.emplace_back(new SceneNode());
-		parent->Children.push_back(node);
-		// Todo: update matrices
+		parent->children.push_back(node);
+		node->parent = parent;
+		// Todo: dirty matrices to require update
 		return node;
 	}
 
@@ -67,6 +72,31 @@ namespace Cookie
 
 	bool SceneManager::DrawAll(Engine const& engine)
 	{
+		// Update matrices
+		vector<SceneNode*> c;
+		c.reserve(nodes.size());
+		stack<SceneNode*, vector<SceneNode*>> nextNodes(move(c));
+		for (SceneNode* node : root.children)
+		{
+			nextNodes.push(node);
+		}
+		
+		while (!nextNodes.empty())
+		{
+			SceneNode* node = nextNodes.top();
+			nextNodes.pop();
+
+			Transform<> const& t = node->localTransform;
+			node->localMatrix = Matrix4x4<>::FromTransform(t);
+			node->matrix = node->localMatrix * node->parent->matrix;
+
+			for (SceneNode* n : node->children)
+			{
+				nextNodes.push(n);
+			}
+		}
+		
+		// draw meshes
 		for(auto& renderer : meshRenderers)
 		{
 			renderer->Draw(engine);
