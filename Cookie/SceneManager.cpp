@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <algorithm>
 #include "SceneManager.h"
 #include "ObjReader.h"
 #include "ObjDataToMeshConverter.h"
@@ -7,6 +8,8 @@
 #include "Engine.h"
 #include <algorithm>
 #include <stack>
+#include "Util.h"
+
 using namespace DirectX;
 
 namespace Cookie
@@ -53,7 +56,7 @@ namespace Cookie
 		SceneNode* node = nodes.emplace_back(new SceneNode());
 		parent->children.push_back(node);
 		node->parent = parent;
-		// Todo: dirty matrices to require update
+		node->localTransform.SetDirty();
 		return node;
 	}
 
@@ -69,7 +72,7 @@ namespace Cookie
 			}
 		}
 	}
-
+	
 	bool SceneManager::DrawAll(Engine const& engine)
 	{
 		// Update matrices
@@ -80,19 +83,25 @@ namespace Cookie
 		{
 			nextNodes.push(node);
 		}
-		
+
+		int64_t lastStackSize = numeric_limits<int64_t>::max();
 		while (!nextNodes.empty())
 		{
 			SceneNode* node = nextNodes.top();
 			nextNodes.pop();
 
-			Transform<> const& t = node->localTransform;
-			node->localMatrix = Matrix4x4<>::FromTransform(t);
-			node->matrix = node->localMatrix * node->parent->matrix;
-
-			for (SceneNode* n : node->children)
+			if (node->localTransform.IsDirty())
 			{
-				nextNodes.push(n);
+				node->localTransform.ResetDirty();
+				lastStackSize = min(static_cast<int64_t>(nextNodes.size()), lastStackSize);
+				
+				Transform<> const& t = node->localTransform;
+				node->localMatrix = Matrix4x4<>::FromTransform(t);
+				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
+			}
+			else if (nextNodes.size() >= lastStackSize)
+			{
+				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
 			}
 		}
 		
@@ -102,5 +111,15 @@ namespace Cookie
 			renderer->Draw(engine);
 		}
 		return true;
+	}
+
+	void SceneManager::UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt)
+	{
+		node->matrix = node->parent->matrix * node->localMatrix;
+
+		for (SceneNode* n : node->children)
+		{
+			insertIt = n;
+		}
 	}
 }

@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Engine.h"
+#include <chrono>
+#include <thread>
 
 namespace Cookie
 {
@@ -34,14 +36,23 @@ namespace Cookie
 
 	bool Engine::Update()
 	{
-		int64_t const TempsCompteurCourant = device->GetTimeSpecific();
-		double const TempsEcoule = device->GetTimeIntervalsInSec(TempsCompteurPrecedent, TempsCompteurCourant);
-
-		if (TempsEcoule > EcartTemps)
+		bool isCompleted = false;
+		while (!isCompleted)
 		{
-			device->Present();
-			RenderScene();
-			TempsCompteurPrecedent = TempsCompteurCourant;
+			int64_t const currentTime = device->GetTimeSpecific();
+			double const deltaTime = device->GetTimeIntervalsInSec(TempsCompteurPrecedent, currentTime);
+
+			if (deltaTime > frameTime)
+			{
+				device->Present();
+				RenderScene();
+				TempsCompteurPrecedent = currentTime;
+				isCompleted = true;
+			}
+			else if (deltaTime > 0.001) // > 1ms
+			{
+				this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(deltaTime * 1000.0) - 1));
+			}
 		}
 
 		return true;
@@ -75,10 +86,10 @@ namespace Cookie
 
 	int Engine::InitScene()
 	{
-		m_MatView = XMMatrixLookAtLH(XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f),
+		m_MatView = XMMatrixLookAtLH(XMVectorSet(0.0f, 5.0f, -5.0f, 1.0f),
 			XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f),
 			XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-		float champDeVision = XM_PI / 3; // 45 degrés
+		float champDeVision = XM_PI / 2.2; // 45 degrés
 		const float ratioDAspect = static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight());
 		float planRapproche = 2.0;
 		float planEloigne = 1000.0;
