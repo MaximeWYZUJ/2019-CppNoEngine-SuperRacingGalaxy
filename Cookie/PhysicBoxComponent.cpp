@@ -16,23 +16,7 @@ namespace Cookie {
 			actor = PxCreateDynamic(*engine.gPhysics, transform, PxBoxGeometry(dx / 2, dy / 2, dz / 2), *material, 1.0f);
 		else
 			actor = PxCreateStatic(*engine.gPhysics, transform, PxBoxGeometry(dx / 2, dy / 2, dz / 2), *material);
-	}
 
-	void PhysicBoxComponent::addForce(Vector3<PhysicComponent_t> force)
-	{
-		if (type == STATIC)
-			return;
-
-		actor->is<PxRigidDynamic>()->addForce(PxVec3(force.x, force.y, force.z));
-	}
-
-	void PhysicBoxComponent::onCollisionCallBack()
-	{
-
-	}
-
-	void PhysicBoxComponent::onTriggerCallBack()
-	{
-
+		actor->userData = this;
 	}
 }

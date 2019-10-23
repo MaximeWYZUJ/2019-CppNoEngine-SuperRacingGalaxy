@@ -162,6 +162,12 @@
     <ClInclude Include="Matrix4x4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicContactCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicCollisionCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -273,6 +279,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicContactCallback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicCollisionCallback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

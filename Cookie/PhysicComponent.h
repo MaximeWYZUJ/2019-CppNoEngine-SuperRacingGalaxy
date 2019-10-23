@@ -7,7 +7,7 @@
 #include "PxActor.h"
 #include "PxRigidBody.h"
 #include "PhysicEngine.h"
-
+#include "PhysicCollisionCallback.h"
 
 namespace Cookie
 {
@@ -38,9 +38,9 @@ namespace Cookie
 	public:
 		~PhysicComponent() = default;
 
-		virtual void addForce(Vector3<PhysicComponent_t> force) = 0;
-		virtual void onCollisionCallBack() = 0;
-		virtual void onTriggerCallBack() = 0;
+		void addForce(Vector3<PhysicComponent_t> force);
+		PhysicCollisionCallback onCollisionCallBack;
+		PhysicCollisionCallback onTriggerCallBack;
 
 		void addFilterGroup(FilterGroup f);
 		void removeFilterGroup(FilterGroup f);

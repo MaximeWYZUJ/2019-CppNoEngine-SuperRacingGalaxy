@@ -7,7 +7,13 @@
 using namespace physx;
 
 namespace Cookie {
-
+	void PhysicComponent::addForce(Vector3<PhysicComponent_t> force)
+	{
+		if (type == STATIC)
+			return;
+		
+		actor->is<PxRigidDynamic>()->addForce(PxVec3(force.x, force.y, force.z));
+	}
 	void PhysicComponent::addFilterGroup(FilterGroup f) {
 		if (std::find(selfGroup.begin(), selfGroup.end(), f) == selfGroup.end())
 			selfGroup.push_back(f);
