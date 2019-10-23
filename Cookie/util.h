@@ -38,4 +38,39 @@ namespace Cookie
 			UnPointeur = nullptr;
 		}
 	}
+
+	template <class _Container>
+	class StackInsertIterator
+	{
+	public:
+		using value_type = void;
+		using difference_type = void;
+		using pointer = void;
+		using reference = void;
+
+		using container_type = _Container;
+
+		explicit StackInsertIterator(_Container& _Cont) noexcept : container(_STD addressof(_Cont)) {}
+
+		StackInsertIterator& operator=(const typename _Container::value_type& _Val)
+		{
+			container->push(_Val);
+			return *this;
+		}
+
+		StackInsertIterator& operator=(typename _Container::value_type&& _Val)
+		{
+			container->push(_STD move(_Val));
+			return *this;
+		}
+
+	protected:
+		_Container* container; // pointer to container
+	};
+
+	template <class _Container>
+	_NODISCARD StackInsertIterator<_Container> StackInserter(_Container& _Cont) noexcept
+	{
+		return StackInsertIterator<_Container>(_Cont);
+	}
 }

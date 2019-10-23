@@ -1,10 +1,12 @@
 #include "pch.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include <fstream>
 #include "EntryPoint.h"
 #include "BitmapToMeshAdapter.h"
 #include "SceneManager.h"
-#include <MeshRenderer.h>
 #include <DeviceD3D11.h>
 #include <variant>
 #include "Material.h"
@@ -17,8 +19,8 @@ int APIENTRY _tWinMain(
 	LPTSTR    lpCmdLine,
 	int       nCmdShow)
 {
-	using namespace Cookie;
 	using namespace std;
+	using namespace Cookie;
 
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
@@ -49,19 +51,22 @@ int APIENTRY _tWinMain(
 
 		SceneNode* root = smgr->GetRoot();
 		SceneNode* firstNode = smgr->AddSceneNode(root);
-		firstNode->localTransform.pos.z = 2.0f;
-		Material* mat = new Material(device);
+		firstNode->localTransform.SetPosition({ 0.0f, 0.0f, 2.0f });
+		auto const mat = new Material(device);
 		smgr->AddMeshRenderer(mesh, mat, firstNode);
 
 		SceneNode* secondNode = smgr->AddSceneNode(firstNode);
-		secondNode->localTransform.pos.x = 5.0f;
-		secondNode->localTransform.scale.z = 2.0f;
+		secondNode->localTransform.SetPosition({ 0.0f, 0.0f, 5.0f });
 		smgr->AddMeshRenderer(mesh, mat, secondNode);
 
 		// We should set the camera here
 
+		float x = 0.0f;
 		while (engine->Run())
 		{
+			x += 0.01f;
+			firstNode->localTransform.SetRotation(Quaternion<>::FromDirection(x, Vector3<>(0.0f, 1.0f, 0.0f)));
+			secondNode->localTransform.SetRotation(Quaternion<>::FromDirection(x * 2.0f, Vector3<>(0.0f, 1.0f, 0.0f)));
 			engine->Update();
 		}
 

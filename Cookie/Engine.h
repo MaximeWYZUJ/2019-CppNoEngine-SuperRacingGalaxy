@@ -12,7 +12,7 @@ namespace Cookie
 	class Device;
 
 	constexpr int TargetFps = 60;
-	constexpr double EcartTemps = 1.0 / static_cast<double>(TargetFps);
+	constexpr double frameTime = 1.0 / static_cast<double>(TargetFps);
 
 	class COOKIE_API Engine
 	{

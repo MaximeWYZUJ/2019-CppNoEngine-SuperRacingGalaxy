@@ -5,6 +5,8 @@
 #include "SceneNode.h"
 #include "Device.h"
 #include "MeshRenderer.h"
+#include <stack>
+#include "Util.h"
 
 namespace Cookie
 {
@@ -33,6 +35,7 @@ namespace Cookie
 
 		bool DrawAll(Engine const& engine);
 	private:
+		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
 		Device* device;
 		SceneNode root;
 		std::vector<MeshPtr> meshes;
