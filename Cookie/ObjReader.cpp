@@ -150,4 +150,21 @@ namespace Cookie
 
 		return res;
 	}
+
+	void ObjReader::Split(std::string_view buf, char delimiter, std::vector<std::string_view>& outResult)
+	{
+		outResult.clear();
+		auto it = begin(buf);
+		auto it2 = begin(buf);
+		while ((it2 = find(it, end(buf), delimiter)) != end(buf))
+		{
+			outResult.emplace_back(&*it, static_cast<size_t>(it2 - it));
+			it = it2 + 1;
+		}
+
+		if (it != it2)
+		{
+			outResult.emplace_back(&*it, static_cast<size_t>(it2 - it));
+		}
+	}
 }
