@@ -8,8 +8,8 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<SceneManager>&& smgr) 
-		: device{ move(uninitializedDevice) }, smgr { move(smgr) }
+	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<SceneManager>&& smgr)
+		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, smgr{ move(smgr) }
 	{
 	}
 
@@ -31,7 +31,15 @@ namespace Cookie
 	bool Engine::Run()
 	{
 		// Todo: enqueue device events in a system-independent way
-		return device->Run();
+		bool isRunning = device->Run();
+		inputManager->UpdateKeyboardState();
+
+		if (inputManager->IsKeyPressed(Key::W))
+		{
+			cout << "W pressed!" << endl;
+		}
+		
+		return isRunning;
 	}
 
 	bool Engine::Update()
@@ -63,6 +71,7 @@ namespace Cookie
 		// Todo: Engine shouldn't know about HMODULE...
 		// Decoupling the "device" and the render target (e.g. win32 window, glut, sfml) may be a good idea
 		device->Init(CdsMode::Windowed, GetCurrentModule());
+		inputManager->Init(GetCurrentModule(), device.get());
 		smgr->SetDevice(device.get());
 		InitScene();
 		InitAnimation();

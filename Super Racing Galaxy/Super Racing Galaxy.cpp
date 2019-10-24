@@ -10,6 +10,7 @@
 #include <DeviceD3D11.h>
 #include <variant>
 #include "Material.h"
+#include "InputManager.h"
 #include "PhysicEngine.h"
 
 // Todo: Change this for a standard console main
@@ -60,6 +61,8 @@ int APIENTRY _tWinMain(
 		smgr->AddMeshRenderer(mesh, mat, secondNode);
 
 		// We should set the camera here
+		// Bind Input Actions for first "scene" (main menu)
+		// Bind lambda on Update Hook for game logic
 
 		float x = 0.0f;
 		while (engine->Run())

@@ -29,7 +29,7 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH_CANADIAN
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_Cookie         ICON                    "Cookie.ico"
+IDI_Cookie              ICON                    "Cookie.ico"
 
 IDI_SMALL               ICON                    "small.ico"
 
@@ -124,7 +124,7 @@ BEGIN
                             "Erreur dans la création du render target view"
     DXE_CREATIONVERTEXBUFFER "Erreur dans la création du vertex buffer"
     DXE_CREATIONINDEXBUFFER "Erreur dans la création de l'index buffer"
-    IDC_Cookie         "Cookie"
+    IDC_Cookie              "Cookie"
     DXE_FICHIER_VS          "Erreur compilation ou existence du fichier VS"
     DXE_CREATION_VS         "Erreur création du VS"
 END
@@ -139,6 +139,9 @@ BEGIN
                             "Erreur de création du depth stencil view"
     DXE_FICHIERTEXTUREINTROUVABLE "Fichier texture introuvable"
     DXE_CREATIONBUFFER      "Erreur dans la création d'un buffer"
+    DIRECTINPUT_CREATION_ERROR "Erreur de création de DirectInput"
+    KEYBOARD_CREATION_ERROR "Erreur de création du clavier"
+    KEYBOARD_FORMAT_CREATION_ERROR "Erreur dans le format du clavier"
 END
 
 #endif    // French (Canada) resources

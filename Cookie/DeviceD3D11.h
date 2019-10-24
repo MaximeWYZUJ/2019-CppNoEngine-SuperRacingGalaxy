@@ -30,6 +30,9 @@ namespace Cookie
 		ID3D11Device* GetD3DDevice() { return device; }
 		IDXGISwapChain*         GetSwapChain() { return pSwapChain; }
 
+		// Todo: Think about how to remove this there... InputManager needs it... :/
+		HWND GetWindowHandle() const { return hMainWnd; }
+
 	protected:
 		ID3D11RasterizerState* mSolidCullBackRS;
 
