@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "PhysicComponent.h"
+#include "PxPhysicsAPI.h"
 
 using namespace physx;
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PhysicBoxComponent.h"
 #include "PhysicEngine.h"
+#include "PxPhysicsAPI.h"
 
 using namespace physx;
 

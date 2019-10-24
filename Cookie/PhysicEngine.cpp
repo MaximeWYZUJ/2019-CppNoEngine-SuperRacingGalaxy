@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PhysicEngine.h"
 #include "PhysicContactCallback.h"
+#include "PxPhysicsAPI.h"
 
 using namespace physx;
 
@@ -34,7 +35,7 @@ namespace Cookie {
 	void PhysicEngine::init()
 	{
 		// Necessaire pour le setup
-		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
 
 
 		// PVD = Physx Visual Debugger

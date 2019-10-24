@@ -8,6 +8,7 @@
 #include "PxRigidBody.h"
 #include "PhysicEngine.h"
 #include "PhysicCollisionCallback.h"
+#include "PxPhysicsAPI.h"
 
 namespace Cookie
 {
