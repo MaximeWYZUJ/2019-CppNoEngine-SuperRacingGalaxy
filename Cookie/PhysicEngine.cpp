@@ -40,14 +40,12 @@ namespace Cookie {
 		// Necessaire pour le setup
 		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
-
 		// PVD = Physx Visual Debugger
 		gPvd = PxCreatePvd(*gFoundation);
 		PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 		gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-
 
 		// Descripteur de la scene
 		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
