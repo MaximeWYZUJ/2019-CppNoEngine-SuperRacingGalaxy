@@ -57,9 +57,9 @@ namespace Cookie
 
 			PxTransform pxT = actor->getGlobalPose();
 			Transform<PhysicComponent_t> t{};
-			t.pos = Vector3<PhysicComponent_t>(-pxT.p.x, pxT.p.y, pxT.p.z);
-			t.rotation = Quaternion<PhysicComponent_t>(pxT.q.x, -pxT.q.y, -pxT.q.z, pxT.q.w);
-			t.scale = Vector3<PhysicComponent_t>(1.0f, 1.0f, 1.0f);
+			t.SetPosition(Vector3<PhysicComponent_t>(-pxT.p.x, pxT.p.y, pxT.p.z));
+			t.SetRotation(Quaternion<PhysicComponent_t>(pxT.q.x, -pxT.q.y, -pxT.q.z, pxT.q.w));
+			t.SetScale(Vector3<PhysicComponent_t>(1.0f, 1.0f, 1.0f));
 
 			return t;
 		}

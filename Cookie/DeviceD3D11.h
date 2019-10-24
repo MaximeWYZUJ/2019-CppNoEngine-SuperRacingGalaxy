@@ -18,6 +18,9 @@ namespace Cookie
 		double GetTimeIntervalsInSec(int64_t start, int64_t stop) const override;
 		int Init(CdsMode cdsMode, HMODULE hModule) override;
 
+		// Events
+		virtual DeviceEvent GetEvent() { return DeviceEvent{}; };
+		
 		BufferPointer CreateBuffer(BufferDescription const& bufferDescription, void const* data) override;
 		void SetTopology() override;
 		void SetVertexBuffer(BufferPointer) override;

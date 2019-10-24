@@ -323,13 +323,13 @@ namespace Cookie
 
 		switch (message)
 		{
-		case WM_KILLFOCUS:
+		/*case WM_KILLFOCUS:
 			keyboardInput->Unacquire();
 			break;
 		case WM_SETFOCUS:
 			if (keyboardInput != nullptr)
 				keyboardInput->Acquire();
-			break;
+			break;*/
 		case WM_COMMAND:
 			wmId = LOWORD(wParam);
 			wmEvent = HIWORD(wParam);
