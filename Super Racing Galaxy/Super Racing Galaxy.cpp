@@ -10,7 +10,6 @@
 #include <DeviceD3D11.h>
 #include <variant>
 #include "Material.h"
-#include "PhysicEngine.h"
 
 // Todo: Change this for a standard console main
 int APIENTRY _tWinMain(
