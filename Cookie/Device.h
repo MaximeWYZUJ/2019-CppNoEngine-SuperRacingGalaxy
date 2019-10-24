@@ -1,4 +1,5 @@
 #pragma once
+#include <queue>
 
 namespace Cookie
 {
@@ -39,6 +40,18 @@ namespace Cookie
 		CpuAccessFlag CpuAccess;
 	};
 
+	enum class EventType
+	{
+		Focus,
+		FocusLost
+	};
+
+	struct DeviceEvent
+	{
+		EventType Type;
+		int32_t buf[4];
+	};
+
 	class Device
 	{
 	public:
@@ -51,6 +64,9 @@ namespace Cookie
 		virtual int64_t GetTimeSpecific() const = 0;
 		virtual double GetTimeIntervalsInSec(int64_t start, int64_t stop) const = 0;
 		virtual int Init(CdsMode cdsMode, HMODULE hModule) = 0;
+
+		// Events
+		virtual DeviceEvent GetEvent() = 0;
 
 		virtual BufferPointer CreateBuffer(BufferDescription const& bufferDescription, void const* data) = 0;
 				
@@ -69,5 +85,6 @@ namespace Cookie
 	protected:
 		uint32_t screenWidth;
 		uint32_t screenHeight;
+		std::queue<DeviceEvent> events;
 	};
 }

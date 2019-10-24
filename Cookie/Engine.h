@@ -6,6 +6,7 @@
 #include "Color.h"
 #include "SceneManager.h"
 #include "TextureManager.h"
+#include "InputManager.h"
 
 namespace Cookie
 {
@@ -17,7 +18,7 @@ namespace Cookie
 	class COOKIE_API Engine
 	{
 	public:
-		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<SceneManager>&& smgr);
+		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<SceneManager>&& smgr);
 
 		Device* GetDevice() const;
 		SceneManager* GetSceneManager() const;
@@ -39,6 +40,7 @@ namespace Cookie
 
 	private:
 		std::unique_ptr<Device> device;
+		std::unique_ptr<InputManager> inputManager;
 		std::unique_ptr<SceneManager> smgr;
 		std::unique_ptr<TextureManager> textureManager;
 
