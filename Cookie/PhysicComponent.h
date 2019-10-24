@@ -4,11 +4,13 @@
 
 #include "Transform.h"
 #include "PhysicMaterial.h"
-#include "PxActor.h"
-#include "PxRigidBody.h"
-#include "PhysicEngine.h"
 #include "PhysicCollisionCallback.h"
-#include "PxPhysicsAPI.h"
+#include "ExportMacro.h"
+
+namespace physx
+{
+	class PxRigidActor;
+}
 
 namespace Cookie
 {
@@ -16,7 +18,7 @@ namespace Cookie
 	class NoVelocity_StaticObject_Exception {};
 	class NoShapeException {};
 
-	class PhysicComponent
+	class COOKIE_API PhysicComponent
 	{
 	public:
 		enum bodyType {
@@ -52,83 +54,14 @@ namespace Cookie
 		void updateFilters();
 
 	public:
-		virtual inline Transform<PhysicComponent_t> getTransform() const noexcept {
-			using namespace physx;
+		virtual Transform<PhysicComponent_t> getTransform() const noexcept;
+		virtual PhysicComponent_t getMass() const;
+		virtual Vector3<PhysicComponent_t> getVelocity() const;
+		virtual PhysicMaterial getMaterial() const noexcept;
+		virtual bool isTrigger() const noexcept;
 
-			PxTransform pxT = actor->getGlobalPose();
-			Transform<PhysicComponent_t> t{};
-			t.SetPosition(Vector3<PhysicComponent_t>(-pxT.p.x, pxT.p.y, pxT.p.z));
-			t.SetRotation(Quaternion<PhysicComponent_t>(pxT.q.x, -pxT.q.y, -pxT.q.z, pxT.q.w));
-			t.SetScale(Vector3<PhysicComponent_t>(1.0f, 1.0f, 1.0f));
-
-			return t;
-		}
-		virtual inline PhysicComponent_t getMass() const {
-			using namespace physx;
-
-			if (type == STATIC)
-				throw NoMass_StaticObject_Exception{};
-
-			return static_cast<PhysicComponent_t>(actor->is<PxRigidDynamic>()->getMass());
-		}
-		virtual inline Vector3<PhysicComponent_t> getVelocity() const {
-			using namespace physx;
-
-			if (type == STATIC)
-				throw NoVelocity_StaticObject_Exception{};
-			
-			PxVec3 velocity = actor->is<PxRigidDynamic>()->getLinearVelocity();
-			return Vector3<PhysicComponent_t>(-velocity.x, velocity.y, velocity.z);
-		}
-		virtual inline PhysicMaterial getMaterial() const noexcept {
-			return material;
-		}
-		virtual inline bool isTrigger() const noexcept {
-			return trigger;
-		}
-
-		virtual inline void setMass(PhysicComponent_t mass) {
-			using namespace physx;
-
-			if (type == STATIC)
-				throw NoMass_StaticObject_Exception{};
-
-			actor->is<PxRigidDynamic>()->setMass(static_cast<PxReal>(mass));
-		}
-		virtual inline void setMaterial(PhysicMaterial material_) {
-			using namespace physx;
-
-			int nbShapes = actor->getNbShapes();
-			if (nbShapes == 0) {
-				throw NoShapeException{};
-			}
-
-			PxShape** shapes{};
-			actor->getShapes(shapes, sizeof(PxShape) * nbShapes);
-
-			PxMaterial* mat = PhysicEngine::getInstance().gPhysics->createMaterial(material_.staticFriction, material_.dynamicFriction, material_.bounce);
-			for (int i = 0; i < nbShapes; i++) {
-				shapes[i]->setMaterials(&mat, 1);
-			}
-
-			material = material_;
-		}
-		virtual inline void setTrigger(bool isTrigger_) {
-			using namespace physx;
-
-			int nbShapes = actor->getNbShapes();
-			if (nbShapes == 0) {
-				throw NoShapeException{};
-			}
-
-			PxShape** shapes{};
-			actor->getShapes(shapes, sizeof(PxShape) * nbShapes);
-
-			for (int i = 0; i < nbShapes; i++) {
-				shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, isTrigger_);
-			}
-
-			trigger = isTrigger_;
-		}
+		virtual void setMass(PhysicComponent_t mass);
+		virtual void setMaterial(PhysicMaterial material_);
+		virtual void setTrigger(bool isTrigger_);
 	};
 }

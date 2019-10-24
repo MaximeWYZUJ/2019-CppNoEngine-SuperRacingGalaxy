@@ -1,9 +1,10 @@
 #pragma once
 
 #include "PhysicComponent.h"
+#include "ExportMacro.h"
 
 namespace Cookie {
-	class PhysicBoxComponent : public PhysicComponent
+	class COOKIE_API PhysicBoxComponent : public PhysicComponent
 	{
 	private:
 		float dx = 1, dy = 1, dz = 1;

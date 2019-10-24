@@ -12,6 +12,7 @@
 #include "Material.h"
 #include "InputManager.h"
 #include "PhysicEngine.h"
+#include "PhysicBoxComponent.h"
 
 // Todo: Change this for a standard console main
 int APIENTRY _tWinMain(
@@ -42,6 +43,12 @@ int APIENTRY _tWinMain(
 
 	try
 	{
+		PhysicEngine& pe = PhysicEngine::getInstance();
+		pe.init();
+
+		PhysicBoxComponent plane({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicComponent::STATIC, 5.0f, 0.1f, 10.0f);
+		PhysicBoxComponent cube({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
+		
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 		engine->Initialisations();
 
@@ -51,27 +58,34 @@ int APIENTRY _tWinMain(
 		Mesh* mesh = smgr->GetMesh("cube.obj");
 
 		SceneNode* root = smgr->GetRoot();
-		SceneNode* firstNode = smgr->AddSceneNode(root);
-		firstNode->localTransform.SetPosition({ 0.0f, 0.0f, 2.0f });
+		
+		SceneNode* planeNode = smgr->AddSceneNode(root);
+		planeNode->localTransform.SetPosition({ 5.0f, 0.0f, 0.0f });
+		planeNode->localTransform.SetScale({ 2.5f, 0.05f, 5.0f });
+		planeNode->localTransform.SetRotation(Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }));
 		auto const mat = new Material(device);
-		smgr->AddMeshRenderer(mesh, mat, firstNode);
+		smgr->AddMeshRenderer(mesh, mat, planeNode);
+		
+		SceneNode* cubeNode = smgr->AddSceneNode(root);
+		cubeNode->localTransform.SetPosition({ 3.0f, 0.0f, 2.0f });
+		smgr->AddMeshRenderer(mesh, mat, cubeNode);
 
-		SceneNode* secondNode = smgr->AddSceneNode(firstNode);
-		secondNode->localTransform.SetPosition({ 0.0f, 0.0f, 5.0f });
-		smgr->AddMeshRenderer(mesh, mat, secondNode);
 
 		// We should set the camera here
 		// Bind Input Actions for first "scene" (main menu)
 		// Bind lambda on Update Hook for game logic
 
-		float x = 0.0f;
 		while (engine->Run())
 		{
-			x += 0.01f;
-			firstNode->localTransform.SetRotation(Quaternion<>::FromDirection(x, Vector3<>(0.0f, 1.0f, 0.0f)));
-			secondNode->localTransform.SetRotation(Quaternion<>::FromDirection(x * 2.0f, Vector3<>(0.0f, 1.0f, 0.0f)));
+			pe.step();
+			
+			cubeNode->localTransform = cube.getTransform();
+			cubeNode->localTransform.SetDirty();
+			
 			engine->Update();
 		}
+
+		pe.clean();
 
 		return (int)1;
 	}

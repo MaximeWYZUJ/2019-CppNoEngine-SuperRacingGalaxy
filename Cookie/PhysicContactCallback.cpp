@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PhysicContactCallback.h"
+#include "PxRigidActor.h"
 #include "PhysicComponent.h"
 
 using namespace physx;

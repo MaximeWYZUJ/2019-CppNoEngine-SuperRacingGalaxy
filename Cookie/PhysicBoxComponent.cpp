@@ -10,7 +10,7 @@ namespace Cookie {
 					  : dx(_dx), dy(_dy), dz(_dz)
 	{
 		auto& engine= PhysicEngine::getInstance();
-		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z));
+		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z), PxQuat(rot.x, rot.y, rot.z, rot.w));
 		PxMaterial* material = engine.gPhysics->createMaterial(mat.staticFriction, mat.dynamicFriction, mat.bounce);
 
 		if (type == DYNAMIC)
@@ -19,5 +19,6 @@ namespace Cookie {
 			actor = PxCreateStatic(*engine.gPhysics, transform, PxBoxGeometry(dx / 2, dy / 2, dz / 2), *material);
 
 		actor->userData = this;
+		engine.gScene->addActor(*actor);
 	}
 }

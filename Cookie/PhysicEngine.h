@@ -16,8 +16,6 @@ namespace Cookie {
 	class COOKIE_API PhysicEngine : Incopiable
 	{
 	private:
-		physx::PxDefaultAllocator* gAllocator;
-		physx::PxDefaultErrorCallback* gErrorCallback;
 		physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
 	public:
 		physx::PxPhysics* gPhysics = nullptr;

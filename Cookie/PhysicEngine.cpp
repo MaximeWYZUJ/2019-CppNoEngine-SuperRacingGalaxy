@@ -34,8 +34,11 @@ namespace Cookie {
 
 	void PhysicEngine::init()
 	{
+		static PxDefaultAllocator gAllocator{};
+		static PxDefaultErrorCallback gErrorCallback{};
+		
 		// Necessaire pour le setup
-		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
+		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
 
 		// PVD = Physx Visual Debugger
