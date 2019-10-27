@@ -9,8 +9,14 @@ namespace Cookie
 	using namespace DirectX;
 
 	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr)
-		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, smgr{ move(smgr) }
+		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }
 	{
+		device->Init(CdsMode::Windowed);
+		inputManager->Init();
+		physics->init();
+		sceneManager->SetDevice(device.get());
+		InitScene();
+		InitAnimation();
 	}
 
 	Device* Engine::GetDevice() const
@@ -20,61 +26,12 @@ namespace Cookie
 
 	SceneManager* Engine::GetSceneManager() const
 	{
-		return smgr.get();
+		return sceneManager.get();
 	}
 
 	TextureManager* Engine::GetTextureManager() const noexcept
 	{
 		return textureManager.get();
-	}
-
-	bool Engine::Run()
-	{
-		bool isRunning = device->Run();
-		inputManager->Update();
-
-		physics->step();
-
-		isRunning = Update();
-
-		device->ClearEvents();
-		
-		return isRunning;
-	}
-
-	bool Engine::Update()
-	{
-		bool isCompleted = false;
-		while (!isCompleted)
-		{
-			int64_t const currentTime = device->GetTimeSpecific();
-			double const deltaTime = device->GetTimeIntervalsInSec(TempsCompteurPrecedent, currentTime);
-
-			if (deltaTime > frameTime)
-			{
-				device->Present();
-				RenderScene();
-				TempsCompteurPrecedent = currentTime;
-				isCompleted = true;
-			}
-			else if (deltaTime > 0.001) // > 1ms
-			{
-				this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(deltaTime * 1000.0) - 1));
-			}
-		}
-
-		return true;
-	}
-
-	int Engine::Initialisations()
-	{
-		device->Init(CdsMode::Windowed);
-		inputManager->Init();
-		physics->init();
-		smgr->SetDevice(device.get());
-		InitScene();
-		InitAnimation();
-		return 0;
 	}
 
 	const XMMATRIX& Engine::GetMatView() const
@@ -115,17 +72,38 @@ namespace Cookie
 
 	int Engine::InitAnimation()
 	{
-		TempsSuivant = device->GetTimeSpecific();
-		TempsCompteurPrecedent = TempsSuivant;
+		previousTime = device->GetTimeSpecific();
 
 		RenderScene();
 
 		return true;
 	}
 
-	bool Engine::RenderScene()
+	void Engine::UpdateScene()
+	{
+		bool isCompleted = false;
+		while (!isCompleted)
+		{
+			int64_t const currentTime = device->GetTimeSpecific();
+			double const deltaTime = device->GetTimeIntervalsInSec(previousTime, currentTime);
+
+			if (deltaTime > frameTime)
+			{
+				device->Present();
+				RenderScene();
+				previousTime = currentTime;
+				isCompleted = true;
+			}
+			else if (deltaTime > 0.001) // > 1ms
+			{
+				this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(deltaTime * 1000.0) - 1));
+			}
+		}
+	}
+
+	void Engine::RenderScene() const
 	{
 		device->Clear(Color::Black);
-		return smgr->DrawAll(*this);
+		sceneManager->DrawAll(*this);
 	}
 }

@@ -30,7 +30,7 @@ namespace Cookie
 		DXRelacher(device);
 	}
 
-	bool DeviceD3D11::Run()
+	bool DeviceD3D11::Update()
 	{
 		MSG msg;
 		bool shouldContinue = true;
@@ -361,15 +361,19 @@ namespace Cookie
 		PAINTSTRUCT ps;
 		HDC hdc;
 
+		// Todo: refactor to use a memory pool for DeviceEvent::data
 		switch (message)
 		{
+		case WM_SETFOCUS:
+			c->events.push_back(DeviceEvent<>{.type = DeviceEventType::Focus });
+			c->hasFocus = true;
+			break;
 		case WM_KILLFOCUS:
-			c->events.push_back(DeviceEvent{ .Type = EventType::FocusLost });
+			c->events.push_back(DeviceEvent<>{ .type = DeviceEventType::FocusLost });
 			c->hasFocus = false;
 			break;
-		case WM_SETFOCUS:
-			c->events.push_back(DeviceEvent{ .Type = EventType::Focus });
-			c->hasFocus = true;
+		case WM_MOUSEMOVE:
+			c->events.push_back(DeviceEvent<>{.type = DeviceEventType::MouseMove, .data = new MouseMove{ .pos = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) } } });
 			break;
 		case WM_COMMAND:
 			wmId = LOWORD(wParam);
@@ -396,6 +400,7 @@ namespace Cookie
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
+
 		return 0;
 	}
 

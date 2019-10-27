@@ -13,7 +13,7 @@ namespace Cookie
 		DeviceD3D11();
 		virtual ~DeviceD3D11();
 
-		bool Run() override;
+		bool Update() override;
 		int64_t GetTimeSpecific() const override;
 		double GetTimeIntervalsInSec(int64_t start, int64_t stop) const override;
 		int Init(CdsMode cdsMode) override;

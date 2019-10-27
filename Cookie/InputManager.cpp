@@ -8,6 +8,8 @@
 
 namespace Cookie
 {
+	using namespace std;
+
 	InputManager::InputManager(DeviceD3D11* device)
 		: device{device}
 	{
@@ -16,6 +18,9 @@ namespace Cookie
 		keyboardInput = nullptr;
 		mouseInput = nullptr;
 		joystickInput = nullptr;
+
+		keyboardCurrentBuffer = keyboardBuffer1;
+		keyboardPreviousBuffer = keyboardBuffer2;
 
 		InitKeyMapping();
 	}
@@ -76,19 +81,26 @@ namespace Cookie
 		auto events = device->GetEvents();
 		for (auto e : events)
 		{
-			if (e.Type == EventType::Focus)
+			switch (e.type)
 			{
+			case DeviceEventType::Focus:
 				keyboardInput->Acquire();
-			}
-			else if (e.Type == EventType::FocusLost)
-			{
+				break;
+			case DeviceEventType::FocusLost:
 				keyboardInput->Unacquire();
+				break;
+			case DeviceEventType::MouseMove:
+				auto const ev = e.As<MouseMove>();
+				mouseCurrentPosition = ev.data->pos;
+				break;
+			default:
+				break;
 			}
 		}
 
 		if (device->HasFocus())
 		{
-			HRESULT const res = keyboardInput->GetDeviceState(sizeof keyboardBuffer, static_cast<void*>(&keyboardBuffer));
+			HRESULT const res = keyboardInput->GetDeviceState(sizeof keyboardBuffer1, static_cast<void*>(keyboardCurrentBuffer));
 
 			if (res != DI_OK)
 			{
@@ -96,10 +108,17 @@ namespace Cookie
 			}
 		}
 	}
+
+	void InputManager::PostUpdate()
+	{
+		swap(keyboardCurrentBuffer, keyboardPreviousBuffer);
+		copy(begin(mouseCurrentBuffer), end(mouseCurrentBuffer), begin(mousePreviousBuffer));
+		mousePreviousPosition = mouseCurrentPosition;
+	}
 	
 	bool InputManager::IsKeyPressed(Key key)
 	{
-		return keyboardBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]] & 0x80;
+		return keyboardCurrentBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]] & 0x80;
 	}
 
 	void InputManager::InitKeyMapping()

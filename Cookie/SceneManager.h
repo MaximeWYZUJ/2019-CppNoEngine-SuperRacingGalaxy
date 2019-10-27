@@ -33,7 +33,7 @@ namespace Cookie
 		template<class T>
 		void AddComponent(T* component, SceneNodePtr parent);
 
-		bool DrawAll(Engine const& engine);
+		void DrawAll(Engine const& engine);
 	private:
 		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
 		Device* device;

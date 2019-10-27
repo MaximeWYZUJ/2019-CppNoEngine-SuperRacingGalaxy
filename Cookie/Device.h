@@ -1,5 +1,7 @@
 #pragma once
 #include <queue>
+#include "Vector2.h"
+#include "DeviceEvents.h"
 
 namespace Cookie
 {
@@ -40,18 +42,6 @@ namespace Cookie
 		CpuAccessFlag CpuAccess;
 	};
 
-	enum class EventType : int32_t
-	{
-		Focus,
-		FocusLost
-	};
-
-	struct DeviceEvent
-	{
-		EventType Type;
-		int32_t buf[4]; // storage used for event arguments
-	};
-
 	class Device
 	{
 	public:
@@ -60,14 +50,14 @@ namespace Cookie
 		virtual ~Device() = default;
 
 		// Todo: Remove these 4 methods from this class
-		virtual bool Run() = 0;
+		virtual bool Update() = 0;
+		virtual void PostUpdate();
 		virtual int64_t GetTimeSpecific() const = 0;
 		virtual double GetTimeIntervalsInSec(int64_t start, int64_t stop) const = 0;
 		virtual int Init(CdsMode cdsMode) = 0;
 
 		// Events
-		virtual std::vector<DeviceEvent> const& GetEvents() const;
-		virtual void ClearEvents();
+		virtual std::vector<DeviceEvent<>> const& GetEvents() const;
 
 		// Window
 		virtual bool HasFocus() const;
@@ -88,6 +78,6 @@ namespace Cookie
 		uint32_t screenWidth = 0;
 		uint32_t screenHeight = 0;
 		bool hasFocus = false;
-		std::vector<DeviceEvent> events;
+		std::vector<DeviceEvent<>> events;
 	};
 }

@@ -19,7 +19,6 @@ int main(int argc, char* argv[])
 	try
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
-		engine->Initialisations();
 
 		PhysicsBoxComponent plane({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f);
 		PhysicsBoxComponent cube({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
@@ -46,7 +45,7 @@ int main(int argc, char* argv[])
 		// Bind Input Actions for first "scene" (main menu)
 		// Bind lambda on Update Hook for game logic
 
-		while (engine->Run());
+		while (engine->Run([](){}));
 
 		return (int)1;
 	}

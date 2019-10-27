@@ -16,7 +16,8 @@ PxFilterFlags filterShader(
 {
 	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
 		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= PxPairFlag::eMODIFY_CONTACTS;
 		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
@@ -30,24 +31,26 @@ PxFilterFlags filterShader(
 }
 
 
-namespace Cookie {
+namespace Cookie
+{
+	PhysicsEngine::~PhysicsEngine()
+	{
+		clean();
+	}
 
 	void PhysicsEngine::init()
 	{
 		static PxDefaultAllocator gAllocator{};
 		static PxDefaultErrorCallback gErrorCallback{};
 		
-		// Necessaire pour le setup
 		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
-		// PVD = Physx Visual Debugger
 		gPvd = PxCreatePvd(*gFoundation);
 		PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 		gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
-		// Descripteur de la scene
 		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 		gDispatcher = PxDefaultCpuDispatcherCreate(2);
@@ -61,8 +64,6 @@ namespace Cookie {
 
 		gScene = gPhysics->createScene(sceneDesc);
 
-
-		// Pour le debugger
 		PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 		if (pvdClient)
 		{

@@ -1,6 +1,9 @@
 #pragma once
 
+#include "ExportMacro.h"
+
 #include <dinput.h>
+#include "Vector2.h"
 
 namespace Cookie
 {
@@ -36,8 +39,15 @@ namespace Cookie
 		Y = 0x18,
 		Z = 0x19,
 	};
+
+	enum class MouseButton
+	{
+		LeftButton,
+		RightButton,
+		MiddleButton
+	};
 	
-	class InputManager
+	class COOKIE_API InputManager
 	{
 	public:
 		InputManager(DeviceD3D11* device);
@@ -45,6 +55,7 @@ namespace Cookie
 
 		bool Init();
 		void Update();
+		void PostUpdate();
 		bool IsKeyPressed(Key key);
 	private:
 		void InitKeyMapping();
@@ -56,8 +67,17 @@ namespace Cookie
 		IDirectInputDevice8* keyboardInput;
 		IDirectInputDevice8* mouseInput;
 		IDirectInputDevice8* joystickInput;
-		
-		uint8_t keyboardBuffer[256];
+
+		uint8_t* keyboardCurrentBuffer;
+		uint8_t* keyboardPreviousBuffer;
+		uint8_t keyboardBuffer1[256];
+		uint8_t keyboardBuffer2[256];
 		uint8_t keyToDirectXKey[256];
+
+		uint8_t mouseCurrentBuffer[16];
+		uint8_t mousePreviousBuffer[16];
+
+		Vector2<int> mouseCurrentPosition;
+		Vector2<int> mousePreviousPosition;
 	};
 }
