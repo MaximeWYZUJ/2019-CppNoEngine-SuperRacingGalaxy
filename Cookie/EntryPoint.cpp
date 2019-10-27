@@ -11,7 +11,11 @@ namespace Cookie
 	{
 #ifdef WIN32
 		// Let's just create a default instance with DirectX for windows
-		return make_unique<Engine>(make_unique<DeviceD3D11>(), make_unique<InputManager>(), make_unique<SceneManager>());
+		auto device = make_unique<DeviceD3D11>();
+		auto inputManager = make_unique<InputManager>(device.get());
+		auto physics = unique_ptr<PhysicsEngine>(&PhysicsEngine::getInstance());
+		auto sceneManager = make_unique<SceneManager>();
+		return make_unique<Engine>(move(device), move(inputManager), move(physics), move(sceneManager));
 #else
 		throw exception("The standalone engine only supports windows platform with DirectX API");
 #endif

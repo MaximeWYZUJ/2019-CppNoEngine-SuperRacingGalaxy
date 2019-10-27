@@ -4,7 +4,7 @@
 
 #include "Transform.h"
 #include "PhysicMaterial.h"
-#include "PhysicCollisionCallback.h"
+#include "PhysicsCollisionCallback.h"
 #include "ExportMacro.h"
 
 namespace physx
@@ -18,17 +18,17 @@ namespace Cookie
 	class NoVelocity_StaticObject_Exception {};
 	class NoShapeException {};
 
-	class COOKIE_API PhysicComponent
+	class COOKIE_API PhysicsComponent
 	{
 	public:
 		enum bodyType {
 			STATIC, DYNAMIC
 		};
 
-		using PhysicComponent_t = float;
+		using PhysicsComponent_t = float;
 
 	protected:
-		Vector3<PhysicComponent_t> massCenter{};
+		Vector3<PhysicsComponent_t> massCenter{};
 		bodyType type;
 		bool trigger = false;
 		PhysicMaterial material;
@@ -39,11 +39,11 @@ namespace Cookie
 		physx::PxRigidActor* actor = nullptr;
 
 	public:
-		~PhysicComponent() = default;
+		~PhysicsComponent() = default;
 
-		void addForce(Vector3<PhysicComponent_t> force);
-		PhysicCollisionCallback onCollisionCallBack;
-		PhysicCollisionCallback onTriggerCallBack;
+		void addForce(Vector3<PhysicsComponent_t> force);
+		PhysicsCollisionCallback onCollisionCallBack;
+		PhysicsCollisionCallback onTriggerCallBack;
 
 		void addFilterGroup(FilterGroup f);
 		void removeFilterGroup(FilterGroup f);
@@ -54,13 +54,13 @@ namespace Cookie
 		void updateFilters();
 
 	public:
-		virtual Transform<PhysicComponent_t> getTransform() const noexcept;
-		virtual PhysicComponent_t getMass() const;
-		virtual Vector3<PhysicComponent_t> getVelocity() const;
+		virtual Transform<PhysicsComponent_t> getTransform() const noexcept;
+		virtual PhysicsComponent_t getMass() const;
+		virtual Vector3<PhysicsComponent_t> getVelocity() const;
 		virtual PhysicMaterial getMaterial() const noexcept;
 		virtual bool isTrigger() const noexcept;
 
-		virtual void setMass(PhysicComponent_t mass);
+		virtual void setMass(PhysicsComponent_t mass);
 		virtual void setMaterial(PhysicMaterial material_);
 		virtual void setTrigger(bool isTrigger_);
 	};

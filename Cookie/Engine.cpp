@@ -8,8 +8,8 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<SceneManager>&& smgr)
-		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, smgr{ move(smgr) }
+	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr)
+		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, smgr{ move(smgr) }
 	{
 	}
 
@@ -30,14 +30,14 @@ namespace Cookie
 
 	bool Engine::Run()
 	{
-		// Todo: enqueue device events in a system-independent way
 		bool isRunning = device->Run();
-		inputManager->UpdateKeyboardState();
+		inputManager->Update();
 
-		if (inputManager->IsKeyPressed(Key::W))
-		{
-			cout << "W pressed!" << endl;
-		}
+		physics->step();
+
+		isRunning = Update();
+
+		device->ClearEvents();
 		
 		return isRunning;
 	}
@@ -68,10 +68,9 @@ namespace Cookie
 
 	int Engine::Initialisations()
 	{
-		// Todo: Engine shouldn't know about HMODULE...
-		// Decoupling the "device" and the render target (e.g. win32 window, glut, sfml) may be a good idea
-		device->Init(CdsMode::Windowed, GetCurrentModule());
-		inputManager->Init(GetCurrentModule(), device.get());
+		device->Init(CdsMode::Windowed);
+		inputManager->Init();
+		physics->init();
 		smgr->SetDevice(device.get());
 		InitScene();
 		InitAnimation();
@@ -128,16 +127,5 @@ namespace Cookie
 	{
 		device->Clear(Color::Black);
 		return smgr->DrawAll(*this);
-	}
-
-	HMODULE Engine::GetCurrentModule()
-	{
-		HMODULE hModule = nullptr;
-		GetModuleHandleEx(
-			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-			reinterpret_cast<LPCTSTR>(GetCurrentModule),
-			&hModule);
-
-		return hModule;
 	}
 }

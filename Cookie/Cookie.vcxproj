@@ -211,12 +211,12 @@
     <ClInclude Include="Objet3D.h" />
     <ClInclude Include="ObjReader.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PhysicBoxComponent.h" />
-    <ClInclude Include="PhysicCollisionCallback.h" />
-    <ClInclude Include="PhysicCollisionFiltering.h" />
-    <ClInclude Include="PhysicComponent.h" />
-    <ClInclude Include="PhysicContactCallback.h" />
-    <ClInclude Include="PhysicEngine.h" />
+    <ClInclude Include="PhysicsBoxComponent.h" />
+    <ClInclude Include="PhysicsCollisionCallback.h" />
+    <ClInclude Include="PhysicsCollisionFiltering.h" />
+    <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="PhysicsContactCallback.h" />
+    <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicMaterial.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="resource.h" />
@@ -265,11 +265,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PhysicBoxComponent.cpp" />
-    <ClCompile Include="PhysicCollisionCallback.cpp" />
-    <ClCompile Include="PhysicComponent.cpp" />
-    <ClCompile Include="PhysicContactCallback.cpp" />
-    <ClCompile Include="PhysicEngine.cpp" />
+    <ClCompile Include="PhysicsBoxComponent.cpp" />
+    <ClCompile Include="PhysicsCollisionCallback.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="PhysicsContactCallback.cpp" />
+    <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />

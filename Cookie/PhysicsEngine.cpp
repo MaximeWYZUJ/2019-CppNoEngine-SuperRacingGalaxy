@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "PhysicEngine.h"
-#include "PhysicContactCallback.h"
+#include "PhysicsEngine.h"
+#include "PhysicsContactCallback.h"
 #include "PxPhysicsAPI.h"
 
 using namespace physx;
@@ -32,7 +32,7 @@ PxFilterFlags filterShader(
 
 namespace Cookie {
 
-	void PhysicEngine::init()
+	void PhysicsEngine::init()
 	{
 		static PxDefaultAllocator gAllocator{};
 		static PxDefaultErrorCallback gErrorCallback{};
@@ -53,7 +53,7 @@ namespace Cookie {
 		gDispatcher = PxDefaultCpuDispatcherCreate(2);
 		sceneDesc.cpuDispatcher = gDispatcher;
 
-		PhysicContactCallback* contactCb = new PhysicContactCallback();
+		PhysicsContactCallback* contactCb = new PhysicsContactCallback();
 		sceneDesc.simulationEventCallback = contactCb;
 		sceneDesc.contactModifyCallback = contactCb;
 
@@ -72,13 +72,13 @@ namespace Cookie {
 		}
 	}
 
-	void PhysicEngine::step()
+	void PhysicsEngine::step()
 	{
 		gScene->simulate(1.0f / 60.0f);
 		gScene->fetchResults(true);
 	}
 
-	void PhysicEngine::clean()
+	void PhysicsEngine::clean()
 	{
 		PX_RELEASE(gScene);
 		PX_RELEASE(gDispatcher);

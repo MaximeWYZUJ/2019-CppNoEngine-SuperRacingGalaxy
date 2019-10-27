@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "TextureManager.h"
 #include "InputManager.h"
+#include "PhysicsEngine.h"
 
 namespace Cookie
 {
@@ -18,7 +19,7 @@ namespace Cookie
 	class COOKIE_API Engine
 	{
 	public:
-		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<SceneManager>&& smgr);
+		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, std::unique_ptr<SceneManager>&& smgr);
 
 		Device* GetDevice() const;
 		SceneManager* GetSceneManager() const;
@@ -26,7 +27,6 @@ namespace Cookie
 
 		/* Check that the device is still running and enqueue events from the system */
 		bool Run();
-		bool Update();
 		int Initialisations();
 
 		DirectX::XMMATRIX const& GetMatView() const;
@@ -34,6 +34,7 @@ namespace Cookie
 		DirectX::XMMATRIX const& GetMatViewProj() const;
 
 	private:
+		bool Update();
 		int InitScene();
 		int InitAnimation();
 		bool RenderScene();
@@ -41,6 +42,7 @@ namespace Cookie
 	private:
 		std::unique_ptr<Device> device;
 		std::unique_ptr<InputManager> inputManager;
+		std::unique_ptr<PhysicsEngine> physics;
 		std::unique_ptr<SceneManager> smgr;
 		std::unique_ptr<TextureManager> textureManager;
 
@@ -50,7 +52,5 @@ namespace Cookie
 		DirectX::XMMATRIX m_MatView;
 		DirectX::XMMATRIX m_MatProj;
 		DirectX::XMMATRIX m_MatViewProj;
-
-		static HMODULE GetCurrentModule();
 	};
 }
