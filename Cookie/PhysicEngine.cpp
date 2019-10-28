@@ -2,6 +2,7 @@
 #include "PhysicEngine.h"
 #include "PhysicContactCallback.h"
 #include "PxPhysicsAPI.h"
+#include <fstream>
 
 using namespace physx;
 
@@ -16,7 +17,12 @@ PxFilterFlags filterShader(
 {
 	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
+	std::fstream file("output.txt", std::ofstream::app);
+	file << "filterShader" << std::endl;
+
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
+		file << "filter shader masks" << std::endl;
+
 		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= PxPairFlag::eMODIFY_CONTACTS;
 		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;

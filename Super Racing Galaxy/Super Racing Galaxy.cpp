@@ -49,6 +49,22 @@ int APIENTRY _tWinMain(
 		PhysicBoxComponent plane({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicComponent::STATIC, 5.0f, 0.1f, 10.0f);
 		PhysicBoxComponent cube({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
 		
+		class MyCallback : public PhysicCollisionCallback {
+		public:
+			void operator()(PhysicComponent* otherComponent) override {
+				std::fstream file("output.txt", std::ofstream::app);
+				file << "truc perso" << std::endl;
+			}
+		};
+		MyCallback cb;
+		plane.onCollisionCallBack = cb;
+		cube.onCollisionCallBack = cb;
+
+		cube.addFilterGroup(FilterGroup::DEFAULT);
+		cube.addFilterMask(FilterGroup::DEFAULT);
+		plane.addFilterGroup(FilterGroup::DEFAULT);
+		plane.addFilterMask(FilterGroup::DEFAULT);
+
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 		engine->Initialisations();
 

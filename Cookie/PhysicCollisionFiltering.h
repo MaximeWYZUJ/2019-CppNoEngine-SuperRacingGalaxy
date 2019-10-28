@@ -2,6 +2,6 @@
 
 namespace Cookie {
 	enum FilterGroup {
-		DEFAULT
+		DEFAULT = (1 << 0)
 	};
 }

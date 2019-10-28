@@ -2,6 +2,7 @@
 #include "PhysicContactCallback.h"
 #include "PxRigidActor.h"
 #include "PhysicComponent.h"
+#include <fstream>
 
 using namespace physx;
 
@@ -9,6 +10,9 @@ namespace Cookie {
 
 	void PhysicContactCallback::onContactModify(PxContactModifyPair* const pairs, PxU32 count)
 	{
+		std::fstream file("output.txt", std::ofstream::app);
+		file << "on contact modify" << std::endl;
+
 		for (int i = 0; i < count; i++) {
 			if (pairs[i].shape[0]->getSimulationFilterData().word1 & pairs[i].shape[1]->getSimulationFilterData().word0) {
 				PhysicComponent* self = static_cast<PhysicComponent*>(pairs[i].actor[0]->userData);
