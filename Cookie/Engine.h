@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "PhysicsEngine.h"
+#include "Synchronizer.h"
 
 namespace Cookie
 {
@@ -19,7 +20,7 @@ namespace Cookie
 	class COOKIE_API Engine
 	{
 	public:
-		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, std::unique_ptr<SceneManager>&& smgr);
+		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, std::unique_ptr<SceneManager>&& smgr, std::unique_ptr<Synchronizer>&& sync);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
@@ -43,6 +44,7 @@ namespace Cookie
 		std::unique_ptr<PhysicsEngine> physics;
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<TextureManager> textureManager;
+		std::unique_ptr<Synchronizer> synchronizer;
 
 		int64_t previousTime;
 

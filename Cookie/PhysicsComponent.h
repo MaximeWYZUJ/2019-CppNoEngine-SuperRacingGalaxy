@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <vector>
 
 #include "Transform.h"
@@ -18,7 +19,41 @@ namespace Cookie
 	class NoVelocity_StaticObject_Exception {};
 	class NoShapeException {};
 
-	class COOKIE_API PhysicsComponent
+	struct COOKIE_API PhysicsComponent
+	{
+		enum BodyType { STATIC, DYNAMIC };
+		using PhysicsComponent_t = float;
+
+		Transform<PhysicsComponent_t> transform;
+		Vector3<PhysicsComponent_t> velocity;
+		Vector3<PhysicsComponent_t> massCenter{};
+		PhysicsComponent_t mass;
+		BodyType type;
+		bool trigger = false;
+		PhysicMaterial material;
+
+		std::set<FilterGroup> selfGroup;
+		std::set<FilterGroup> mask;
+
+		physx::PxRigidActor* actor = nullptr;
+
+		PhysicsCollisionCallback onCollisionCallback;
+		PhysicsCollisionCallback onTriggerCallback;
+
+		bool isDirty = false;
+
+	protected:
+		std::vector<Vector3<PhysicsComponent_t>> addedForces;
+
+	public:
+		void addFilterGroup(FilterGroup f);
+		void removeFilterGroup(FilterGroup f);
+		void addFilterMask(FilterGroup f);
+		void removeFilterMask(FilterGroup f);
+		void addForce(Vector3<PhysicsComponent_t> force);
+	};
+
+	/*class COOKIE_API PhysicsComponent
 	{
 	public:
 		enum bodyType {
@@ -63,5 +98,5 @@ namespace Cookie
 		virtual void setMass(PhysicsComponent_t mass);
 		virtual void setMaterial(PhysicMaterial material_);
 		virtual void setTrigger(bool isTrigger_);
-	};
+	};*/
 }

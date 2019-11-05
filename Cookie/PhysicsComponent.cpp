@@ -16,42 +16,33 @@ namespace Cookie
 		if (type == STATIC)
 			return;
 		
-		actor->is<PxRigidDynamic>()->addForce(PxVec3(-force.x, force.y, force.z));
+		addedForces.push_back(force);
+		//actor->is<PxRigidDynamic>()->addForce(PxVec3(-force.x, force.y, force.z));
 	}
 	
 	void PhysicsComponent::addFilterGroup(FilterGroup f)
 	{
-		if (std::find(selfGroup.begin(), selfGroup.end(), f) == selfGroup.end())
-			selfGroup.push_back(f);
-
-		updateFilters();
+		selfGroup.insert(f);
 	}
 
 	void PhysicsComponent::removeFilterGroup(FilterGroup f)
 	{
 		if (auto it = std::find(selfGroup.begin(), selfGroup.end(), f); it != selfGroup.end())
 			selfGroup.erase(it);
-
-		updateFilters();
 	}
 
 	void PhysicsComponent::addFilterMask(FilterGroup f)
 	{
-		if (std::find(mask.begin(), mask.end(), f) == mask.end())
-			mask.push_back(f);
-
-		updateFilters();
+		mask.insert(f);
 	}
 
 	void PhysicsComponent::removeFilterMask(FilterGroup f)
 	{
 		if (auto it = std::find(mask.begin(), mask.end(), f); it != mask.end())
 			mask.erase(it);
-
-		updateFilters();
 	}
 	
-	void PhysicsComponent::updateFilters()
+	/*void PhysicsComponent::updateFilters()
 	{
 		int nbShapes = actor->getNbShapes();
 		if (nbShapes == 0) {
@@ -157,5 +148,5 @@ namespace Cookie
 		}
 
 		trigger = isTrigger_;
-	}
+	}*/
 }

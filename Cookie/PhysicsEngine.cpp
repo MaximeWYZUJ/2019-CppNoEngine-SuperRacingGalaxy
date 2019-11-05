@@ -2,6 +2,7 @@
 #include "PhysicsEngine.h"
 #include "PhysicsContactCallback.h"
 #include "PxPhysicsAPI.h"
+#include <algorithm>
 
 using namespace physx;
 
@@ -92,5 +93,45 @@ namespace Cookie
 			PX_RELEASE(transport);
 		}
 		PX_RELEASE(gFoundation);
+	}
+	void PhysicsEngine::UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr actor)
+	{
+		// ON NE PEUT PAS CHANGER LE BODY TYPE POUR LE MOMENT
+
+		Vector3<PhysicsComponent::PhysicsComponent_t> modP = modifs->transform.GetPosition();
+		Quaternion<PhysicsComponent::PhysicsComponent_t> modR = modifs->transform.GetRotation();
+		actor->setGlobalPose(PxTransform(PxVec3(-modP.x, modP.y, modP.z), PxQuat(modR.x, modR.y, modR.z, modR.w)));
+
+		if (modifs->type == PhysicsComponent::BodyType::DYNAMIC) {
+			actor->is<PxRigidDynamic>()->setMass(modifs->mass);
+			actor->is<PxRigidDynamic>()->setCMassLocalPose(PxTransform(PxVec3(-modifs->massCenter.x, modifs->massCenter.y, modifs->massCenter.z)));
+			actor->is<PxRigidDynamic>()->setLinearVelocity(PxVec3(modifs->velocity.x, modifs->velocity.y, modifs->velocity.z));
+		}
+
+		// On calcule les nouveaux word0 et word1
+		PxFilterData filter{};
+		std::for_each(modifs->selfGroup.begin(), modifs->selfGroup.end(), [&filter](FilterGroup f) {
+			filter.word0 |= f;
+		});
+		std::for_each(modifs->mask.begin(), modifs->mask.end(), [&filter](FilterGroup f) {
+			filter.word1 |= f;
+		});
+
+		// Calcul du nouveau material
+		PxMaterial* mat = PhysicsEngine::getInstance().gPhysics->createMaterial(modifs->material.staticFriction, modifs->material.dynamicFriction, modifs->material.bounce);
+
+		// Parcourt de toutes les shapes
+		int nbShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		actor->getShapes(shapes, sizeof(PxShape) * nbShapes);
+
+		for (int i = 0; i < nbShapes; i++) {
+			shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, modifs->trigger);
+			shapes[i]->setMaterials(&mat, 1);
+			shapes[i]->setSimulationFilterData(filter);
+		}
+
+		// On met les data dans le userData de l'actor, utile pour les callbacks
+		actor->userData = modifs;
 	}
 }

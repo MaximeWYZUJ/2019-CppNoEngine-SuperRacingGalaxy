@@ -8,8 +8,8 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr)
-		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }
+	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr, unique_ptr<Synchronizer>&& sync)
+		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }, synchronizer{ move(sync) }
 	{
 		device->Init(CdsMode::Windowed);
 		inputManager->Init();

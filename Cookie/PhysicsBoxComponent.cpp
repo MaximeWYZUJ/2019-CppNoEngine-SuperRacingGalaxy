@@ -6,7 +6,7 @@
 using namespace physx;
 
 namespace Cookie {
-	PhysicsBoxComponent::PhysicsBoxComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, bodyType type, float _dx, float _dy, float _dz)
+	PhysicsBoxComponent::PhysicsBoxComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type, float _dx, float _dy, float _dz)
 					  : dx(_dx), dy(_dy), dz(_dz)
 	{
 		auto& engine= PhysicsEngine::getInstance();

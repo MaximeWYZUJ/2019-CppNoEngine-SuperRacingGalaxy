@@ -13,13 +13,13 @@ namespace Cookie {
 			if (pairs[i].shape[0]->getSimulationFilterData().word1 & pairs[i].shape[1]->getSimulationFilterData().word0) {
 				PhysicsComponent* self = static_cast<PhysicsComponent*>(pairs[i].actor[0]->userData);
 				PhysicsComponent* other = static_cast<PhysicsComponent*>(pairs[i].actor[1]->userData);
-				self->onCollisionCallBack(other);
+				self->onCollisionCallback(other);
 			}
 
 			if (pairs[i].shape[1]->getSimulationFilterData().word1 & pairs[i].shape[0]->getSimulationFilterData().word0) {
 				PhysicsComponent* self = static_cast<PhysicsComponent*>(pairs[i].actor[1]->userData);
 				PhysicsComponent* other = static_cast<PhysicsComponent*>(pairs[i].actor[0]->userData);
-				self->onCollisionCallBack(other);
+				self->onCollisionCallback(other);
 			}
 		}
 	}
@@ -30,7 +30,7 @@ namespace Cookie {
 			if (pairs[i].triggerShape->getSimulationFilterData().word1 & pairs[i].otherShape->getSimulationFilterData().word0) {
 				PhysicsComponent* self = static_cast<PhysicsComponent*>(pairs[i].triggerActor->userData);
 				PhysicsComponent* other = static_cast<PhysicsComponent*>(pairs[i].otherActor->userData);
-				self->onTriggerCallBack(other);
+				self->onCollisionCallback(other);
 			}
 		}
 	}
