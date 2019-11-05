@@ -182,6 +182,9 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionContext.h" />
+    <ClInclude Include="ActionDescriptor.h" />
+    <ClInclude Include="ActionManager.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapReader.h" />
     <ClInclude Include="BitmapToMeshAdapter.h" />
@@ -236,6 +239,9 @@
     <ClInclude Include="Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ActionContext.cpp" />
+    <ClCompile Include="ActionDescriptor.cpp" />
+    <ClCompile Include="ActionManager.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapReader.cpp" />
     <ClCompile Include="BitmapToMeshAdapter.cpp" />
