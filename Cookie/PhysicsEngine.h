@@ -12,12 +12,13 @@ namespace physx {
 	class PxPhysics;
 	class PxScene;
 }
-namespace Cookie {
-	class COOKIE_API PhysicEngine : Incopiable
+
+namespace Cookie
+{
+	class COOKIE_API PhysicsEngine : Incopiable
 	{
-	private:
-		physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
 	public:
+		~PhysicsEngine();
 		physx::PxPhysics* gPhysics = nullptr;
 		physx::PxFoundation* gFoundation = nullptr;
 		physx::PxScene* gScene = nullptr;
@@ -27,9 +28,12 @@ namespace Cookie {
 		void step();
 		void clean();
 
-		static PhysicEngine& getInstance() {
-			static PhysicEngine instance;
-			return instance;
+		static PhysicsEngine& getInstance()
+		{
+			static PhysicsEngine* instance = new PhysicsEngine();
+			return *instance;
 		};
+	private:
+		physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
 	};
 }

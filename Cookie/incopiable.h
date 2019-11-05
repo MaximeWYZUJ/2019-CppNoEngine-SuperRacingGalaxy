@@ -1,6 +1,4 @@
-#ifndef INCOPIABLE_H
-#define INCOPIABLE_H
-
+#pragma once
 
 class Incopiable
 {
@@ -11,5 +9,3 @@ protected:
     Incopiable() = default;
     ~Incopiable() = default;
 };
-
-#endif // INCOPIABLE_H

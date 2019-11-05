@@ -12,4 +12,19 @@ namespace Cookie
 	{
 		return screenHeight;
 	}
+
+	void Device::PostUpdate()
+	{
+		events.clear();
+	}
+
+	std::vector<DeviceEvent<>> const& Device::GetEvents() const
+	{
+		return events;
+	}
+
+	bool Device::HasFocus() const
+	{
+		return hasFocus;
+	}
 }

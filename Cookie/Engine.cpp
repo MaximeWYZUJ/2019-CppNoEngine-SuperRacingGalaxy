@@ -8,9 +8,15 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<SceneManager>&& smgr)
-		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, smgr{ move(smgr) }
+	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr)
+		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }
 	{
+		device->Init(CdsMode::Windowed);
+		inputManager->Init();
+		physics->init();
+		sceneManager->SetDevice(device.get());
+		InitScene();
+		InitAnimation();
 	}
 
 	Device* Engine::GetDevice() const
@@ -20,62 +26,12 @@ namespace Cookie
 
 	SceneManager* Engine::GetSceneManager() const
 	{
-		return smgr.get();
+		return sceneManager.get();
 	}
 
 	TextureManager* Engine::GetTextureManager() const noexcept
 	{
 		return textureManager.get();
-	}
-
-	bool Engine::Run()
-	{
-		// Todo: enqueue device events in a system-independent way
-		bool isRunning = device->Run();
-		inputManager->UpdateKeyboardState();
-
-		if (inputManager->IsKeyPressed(Key::W))
-		{
-			cout << "W pressed!" << endl;
-		}
-		
-		return isRunning;
-	}
-
-	bool Engine::Update()
-	{
-		bool isCompleted = false;
-		while (!isCompleted)
-		{
-			int64_t const currentTime = device->GetTimeSpecific();
-			double const deltaTime = device->GetTimeIntervalsInSec(TempsCompteurPrecedent, currentTime);
-
-			if (deltaTime > frameTime)
-			{
-				device->Present();
-				RenderScene();
-				TempsCompteurPrecedent = currentTime;
-				isCompleted = true;
-			}
-			else if (deltaTime > 0.001) // > 1ms
-			{
-				this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(deltaTime * 1000.0) - 1));
-			}
-		}
-
-		return true;
-	}
-
-	int Engine::Initialisations()
-	{
-		// Todo: Engine shouldn't know about HMODULE...
-		// Decoupling the "device" and the render target (e.g. win32 window, glut, sfml) may be a good idea
-		device->Init(CdsMode::Windowed, GetCurrentModule());
-		inputManager->Init(GetCurrentModule(), device.get());
-		smgr->SetDevice(device.get());
-		InitScene();
-		InitAnimation();
-		return 0;
 	}
 
 	const XMMATRIX& Engine::GetMatView() const
@@ -116,28 +72,38 @@ namespace Cookie
 
 	int Engine::InitAnimation()
 	{
-		TempsSuivant = device->GetTimeSpecific();
-		TempsCompteurPrecedent = TempsSuivant;
+		previousTime = device->GetTimeSpecific();
 
 		RenderScene();
 
 		return true;
 	}
 
-	bool Engine::RenderScene()
+	void Engine::UpdateScene()
 	{
-		device->Clear(Color::Black);
-		return smgr->DrawAll(*this);
+		bool isCompleted = false;
+		while (!isCompleted)
+		{
+			int64_t const currentTime = device->GetTimeSpecific();
+			double const deltaTime = device->GetTimeIntervalsInSec(previousTime, currentTime);
+
+			if (deltaTime > frameTime)
+			{
+				device->Present();
+				RenderScene();
+				previousTime = currentTime;
+				isCompleted = true;
+			}
+			else if (deltaTime > 0.001) // > 1ms
+			{
+				this_thread::sleep_for(std::chrono::milliseconds(static_cast<int64_t>(deltaTime * 1000.0) - 1));
+			}
+		}
 	}
 
-	HMODULE Engine::GetCurrentModule()
+	void Engine::RenderScene() const
 	{
-		HMODULE hModule = nullptr;
-		GetModuleHandleEx(
-			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-			reinterpret_cast<LPCTSTR>(GetCurrentModule),
-			&hModule);
-
-		return hModule;
+		device->Clear(Color::Black);
+		sceneManager->DrawAll(*this);
 	}
 }

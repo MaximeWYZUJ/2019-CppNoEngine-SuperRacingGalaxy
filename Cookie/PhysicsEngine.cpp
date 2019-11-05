@@ -1,8 +1,7 @@
 #include "pch.h"
-#include "PhysicEngine.h"
-#include "PhysicContactCallback.h"
+#include "PhysicsEngine.h"
+#include "PhysicsContactCallback.h"
 #include "PxPhysicsAPI.h"
-#include <fstream>
 
 using namespace physx;
 
@@ -17,12 +16,8 @@ PxFilterFlags filterShader(
 {
 	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
-	std::fstream file("output.txt", std::ofstream::app);
-	file << "filterShader" << std::endl;
-
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
-		file << "filter shader masks" << std::endl;
-
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
 		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= PxPairFlag::eMODIFY_CONTACTS;
 		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
@@ -36,30 +31,32 @@ PxFilterFlags filterShader(
 }
 
 
-namespace Cookie {
+namespace Cookie
+{
+	PhysicsEngine::~PhysicsEngine()
+	{
+		clean();
+	}
 
-	void PhysicEngine::init()
+	void PhysicsEngine::init()
 	{
 		static PxDefaultAllocator gAllocator{};
 		static PxDefaultErrorCallback gErrorCallback{};
 		
-		// Necessaire pour le setup
 		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
-		// PVD = Physx Visual Debugger
 		gPvd = PxCreatePvd(*gFoundation);
 		PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
 		gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
-		// Descripteur de la scene
 		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 		gDispatcher = PxDefaultCpuDispatcherCreate(2);
 		sceneDesc.cpuDispatcher = gDispatcher;
 
-		PhysicContactCallback* contactCb = new PhysicContactCallback();
+		PhysicsContactCallback* contactCb = new PhysicsContactCallback();
 		sceneDesc.simulationEventCallback = contactCb;
 		sceneDesc.contactModifyCallback = contactCb;
 
@@ -67,8 +64,6 @@ namespace Cookie {
 
 		gScene = gPhysics->createScene(sceneDesc);
 
-
-		// Pour le debugger
 		PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 		if (pvdClient)
 		{
@@ -78,13 +73,13 @@ namespace Cookie {
 		}
 	}
 
-	void PhysicEngine::step()
+	void PhysicsEngine::step()
 	{
 		gScene->simulate(1.0f / 60.0f);
 		gScene->fetchResults(true);
 	}
 
-	void PhysicEngine::clean()
+	void PhysicsEngine::clean()
 	{
 		PX_RELEASE(gScene);
 		PX_RELEASE(gDispatcher);

@@ -1,13 +1,12 @@
 #include "pch.h"
 #include <algorithm>
+#include <stack>
 #include "SceneManager.h"
 #include "ObjReader.h"
 #include "ObjDataToMeshConverter.h"
 #include "Device.h"
 #include "MeshRenderer.h"
 #include "Engine.h"
-#include <algorithm>
-#include <stack>
 #include "Util.h"
 
 using namespace DirectX;
@@ -73,7 +72,7 @@ namespace Cookie
 		}
 	}
 	
-	bool SceneManager::DrawAll(Engine const& engine)
+	void SceneManager::DrawAll(Engine const& engine)
 	{
 		// Update matrices
 		vector<SceneNode*> c;
@@ -110,7 +109,6 @@ namespace Cookie
 		{
 			renderer->Draw(engine);
 		}
-		return true;
 	}
 
 	void SceneManager::UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt)

@@ -13,14 +13,12 @@ namespace Cookie
 		DeviceD3D11();
 		virtual ~DeviceD3D11();
 
-		bool Run() override;
+		bool Update() override;
 		int64_t GetTimeSpecific() const override;
 		double GetTimeIntervalsInSec(int64_t start, int64_t stop) const override;
-		int Init(CdsMode cdsMode, HMODULE hModule) override;
+		int Init(CdsMode cdsMode) override;
 
-		// Events
-		virtual DeviceEvent GetEvent() { return DeviceEvent{}; };
-		
+		// Direct3D function wrappers
 		BufferPointer CreateBuffer(BufferDescription const& bufferDescription, void const* data) override;
 		void SetTopology() override;
 		void SetVertexBuffer(BufferPointer) override;
@@ -30,11 +28,11 @@ namespace Cookie
 		void Clear(Color const& clearColor) override;
 		void Present() override;
 
-		ID3D11Device* GetD3DDevice() { return device; }
-		IDXGISwapChain*         GetSwapChain() { return pSwapChain; }
+		ID3D11Device* GetD3DDevice() const;
+		IDXGISwapChain* GetSwapChain() const;
 
-		// Todo: Think about how to remove this there... InputManager needs it... :/
-		HWND GetWindowHandle() const { return hMainWnd; }
+		HMODULE GetModule() const;
+		HWND GetWindow() const;
 
 	protected:
 		ID3D11RasterizerState* mSolidCullBackRS;
@@ -44,6 +42,7 @@ namespace Cookie
 		ATOM MyRegisterClass(HINSTANCE hInstance);
 		bool InitAppInstance();
 		int Show();
+		static HMODULE GetCurrentModule();
 
 	private:
 		void InitDepthBuffer();
@@ -62,11 +61,11 @@ namespace Cookie
 		static INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 		HACCEL hAccelTable;						// handle Windows de la table des accélérateurs
-		static HINSTANCE hAppInstance;			// handle Windows de l'instance actuelle de l'application
+		HMODULE moduleHandle;			// handle Windows de l'instance actuelle de l'application
 		HWND hMainWnd;							// handle Windows de la fenêtre principale
 		TCHAR szWindowClass[MAX_LOADSTRING];	// le nom de la classe de fenêtre principale
 
-		Horloge m_Horloge;
+		Horloge horloge;
 	};
 
 }

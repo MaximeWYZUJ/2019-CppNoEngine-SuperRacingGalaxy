@@ -7,8 +7,6 @@
 
 namespace Cookie
 {
-	HINSTANCE DeviceD3D11::hAppInstance;
-
 	DeviceD3D11::DeviceD3D11()
 	{
 	}
@@ -32,14 +30,17 @@ namespace Cookie
 		DXRelacher(device);
 	}
 
-	bool DeviceD3D11::Run()
+	bool DeviceD3D11::Update()
 	{
 		MSG msg;
-		bool bBoucle = true;
+		bool shouldContinue = true;
 
-		if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		while (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT) bBoucle = false;
+			if (msg.message == WM_QUIT)
+			{
+				shouldContinue = false;
+			}
 
 			if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
 			{
@@ -48,22 +49,22 @@ namespace Cookie
 			}
 		}
 
-		return bBoucle;
+		return shouldContinue;
 	}
 
 	int64_t DeviceD3D11::GetTimeSpecific() const
 	{
-		return m_Horloge.GetTimeCount();
+		return horloge.GetTimeCount();
 	}
 
 	double DeviceD3D11::GetTimeIntervalsInSec(int64_t start, int64_t stop) const
 	{
-		return m_Horloge.GetTimeBetweenCounts(start, stop);
+		return horloge.GetTimeBetweenCounts(start, stop);
 	}
 
-	int DeviceD3D11::Init(CdsMode cdsMode, HMODULE hModule)
+	int DeviceD3D11::Init(CdsMode cdsMode)
 	{
-		hAppInstance = hModule;
+		moduleHandle = GetCurrentModule();
 
 		InitAppInstance();
 		Show();
@@ -226,6 +227,26 @@ namespace Cookie
 		pSwapChain->Present(0, 0);
 	}
 
+	ID3D11Device* DeviceD3D11::GetD3DDevice() const
+	{
+		return device;
+	}
+
+	IDXGISwapChain* DeviceD3D11::GetSwapChain() const
+	{
+		return pSwapChain;
+	}
+
+	HMODULE DeviceD3D11::GetModule() const
+	{
+		return moduleHandle;
+	}
+
+	HWND DeviceD3D11::GetWindow() const
+	{
+		return hMainWnd;
+	}
+
 	ATOM DeviceD3D11::MyRegisterClass(HINSTANCE hInstance)
 	{
 		WNDCLASSEX wcex;
@@ -251,17 +272,17 @@ namespace Cookie
 	{
 		TCHAR szTitle[MAX_LOADSTRING];
 
-		LoadString(hAppInstance, IDS_APP_TITLE, static_cast<TCHAR*>(szTitle), MAX_LOADSTRING);
-		LoadString(hAppInstance, IDC_Cookie, static_cast<TCHAR*>(szWindowClass), MAX_LOADSTRING);
+		LoadString(moduleHandle, IDS_APP_TITLE, static_cast<TCHAR*>(szTitle), MAX_LOADSTRING);
+		LoadString(moduleHandle, IDC_Cookie, static_cast<TCHAR*>(szWindowClass), MAX_LOADSTRING);
 
-		if (!MyRegisterClass(hAppInstance))
+		if (!MyRegisterClass(moduleHandle))
 		{
 			MessageBox(NULL, L"Class registration has failed!", L"Error!", MB_OK | MB_ICONINFORMATION);
 			return false;
 		}
 
 		hMainWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hAppInstance, nullptr);
+			CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, moduleHandle, nullptr);
 
 		if (!hMainWnd)
 		{
@@ -269,7 +290,9 @@ namespace Cookie
 			return false;
 		}
 
-		hAccelTable = LoadAccelerators(hAppInstance, MAKEINTRESOURCE(IDC_Cookie));
+		SetWindowLongPtr(hMainWnd, GWLP_USERDATA, (LONG_PTR)this);
+
+		hAccelTable = LoadAccelerators(moduleHandle, MAKEINTRESOURCE(IDC_Cookie));
 
 		return true;
 	}
@@ -280,6 +303,17 @@ namespace Cookie
 		UpdateWindow(hMainWnd);
 
 		return 0;
+	}
+
+	HMODULE DeviceD3D11::GetCurrentModule()
+	{
+		HMODULE hModule = nullptr;
+		GetModuleHandleEx(
+			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+			reinterpret_cast<LPCTSTR>(GetCurrentModule),
+			&hModule);
+
+		return hModule;
 	}
 
 	void DeviceD3D11::InitDepthBuffer()
@@ -317,26 +351,37 @@ namespace Cookie
 
 	LRESULT CALLBACK DeviceD3D11::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
+		auto* c = reinterpret_cast<DeviceD3D11*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+		if (c == nullptr)
+		{
+			return DefWindowProc(hWnd, message, wParam, lParam);
+		}
+
 		int wmId, wmEvent;
 		PAINTSTRUCT ps;
 		HDC hdc;
 
+		// Todo: refactor to use a memory pool for DeviceEvent::data
 		switch (message)
 		{
-		/*case WM_KILLFOCUS:
-			keyboardInput->Unacquire();
-			break;
 		case WM_SETFOCUS:
-			if (keyboardInput != nullptr)
-				keyboardInput->Acquire();
-			break;*/
+			c->events.push_back(DeviceEvent<>{.type = DeviceEventType::Focus });
+			c->hasFocus = true;
+			break;
+		case WM_KILLFOCUS:
+			c->events.push_back(DeviceEvent<>{ .type = DeviceEventType::FocusLost });
+			c->hasFocus = false;
+			break;
+		case WM_MOUSEMOVE:
+			c->events.push_back(DeviceEvent<>{.type = DeviceEventType::MouseMove, .data = new MouseMove{ .pos = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) } } });
+			break;
 		case WM_COMMAND:
 			wmId = LOWORD(wParam);
 			wmEvent = HIWORD(wParam);
 			switch (wmId)
 			{
 			case IDM_ABOUT:
-				DialogBox(hAppInstance, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)About);
+				DialogBox(c->GetModule(), (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)About);
 				break;
 			case IDM_EXIT:
 				DestroyWindow(hWnd);
@@ -347,7 +392,6 @@ namespace Cookie
 			break;
 		case WM_PAINT:
 			hdc = BeginPaint(hWnd, &ps);
-			// Évitez d'ajouter du code ici...
 			EndPaint(hWnd, &ps);
 			break;
 		case WM_DESTROY:
@@ -356,6 +400,7 @@ namespace Cookie
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
+
 		return 0;
 	}
 

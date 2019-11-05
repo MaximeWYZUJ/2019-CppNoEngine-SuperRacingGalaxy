@@ -5,7 +5,7 @@
 namespace Cookie {
 	using physx::PxU32;
 
-	class PhysicContactCallback : public physx::PxContactModifyCallback, public physx::PxSimulationEventCallback
+	class PhysicsContactCallback : public physx::PxContactModifyCallback, public physx::PxSimulationEventCallback
 	{
 	public:
 		// Hérité via PxContactModifyCallback
