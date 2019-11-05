@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ExportMacro.h"
 #include <unordered_map>
+#include "ExportMacro.h"
 #include "ActionDescriptor.h"
 
 namespace Cookie
@@ -12,6 +12,6 @@ namespace Cookie
 		ActionContext();
 
 	private:
-		//std::unordered_map<ActionDescriptor, void(*)()> actions;
+		std::unordered_map<ActionDescriptor, void(*)()> actions;
 	};
 }
