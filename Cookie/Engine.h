@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "PhysicsEngine.h"
+#include "ActionManager.h"
 
 namespace Cookie
 {
@@ -19,12 +20,18 @@ namespace Cookie
 	class COOKIE_API Engine
 	{
 	public:
-		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, std::unique_ptr<SceneManager>&& smgr);
+		Engine(
+			std::unique_ptr<Device>&& uninitializedDevice,
+			std::unique_ptr<InputManager>&& uninitializedInputManager,
+			std::unique_ptr<ActionManager>&& actionManager,
+			std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine,
+			std::unique_ptr<SceneManager>&& smgr);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
 
 		Device* GetDevice() const;
+		ActionManager* GetActionManager() const;
 		SceneManager* GetSceneManager() const;
 		TextureManager* GetTextureManager() const noexcept;
 
@@ -40,6 +47,7 @@ namespace Cookie
 
 		std::unique_ptr<Device> device;
 		std::unique_ptr<InputManager> inputManager;
+		std::unique_ptr<ActionManager> actionManager;
 		std::unique_ptr<PhysicsEngine> physics;
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<TextureManager> textureManager;

@@ -5,9 +5,10 @@ namespace Cookie
 {
 	using namespace std;
 
-	ActionManager::ActionManager()
-		: activeContext(nullptr), contextPool(16)
+	ActionManager::ActionManager(InputManager* inputManager)
+		: inputManager(inputManager), activeContext(nullptr), contextPool(16)
 	{
+		assert(inputManager);
 	}
 
 	ActionContext& ActionManager::CreateContext(std::string const& contextName)
