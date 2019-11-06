@@ -18,7 +18,7 @@ namespace Cookie
 		events.clear();
 	}
 
-	std::vector<DeviceEvent<>> const& Device::GetEvents() const
+	std::vector<DeviceEvent> const& Device::GetEvents() const
 	{
 		return events;
 	}

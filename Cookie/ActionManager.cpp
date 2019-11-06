@@ -1,30 +1,69 @@
 #include "pch.h"
+
+#include <stdexcept>
+
 #include "ActionManager.h"
+#include <iostream>
+#include "magic_enum.hpp"
 
 namespace Cookie
 {
 	using namespace std;
 
 	ActionManager::ActionManager(InputManager* inputManager)
-		: inputManager(inputManager), activeContext(nullptr), contextPool(16)
+		: inputManager(inputManager)
 	{
 		assert(inputManager);
+		
+		activeContext = end(contexts);
 	}
 
-	ActionContext& ActionManager::CreateContext(std::string const& contextName)
+	void ActionManager::CreateContext(std::string const& contextName, vector<ActionDescriptor>&& actions)
 	{
-		ActionContext& context = contextPool.Rent();
-		bool const insertionFailed = !contexts.insert({ contextName, &context }).second;
+		bool const insertionFailed = !contexts.insert({ contextName, ActionContext(move(actions)) }).second;
 		if (insertionFailed)
 		{
-			throw exception("Insertion failed!");
+			throw runtime_error("There is already a context with name " + contextName + "!");
 		}
 
-		return context;
+		if (!activeContextName.empty())
+		{
+			SetActiveContext(contextName);
+		}
 	}
 
 	void ActionManager::SetActiveContext(std::string const& contextName)
 	{
-		activeContext = contexts.at(contextName);
+		activeContextName = contextName;
+		activeContext = contexts.find(contextName);
+		
+		actionRunners.clear();
+		actionRunners.reserve(activeContext->second.actions.size());
+		for(auto& descriptor : activeContext->second.actions)
+		{
+			actionRunners.emplace_back(&descriptor);
+		}
+	}
+	
+	void ActionManager::Update()
+	{
+		for (auto& runner : actionRunners)
+		{
+			runner.Update();
+		}
+		
+		vector<InputEvent> const& events = inputManager->GetEvents();
+
+		// Todo: really slow if ActionContext are more complex
+		for (auto event : events)
+		{
+			if (event.type == InputEventType::KeyStateChanged)
+			{
+				for (auto& runner : actionRunners)
+				{
+					runner.Run(get<KeyStateChanged>(event.data));
+				}
+			}
+		}
 	}
 }

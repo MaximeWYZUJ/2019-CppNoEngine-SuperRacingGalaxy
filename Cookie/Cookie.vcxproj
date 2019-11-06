@@ -185,6 +185,7 @@
     <ClInclude Include="ActionContext.h" />
     <ClInclude Include="ActionDescriptor.h" />
     <ClInclude Include="ActionManager.h" />
+    <ClInclude Include="ActionRunner.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapReader.h" />
     <ClInclude Include="BitmapToMeshAdapter.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="IndexedTriangle.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Layout.h" />
+    <ClInclude Include="magic_enum.hpp" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mesh.h" />
@@ -244,6 +246,7 @@
     <ClCompile Include="ActionContext.cpp" />
     <ClCompile Include="ActionDescriptor.cpp" />
     <ClCompile Include="ActionManager.cpp" />
+    <ClCompile Include="ActionRunner.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapReader.cpp" />
     <ClCompile Include="BitmapToMeshAdapter.cpp" />

@@ -3,10 +3,11 @@
 
 namespace Cookie
 {
-	ActionDescriptor::ActionDescriptor(Key key, StateType state, std::chrono::milliseconds const& stateTime)
+	ActionDescriptor::ActionDescriptor(Key key, StateType state, std::chrono::milliseconds const& delay, Callbacks callbacks)
 		: key(key),
 		state(state),
-		stateTime(stateTime)
+		delay(delay),
+		callbacks(callbacks)
 	{
 	}
 }

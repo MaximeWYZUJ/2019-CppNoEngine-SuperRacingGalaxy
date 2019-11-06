@@ -7,9 +7,28 @@
 #include "BitmapToMeshAdapter.h"
 #include "SceneManager.h"
 #include <DeviceD3D11.h>
-#include <variant>
 #include "Material.h"
 #include "PhysicsBoxComponent.h"
+
+int c = 0;
+
+void onBeginCallback()
+{
+	std::cout << "Begin " << c << std::endl;
+	c++;
+}
+
+void onSuccessCallback()
+{
+	std::cout << "Success " << c << std::endl;
+	c++;
+}
+
+void onCancelCallback()
+{
+	std::cout << "Cancel " << c << std::endl;
+	c++;
+}
 
 int main(int argc, char* argv[])
 {
@@ -25,6 +44,19 @@ int main(int argc, char* argv[])
 
 		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
+		ActionManager* actionManager = engine->GetActionManager();
+
+		actionManager->CreateContext(
+			"Test",
+			{
+				ActionDescriptor(
+					Key::A,
+					StateType::Pressed,
+					chrono::milliseconds(500),
+					ActionDescriptor::Callbacks(&onBeginCallback, &onSuccessCallback, &onCancelCallback))
+			});
+
+		actionManager->SetActiveContext("Test");
 
 		Mesh* mesh = smgr->GetMesh("cube.obj");
 

@@ -67,14 +67,25 @@ namespace Cookie
 			return false;
 		}
 
-		inputManager->Update();
+		// Physics
 		physics->step();
-		// synchronizer->Update() should be here
+		// Todo: synchronizer->SyncUp() should be here
 
+		// Input Events
+		inputManager->Update();
+		actionManager->Update();
+
+		// Game Logic
 		update();
+		// Todo: synchronizer->SyncDown() should be here
 
+		// Scene Rendering
 		UpdateScene();
 
+		// GUI Rendering
+		// Todo: 
+
+		// Post Updates
 		inputManager->PostUpdate();
 		device->PostUpdate();
 

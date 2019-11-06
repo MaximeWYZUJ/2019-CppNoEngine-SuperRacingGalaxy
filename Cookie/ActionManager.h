@@ -5,7 +5,7 @@
 
 #include "ExportMacro.h"
 #include "ActionContext.h"
-#include "ObjectPool.h"
+#include "ActionRunner.h"
 
 namespace Cookie
 {
@@ -14,17 +14,23 @@ namespace Cookie
 	public:
 		ActionManager(InputManager* inputManager);
 
-		// Create (allocate) an ActionContext and return a reference to it.
-		// Any subsequent call to this function may invalidate previous returned references.
-		ActionContext& CreateContext(std::string const& contextName);
+		// Create an ActionContext.
+		void CreateContext(std::string const& contextName, std::vector<ActionDescriptor>&& actions);
 
-		// Set the ActionContext that will be used on next frame
+		// Set the ActionContext that will be used in subsequent frames.
 		void SetActiveContext(std::string const& contextName);
+
+		void Update();
 	private:
+		using Contexts = std::unordered_map<std::string, ActionContext>;
+		
 		InputManager* inputManager;
 		
-		ActionContext* activeContext;
-		std::unordered_map<std::string, ActionContext*> contexts;
-		ObjectPool<ActionContext> contextPool;
+		Contexts::const_iterator activeContext;
+		std::string activeContextName;
+
+		std::vector<ActionRunner> actionRunners;
+		
+		Contexts contexts;
 	};
 }

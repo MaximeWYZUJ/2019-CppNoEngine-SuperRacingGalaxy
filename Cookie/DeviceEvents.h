@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector2.h"
+#include <variant>
 
 namespace Cookie
 {
@@ -11,21 +12,16 @@ namespace Cookie
 		MouseMove
 	};
 
-	template<class T = void>
-	struct DeviceEvent
-	{
-		DeviceEventType type;
-		T* data;
-
-		template<class U>
-		DeviceEvent<U> const& As()
-		{
-			return *reinterpret_cast<DeviceEvent<U>*>(this);
-		}
-	};
-
 	struct MouseMove
 	{
 		Vector2<int> pos;
+	};
+
+	struct DeviceEvent
+	{
+		using DataType = std::variant<MouseMove>;
+		
+		DeviceEventType type;
+		DataType data;
 	};
 }
