@@ -35,9 +35,9 @@ namespace Cookie
 		SceneManager* GetSceneManager() const;
 		TextureManager* GetTextureManager() const noexcept;
 
-		DirectX::XMMATRIX const& GetMatView() const;
-		DirectX::XMMATRIX const& GetMatProj() const;
-		DirectX::XMMATRIX const& GetMatViewProj() const;
+		Matrix4x4<> const& GetMatView() const;
+		Matrix4x4<> const& GetMatProj() const;
+		Matrix4x4<> const& GetMatViewProj() const;
 
 	private:
 		int InitScene();
@@ -54,9 +54,9 @@ namespace Cookie
 
 		int64_t previousTime;
 
-		DirectX::XMMATRIX m_MatView;
-		DirectX::XMMATRIX m_MatProj;
-		DirectX::XMMATRIX m_MatViewProj;
+		Matrix4x4<> m_MatView;
+		Matrix4x4<> m_MatProj;
+		Matrix4x4<> m_MatViewProj;
 	};
 
 	template<class TUpdateFunc>
@@ -77,6 +77,7 @@ namespace Cookie
 
 		// Game Logic
 		update();
+		sceneManager->PostGameLogicUpdate();
 		// Todo: synchronizer->SyncDown() should be here
 
 		// Scene Rendering

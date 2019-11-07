@@ -5,8 +5,9 @@
 
 namespace Cookie
 {
-	struct COOKIE_API Component
+	class COOKIE_API Component
 	{
+	public:
 		SceneNode* parent;
 		Matrix4x4<>* matrix;
 	};

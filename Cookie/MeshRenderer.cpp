@@ -97,11 +97,11 @@ namespace Cookie
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer), DXGI_FORMAT_R32_UINT, 0);
 
+		Matrix4x4<> const& projViewWorld = engine.GetMatViewProj() * *matrix;
+		
 		ShadersParams sp;
-		XMMATRIX const viewProj = engine.GetMatViewProj();
-		XMMATRIX m = XMMATRIX(reinterpret_cast<float const*>(matrix));
-		sp.matWorldViewProj = m * viewProj;
-		sp.matWorld = m;
+		sp.matProjViewWorld = projViewWorld;
+		sp.matWorld = *matrix;
 		sp.vLumiere = XMVectorSet(x, 10.0f, z, 1.0f);
 		sp.vCamera = XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f);
 		sp.vAEcl = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);

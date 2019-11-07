@@ -7,6 +7,7 @@
 #include "MeshRenderer.h"
 #include <stack>
 #include "Util.h"
+#include "Camera.h"
 
 namespace Cookie
 {
@@ -26,21 +27,29 @@ namespace Cookie
 
 		// Components
 		MeshRenderer* AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent);
-
+		Camera* AddCamera(SceneNode* parent);
+		
 		SceneNodePtr GetRoot();
 		SceneNodePtr AddSceneNode(SceneNodePtr parent);
 		void RemoveSceneNode(SceneNodePtr node);
 		template<class T>
 		void AddComponent(T* component, SceneNodePtr parent);
 
+		void SetMainCamera(Camera* camera);
+
+		void PostGameLogicUpdate();
 		void DrawAll(Engine const& engine);
 	private:
 		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
 		Device* device;
 		SceneNode root;
+		
+		Camera* mainCamera;
+		
 		std::vector<MeshPtr> meshes;
 		std::vector<SceneNode*> nodes;
 		std::vector<MeshRenderer*> meshRenderers;
+		std::vector<Camera*> cameras;
 	};
 	
 	template<class T>

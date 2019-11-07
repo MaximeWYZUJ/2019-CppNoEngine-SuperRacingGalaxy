@@ -1,6 +1,6 @@
 cbuffer param
 {
-	float4x4 matWorldViewProj; // la matrice totale
+	float4x4 matProjViewWorld; // la matrice totale
 	float4x4 matWorld; // matrice de transformation dans le monde
 	float4 vLumiere; // la position de la source d’éclairage (Point)
 	float4 vCamera; // la position de la caméra

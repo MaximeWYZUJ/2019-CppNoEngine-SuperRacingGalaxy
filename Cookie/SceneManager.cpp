@@ -8,6 +8,7 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 #include "Util.h"
+#include "AlgorithmShortcuts.h"
 
 using namespace DirectX;
 
@@ -45,6 +46,12 @@ namespace Cookie
 		return renderer;
 	}
 
+	Camera* SceneManager::AddCamera(SceneNode* parent)
+	{
+		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 1000.0f));
+		return cam;
+	}
+
 	auto SceneManager::GetRoot() -> SceneNodePtr
 	{
 		return &root;
@@ -72,6 +79,18 @@ namespace Cookie
 		}
 	}
 	
+	void SceneManager::SetMainCamera(Camera* camera)
+	{
+		assert(Alg::Exists(cameras, camera));
+		
+		mainCamera = camera;
+	}
+
+	void SceneManager::PostGameLogicUpdate()
+	{
+		// Todo: activeCamera->UpdateMatrices();
+	}
+
 	void SceneManager::DrawAll(Engine const& engine)
 	{
 		// Update matrices

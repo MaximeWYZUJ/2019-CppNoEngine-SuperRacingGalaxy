@@ -49,38 +49,32 @@ namespace Cookie
 		return textureManager.get();
 	}
 
-	const XMMATRIX& Engine::GetMatView() const
+	Matrix4x4<> const& Engine::GetMatView() const
 	{
 		return m_MatView;
 	}
 
-	const XMMATRIX& Engine::GetMatProj() const
+	Matrix4x4<> const& Engine::GetMatProj() const
 	{
 		return m_MatProj;
 	}
 
-	const XMMATRIX& Engine::GetMatViewProj() const
+	Matrix4x4<> const& Engine::GetMatViewProj() const
 	{
 		return m_MatViewProj;
 	}
 
 	int Engine::InitScene()
 	{
-		m_MatView = XMMatrixLookAtLH(XMVectorSet(0.0f, 5.0f, -5.0f, 1.0f),
-			XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f),
-			XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
 		float champDeVision = XM_PI / 2.2; // 45 degrés
 		const float ratioDAspect = static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight());
 		float planRapproche = 2.0;
 		float planEloigne = 1000.0;
 
-		m_MatProj = XMMatrixPerspectiveFovLH(
-			champDeVision,
-			ratioDAspect,
-			planRapproche,
-			planEloigne);
+		m_MatView = Matrix4x4<>::FromLookAt({ 0.0f, 5.0f, -5.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
+		m_MatProj = Matrix4x4<>::FromPerspective(champDeVision, ratioDAspect, planRapproche, planEloigne);
 
-		m_MatViewProj = m_MatView * m_MatProj;
+		m_MatViewProj = m_MatProj * m_MatView;
 
 		return 0;
 	}

@@ -186,9 +186,11 @@
     <ClInclude Include="ActionDescriptor.h" />
     <ClInclude Include="ActionManager.h" />
     <ClInclude Include="ActionRunner.h" />
+    <ClInclude Include="AlgorithmShortcuts.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapReader.h" />
     <ClInclude Include="BitmapToMeshAdapter.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CompilerFlags.h" />
     <ClInclude Include="Component.h" />
@@ -250,6 +252,7 @@
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapReader.cpp" />
     <ClCompile Include="BitmapToMeshAdapter.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
