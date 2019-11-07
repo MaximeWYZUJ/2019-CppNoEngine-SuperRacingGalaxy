@@ -6,9 +6,9 @@
 #include "EntryPoint.h"
 #include "BitmapToMeshAdapter.h"
 #include "SceneManager.h"
+#include "MaterialManager.h"
 #include <DeviceD3D11.h>
 #include <variant>
-#include "Material.h"
 #include "PhysicsBoxComponent.h"
 
 int main(int argc, char* argv[])
@@ -25,6 +25,8 @@ int main(int argc, char* argv[])
 
 		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
+		TextureManager* tm = engine->GetTextureManager();
+		MaterialManager* mm = engine->GetMaterialManager();
 
 		Mesh* mesh = smgr->GetMesh("cube.obj");
 
@@ -34,11 +36,15 @@ int main(int argc, char* argv[])
 		planeNode->localTransform.SetPosition({ 5.0f, 0.0f, 0.0f });
 		planeNode->localTransform.SetScale({ 2.5f, 0.05f, 5.0f });
 		planeNode->localTransform.SetRotation(Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }));
-		auto const mat = new Material(device);
+
+		auto const text = tm->GetNewTexture(L"UneTexture.dds", device);
+		
+		auto const mat = mm->GetNewMaterial("basique", text, { 0.5f, 0.5f, 0.5f, 1.0f}, { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, 4, false);
 		smgr->AddMeshRenderer(mesh, mat, planeNode);
 		
 		SceneNode* cubeNode = smgr->AddSceneNode(root);
 		cubeNode->localTransform.SetPosition({ 3.0f, 0.0f, 2.0f });
+		//auto const mat2 = mm->GetNewMaterial("basique2");
 		smgr->AddMeshRenderer(mesh, mat, cubeNode);
 
 		// We should set the camera here

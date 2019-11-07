@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "PhysicsEngine.h"
+#include "MaterialManager.h"
 
 namespace Cookie
 {
@@ -19,7 +20,7 @@ namespace Cookie
 	class COOKIE_API Engine
 	{
 	public:
-		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, std::unique_ptr<SceneManager>&& smgr);
+		Engine(std::unique_ptr<Device>&& uninitializedDevice, std::unique_ptr<InputManager>&& uninitializedInputManager, std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, std::unique_ptr<SceneManager>&& smgr, std::unique_ptr<TextureManager>&& tm, std::unique_ptr<MaterialManager>&& mm);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
@@ -27,6 +28,7 @@ namespace Cookie
 		Device* GetDevice() const;
 		SceneManager* GetSceneManager() const;
 		TextureManager* GetTextureManager() const noexcept;
+		MaterialManager* GetMaterialManager() const noexcept;
 
 		DirectX::XMMATRIX const& GetMatView() const;
 		DirectX::XMMATRIX const& GetMatProj() const;
@@ -43,6 +45,7 @@ namespace Cookie
 		std::unique_ptr<PhysicsEngine> physics;
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<TextureManager> textureManager;
+		std::unique_ptr<MaterialManager> materialManager;
 
 		int64_t previousTime;
 

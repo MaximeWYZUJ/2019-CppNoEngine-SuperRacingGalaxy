@@ -5,15 +5,17 @@
 
 #include "Texture.h"
 
+#include "ExportMacro.h"
+
 namespace Cookie
 {
 	class Device;
-	class TextureManager
+	class COOKIE_API TextureManager
 	{
 	public:
-		Texture const* GetNewTexture(const std::wstring& fileName, Device* device);
-		Texture const* GetTexture(const std::wstring& fileName) noexcept;
+		Texture* GetNewTexture(const std::wstring& fileName, Device* device);
+		Texture* GetTexture(const std::wstring& fileName) noexcept;
 	private:
-		std::vector<std::unique_ptr<Texture>> textures;
+		std::vector<Texture*> textures;
 	};
 }

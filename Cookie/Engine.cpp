@@ -8,8 +8,8 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr)
-		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }
+	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr, std::unique_ptr<TextureManager>&& tm, std::unique_ptr<MaterialManager>&& mm)
+		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }, textureManager{ move(tm) }, materialManager{ move(mm) }
 	{
 		device->Init(CdsMode::Windowed);
 		inputManager->Init();
@@ -34,6 +34,11 @@ namespace Cookie
 		return textureManager.get();
 	}
 
+	MaterialManager* Engine::GetMaterialManager() const noexcept
+	{
+		return materialManager.get();
+	}
+	
 	const XMMATRIX& Engine::GetMatView() const
 	{
 		return m_MatView;
