@@ -79,10 +79,9 @@ namespace Cookie
 
 		static Shaders shader {engine.GetDevice()};
 		
-		XMMATRIX const viewProj = engine.GetMatViewProj();
-		XMMATRIX m = XMMATRIX(reinterpret_cast<float const*>(matrix));
+		Matrix4x4<> const& viewProj = engine.GetMatViewProj();
 
-		shader.Activate(m, viewProj, material);
+		shader.Activate(*matrix, viewProj, material);
 		
 		pImmediateContext->DrawIndexed(mesh->GetTriangles().size() * 3, 0, 0);
 	}

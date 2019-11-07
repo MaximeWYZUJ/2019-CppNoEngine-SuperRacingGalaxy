@@ -9,6 +9,11 @@ namespace Cookie
 	class Vector3
 	{
 	public:
+		static constexpr Vector3<T> Zero();
+		static Vector3<T> Normalize(Vector3<T> const& v);
+		static T DotProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
+		static Vector3<T> CrossProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
+		
 		Vector3<T>() : x(0), y(0), z(0) {}
 		Vector3<T>(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
 		Vector3<T>(const Vector3<T>& v) : x(v.x), y(v.y), z(v.z) {}
@@ -62,6 +67,34 @@ namespace Cookie
 
 		T x, y, z;
 	};
+
+	template<class T>
+	constexpr Vector3<T> Vector3<T>::Zero()
+	{
+		return Vector3<T>(0.0f, 0.0f, 0.0f);
+	}
+
+	template<class T>
+	Vector3<T> Vector3<T>::Normalize(Vector3<T> const& v)
+	{
+		float len = static_cast<float>(sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
+		return Vector3<T>(v.x / len, v.y / len, v.z / len);
+	}
+
+	template<class T>
+	T Vector3<T>::DotProduct(Vector3<T> const& lhs, Vector3<T> const& rhs)
+	{
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+	}
+
+	template<typename T>
+	Vector3<T> Vector3<T>::CrossProduct(Vector3<T> const& lhs, Vector3<T> const& rhs)
+	{
+		return Vector3<T>(
+			lhs.y * rhs.z - lhs.z * rhs.y,
+			lhs.z * rhs.x - lhs.x * rhs.z,
+			lhs.x * rhs.y - lhs.y * rhs.x);
+	}
 
 	template<typename T>
 	float Vector3<T>::operator% (const Vector3<T>& v) const
