@@ -1,16 +1,18 @@
 #pragma once
-#include "ExportMacro.h"
+
 #include <string>
+
+#include "ExportMacro.h"
 #include "Vector4.h"
-#include "Texture.h"
 
 namespace Cookie
 {
+	class Texture;
 
 	class COOKIE_API Material
 	{
 	public:
-		Material(std::string&& name, const Texture* texture, Vector4<>&& ambient, Vector4<>&& diffuse, Vector4<>&& specular, float&& puissance, bool&& transparent);
+		Material(std::string name, Texture const* texture, Vector4<> const& ambient, Vector4<> const& diffuse, Vector4<> const& specular, float power, bool transparent);
 
 		~Material() = default;
 		
@@ -19,7 +21,7 @@ namespace Cookie
 		const Vector4<> ambient;
 		const Vector4<> diffuse;
 		const Vector4<> specular;
-		const float puissance;
+		const float power;
 		const bool transparent;
 
 		const Texture* texture;

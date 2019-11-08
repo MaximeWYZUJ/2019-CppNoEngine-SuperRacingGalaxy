@@ -71,9 +71,9 @@ int main(int argc, char* argv[])
 		planeNode->localTransform.SetScale({ 2.5f, 0.05f, 5.0f });
 		planeNode->localTransform.SetRotation(Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }));
 
-		auto const text = tm->GetNewTexture(L"UneTexture.dds", device);
+		auto texture = tm->GetNewTexture(L"UneTexture.dds", device);
 		
-		auto const mat = mm->GetNewMaterial("basique", text, { 0.5f, 0.5f, 0.5f, 1.0f}, { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, 4, false);
+		auto mat = mm->GetNewMaterial("basic", texture, { 0.5f, 0.5f, 0.5f, 1.0f}, { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, 4, false);
 		smgr->AddMeshRenderer(mesh, mat, planeNode);
 		
 		SceneNode* cubeNode = smgr->AddSceneNode(root);

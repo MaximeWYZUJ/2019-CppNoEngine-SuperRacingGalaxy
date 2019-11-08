@@ -2,13 +2,13 @@
 
 #include "ExportMacro.h"
 #include "Component.h"
-#include "Mesh.h"
 #include "Device.h"
-#include "Material.h"
 
 namespace Cookie
 {
 	class Engine;
+	class Material;
+	class Mesh;
 	
 	class COOKIE_API MeshRenderer : public Component
 	{
