@@ -13,13 +13,17 @@ namespace Cookie
 		unique_ptr<InputManager>&& uninitializedInputManager,
 		unique_ptr<ActionManager>&& actionManager,
 		unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine,
-		unique_ptr<SceneManager>&& smgr)
+		unique_ptr<SceneManager>&& smgr,
+		unique_ptr<TextureManager>&& tm,
+		unique_ptr<MaterialManager>&& mm)
 		:
 		device{ move(uninitializedDevice) },
 		inputManager{ move(uninitializedInputManager) },
 		actionManager{ move(actionManager) },
 		physics{ move(uninitializedPhysicsEngine) },
-		sceneManager{ move(smgr) }
+		sceneManager{ move(smgr) },
+		textureManager{ move(tm) },
+		materialManager { move(mm) }
 	{
 		device->Init(CdsMode::Windowed);
 		inputManager->Init();
