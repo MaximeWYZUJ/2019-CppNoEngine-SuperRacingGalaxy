@@ -1,25 +1,22 @@
 #include "pch.h"
-#include "Material.h"
-#include "DeviceD3D11.h"
-#include "util.h"
-#include "resource.h"
-#include "ShaderParams.h"
-#include "SommetBloc.h"
-#include "Vector4.h"
+
 #include <string>
+#include <utility>
+
+#include "Material.h"
+#include "Vector4.h"
 
 namespace Cookie
 {
 	using namespace std;
-	using namespace DirectX;
 
-	Material::Material(std::string&& name, const Texture* texture, Vector4<>&& ambient, Vector4<>&& diffuse, Vector4<>&& specular, float&& puissance, bool&& transparent)
+	Material::Material(string name, Texture const* texture, Vector4<> const& ambient, Vector4<> const& diffuse, Vector4<> const& specular, float power, bool transparent)
 		: matName(move(name))
-		, ambient(move(ambient))
-		, diffuse(move(diffuse))
-		, specular(move(specular))
-		, puissance(move(puissance))
-		, transparent(move(transparent))
+		, ambient(ambient)
+		, diffuse(diffuse)
+		, specular(specular)
+		, power(power)
+		, transparent(transparent)
 		, texture(texture)
 	{}
 }

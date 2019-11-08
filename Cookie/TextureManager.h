@@ -10,6 +10,7 @@
 namespace Cookie
 {
 	class Device;
+
 	class COOKIE_API TextureManager
 	{
 	public:

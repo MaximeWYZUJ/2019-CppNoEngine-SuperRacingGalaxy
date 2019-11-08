@@ -1,15 +1,17 @@
 #include "pch.h"
+
 #include "MaterialManager.h"
+#include "Material.h"
 
 namespace Cookie
 {
-	Material* MaterialManager::GetNewMaterial(std::string name, Texture* texture, Vector4<> ambient, Vector4<> diffuse, Vector4<> specular, float puissance, bool transparent)
+	Material* MaterialManager::GetNewMaterial(std::string const& name, Texture* texture, Vector4<> ambient, Vector4<> diffuse, Vector4<> specular, float power, bool transparent)
 	{
 		Material* pMaterial = GetMaterial(name);
 
 		if (!pMaterial)
 		{
-			pMaterial = new Material (std::move(name), texture, std::move(ambient), std::move(diffuse), std::move(specular), std::move(puissance), std::move(transparent));
+			pMaterial = new Material (name, texture, ambient, diffuse, specular, power, transparent);
 			materials.push_back(pMaterial);
 		}
 

@@ -66,7 +66,7 @@ namespace Cookie
 		pPSBlob->Release();
 	}
 
-	void Shaders::Activate(const XMMATRIX& matWorld, const XMMATRIX& matViewProj, const Material* mat) const
+	void Shaders::Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, const Material* mat) const
 	{
 		static float x = 0.0f;
 		static float z = 0.0f;
@@ -91,7 +91,7 @@ namespace Cookie
 		
 		ShadersParams sp;
 
-		sp.matWorldViewProj = matWorld * matViewProj;
+		sp.matProjViewWorld = matViewProj * matWorld;
 		sp.matWorld = matWorld;
 		sp.vLumiere = XMVectorSet(x, 10.0f, z, 1.0f);
 		sp.vCamera = XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f);

@@ -1,5 +1,6 @@
 #pragma once
 #include "ExportMacro.h"
+#include "Matrix4x4.h"
 
 namespace Cookie
 {
@@ -11,7 +12,7 @@ namespace Cookie
 	{
 	public:
 		Shaders(Device* device);
-		void Activate(const DirectX::XMMATRIX& matWorld, const DirectX::XMMATRIX& matViewProj, const Material* mat) const;
+		void Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, const Material* mat) const;
 
 	private:
 		Device* device;
