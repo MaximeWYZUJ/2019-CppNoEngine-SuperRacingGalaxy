@@ -82,7 +82,7 @@ namespace Cookie
 
 		// Game Logic
 		update();
-		sceneManager->PostGameLogicUpdate();
+		sceneManager->UpdateMatrices();
 		// Todo: synchronizer->SyncDown() should be here
 
 		// Scene Rendering

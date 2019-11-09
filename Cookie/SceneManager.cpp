@@ -86,12 +86,7 @@ namespace Cookie
 		mainCamera = camera;
 	}
 
-	void SceneManager::PostGameLogicUpdate()
-	{
-		// Todo: activeCamera->UpdateMatrices();
-	}
-
-	void SceneManager::DrawAll(Engine const& engine)
+	void SceneManager::UpdateMatrices()
 	{
 		// Update matrices
 		vector<SceneNode*> c;
@@ -112,7 +107,7 @@ namespace Cookie
 			{
 				node->localTransform.ResetDirty();
 				lastStackSize = min(static_cast<int64_t>(nextNodes.size()), lastStackSize);
-				
+
 				Transform<> const& t = node->localTransform;
 				node->localMatrix = Matrix4x4<>::FromTransform(t);
 				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
@@ -122,8 +117,10 @@ namespace Cookie
 				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
 			}
 		}
-		
-		// draw meshes
+	}
+
+	void SceneManager::DrawAll(Engine const& engine)
+	{
 		for(auto& renderer : meshRenderers)
 		{
 			renderer->Draw(engine);

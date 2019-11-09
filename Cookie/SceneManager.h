@@ -37,7 +37,7 @@ namespace Cookie
 
 		void SetMainCamera(Camera* camera);
 
-		void PostGameLogicUpdate();
+		void UpdateMatrices();
 		void DrawAll(Engine const& engine);
 	private:
 		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
