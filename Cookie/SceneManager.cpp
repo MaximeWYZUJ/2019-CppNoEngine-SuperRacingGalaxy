@@ -16,16 +16,11 @@ namespace Cookie
 {
 	using namespace std;
 
-	SceneManager::SceneManager()
+	SceneManager::SceneManager(Device* device) : device { device }, shaders{ device }
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);
 		root.matrix = root.localMatrix;
-	}
-
-	void SceneManager::SetDevice(Device* device)
-	{
-		this->device = device;
 	}
 
 	Mesh* SceneManager::GetMesh(string const& filePath)
@@ -132,7 +127,7 @@ namespace Cookie
 	{
 		for(auto& renderer : meshRenderers)
 		{
-			renderer->Draw(mainCamera->GetProjView());
+			renderer->Draw(mainCamera->GetProjView(), shaders);
 		}
 	}
 

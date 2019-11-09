@@ -6,6 +6,7 @@
 
 namespace Cookie
 {
+	class Shaders;
 	class Material;
 	class Mesh;
 	
@@ -13,7 +14,7 @@ namespace Cookie
 	{
 	public:
 		MeshRenderer(Mesh* mesh, Material* material, Device* device);
-		void Draw(Matrix4x4<> const& projView);
+		void Draw(Matrix4x4<> const& projView, Shaders const& shader);
 	private:
 		static D3D11_INPUT_ELEMENT_DESC layout[];
 		static UINT nbElements;

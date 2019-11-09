@@ -22,13 +22,13 @@ namespace Cookie
 	{
 	public:
 		Engine(
-			std::unique_ptr<Device>&& uninitializedDevice,
-			std::unique_ptr<InputManager>&& uninitializedInputManager,
+			std::unique_ptr<Device>&& device,
+			std::unique_ptr<InputManager>&& inputManager,
 			std::unique_ptr<ActionManager>&& actionManager,
-			std::unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine,
+			std::unique_ptr<PhysicsEngine>&& physicsEngine,
 			std::unique_ptr<SceneManager>&& smgr,
-			std::unique_ptr<TextureManager>&& tm,
-			std::unique_ptr<MaterialManager>&& mm);
+			std::unique_ptr<TextureManager>&& textureManager,
+			std::unique_ptr<MaterialManager>&& materialManager);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);

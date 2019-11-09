@@ -67,7 +67,7 @@ namespace Cookie
 		}
 	}
 
-	void MeshRenderer::Draw(Matrix4x4<> const& projView)
+	void MeshRenderer::Draw(Matrix4x4<> const& projView, Shaders const& shader)
 	{
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
@@ -76,8 +76,6 @@ namespace Cookie
 		constexpr UINT offset = 0;
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer), DXGI_FORMAT_R32_UINT, 0);
-
-		static Shaders shader(device);
 
 		shader.Activate(*matrix, projView, material);
 		

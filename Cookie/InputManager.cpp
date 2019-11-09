@@ -29,6 +29,7 @@ namespace Cookie
 		fill(begin(keyStates2), end(keyStates2), 0);
 
 		InitKeyMapping();
+		Init();
 	}
 
 	InputManager::~InputManager()

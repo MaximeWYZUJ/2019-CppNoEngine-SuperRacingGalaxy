@@ -42,13 +42,13 @@ int main(int argc, char* argv[])
 
 		auto texture = tm->GetNewTexture(L"UneTexture.dds", device);
 		
-		auto mat = mm->GetNewMaterial("basic", texture, { 0.5f, 0.5f, 0.5f, 1.0f}, { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, 4, false);
+		auto mat = mm->GetNewMaterial("basic", texture, { 0.0f, 0.0f, 0.0f, 1.0f}, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, 4, false);
 		smgr->AddMeshRenderer(mesh, mat, planeNode);
 		
 		SceneNode* cubeNode = smgr->AddSceneNode(root);
 		cubeNode->localTransform.SetPosition({ 3.0f, 0.0f, 2.0f });
-		//auto const mat2 = mm->GetNewMaterial("basique2");
-		smgr->AddMeshRenderer(mesh, mat, cubeNode);
+		auto const mat2 = mm->GetNewMaterial("basic2", texture);
+		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
 
 		SceneNode* camNode = smgr->AddSceneNode(root);
 		Camera* cam = smgr->AddCamera(camNode);
