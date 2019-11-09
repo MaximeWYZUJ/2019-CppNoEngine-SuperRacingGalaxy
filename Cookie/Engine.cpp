@@ -9,26 +9,22 @@ namespace Cookie
 	using namespace DirectX;
 
 	Engine::Engine(
-		unique_ptr<Device>&& uninitializedDevice,
-		unique_ptr<InputManager>&& uninitializedInputManager,
+		unique_ptr<Device>&& device,
+		unique_ptr<InputManager>&& inputManager,
 		unique_ptr<ActionManager>&& actionManager,
-		unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine,
+		unique_ptr<PhysicsEngine>&& physicsEngine,
 		unique_ptr<SceneManager>&& smgr,
-		unique_ptr<TextureManager>&& tm,
-		unique_ptr<MaterialManager>&& mm)
+		unique_ptr<TextureManager>&& textureManager,
+		unique_ptr<MaterialManager>&& materialManager)
 		:
-		device{ move(uninitializedDevice) },
-		inputManager{ move(uninitializedInputManager) },
+		device{ move(device) },
+		inputManager{ move(inputManager) },
 		actionManager{ move(actionManager) },
-		physics{ move(uninitializedPhysicsEngine) },
+		physics{ move(physicsEngine) },
 		sceneManager{ move(smgr) },
-		textureManager{ move(tm) },
-		materialManager { move(mm) }
+		textureManager{ move(textureManager) },
+		materialManager { move(materialManager) }
 	{
-		device->Init(CdsMode::Windowed);
-		inputManager->Init();
-		physics->init();
-		sceneManager->SetDevice(device.get());
 		InitScene();
 		InitAnimation();
 	}

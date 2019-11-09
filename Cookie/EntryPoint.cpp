@@ -16,7 +16,7 @@ namespace Cookie
 		auto inputManager = make_unique<InputManager>(device.get());
 		auto actionManager = make_unique<ActionManager>(inputManager.get());
 		auto physics = unique_ptr<PhysicsEngine>(&PhysicsEngine::getInstance());
-		auto sceneManager = make_unique<SceneManager>();
+		auto sceneManager = make_unique<SceneManager>(device.get());
 		auto textureManager = make_unique<TextureManager>();
 		auto materialManager = make_unique<MaterialManager>();
 		

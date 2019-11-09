@@ -18,6 +18,7 @@ namespace Cookie
 	class COOKIE_API PhysicsEngine : Incopiable
 	{
 	public:
+		PhysicsEngine();
 		~PhysicsEngine();
 		physx::PxPhysics* gPhysics = nullptr;
 		physx::PxFoundation* gFoundation = nullptr;

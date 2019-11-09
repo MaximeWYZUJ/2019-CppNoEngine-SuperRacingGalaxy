@@ -33,6 +33,10 @@ PxFilterFlags filterShader(
 
 namespace Cookie
 {
+	PhysicsEngine::PhysicsEngine()
+	{
+		init();
+	}
 	PhysicsEngine::~PhysicsEngine()
 	{
 		clean();

@@ -9,6 +9,7 @@ namespace Cookie
 {
 	DeviceD3D11::DeviceD3D11()
 	{
+		Init(CdsMode::Windowed);
 	}
 
 	DeviceD3D11::~DeviceD3D11()

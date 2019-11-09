@@ -8,6 +8,7 @@
 #include <stack>
 #include "Util.h"
 #include "Camera.h"
+#include "Shaders.h"
 
 namespace Cookie
 {
@@ -18,10 +19,9 @@ namespace Cookie
 	public:
 		using SceneNodePtr = SceneNode::SceneNodePtr;
 		using MeshPtr = Mesh*;
-		SceneManager();
+		SceneManager(Device* device);
 
 		// Todo: bof... comment découpler SceneManager et Device ?
-		void SetDevice(Device* device);
 		
 		MeshPtr GetMesh(std::string const& filePath);
 
@@ -45,6 +45,8 @@ namespace Cookie
 		SceneNode root;
 		
 		Camera* mainCamera;
+
+		Shaders shaders;
 		
 		std::vector<MeshPtr> meshes;
 		std::vector<SceneNode*> nodes;
