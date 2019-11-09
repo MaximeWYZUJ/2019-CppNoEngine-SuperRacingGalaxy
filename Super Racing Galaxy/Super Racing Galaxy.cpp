@@ -81,10 +81,6 @@ int main(int argc, char* argv[])
 			{
 				curPos += -left * 0.1f;
 			}
-			if (inputManager->IsKeyPressed(Key::Z))
-			{
-				cam.
-			}
 
 			cam.SetPosition(curPos);
 		}));
