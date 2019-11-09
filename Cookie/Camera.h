@@ -10,8 +10,7 @@ namespace Cookie
 	public:
 		Camera(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
 		
-		Matrix4x4<> const& GetView();
-		Matrix4x4<> const& GetProjection();
+		Matrix4x4<> const& GetProjView() const noexcept;
 
 		void SetFieldOfView(float fieldOfView);
 		void SetAspectRatio(float aspectRatio);
@@ -29,5 +28,6 @@ namespace Cookie
 		
 		Matrix4x4<> view;
 		Matrix4x4<> projection;
+		Matrix4x4<> projView;
 	};
 }

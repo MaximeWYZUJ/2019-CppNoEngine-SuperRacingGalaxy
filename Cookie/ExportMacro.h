@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef WIN32
-#ifdef COOKIE_API
+#ifdef COOKIE_DLL
 #define COOKIE_API __declspec(dllexport)
 #else
 #define COOKIE_API __declspec(dllimport)

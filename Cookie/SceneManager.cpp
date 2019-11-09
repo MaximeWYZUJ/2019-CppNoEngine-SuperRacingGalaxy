@@ -40,7 +40,7 @@ namespace Cookie
 	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
 	{
 		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
-		parent->components.emplace_back(renderer);
+		parent->components.push_back(renderer);
 		renderer->parent = parent;
 		renderer->matrix = &parent->matrix;
 		return renderer;
@@ -49,6 +49,9 @@ namespace Cookie
 	Camera* SceneManager::AddCamera(SceneNode* parent)
 	{
 		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 1000.0f));
+		parent->components.push_back(cam);
+		cam->parent = parent;
+		cam->matrix = &parent->matrix;
 		return cam;
 	}
 
@@ -117,13 +120,19 @@ namespace Cookie
 				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
 			}
 		}
+
+		// Update main camera
+		if (mainCamera)
+		{
+			mainCamera->UpdateMatrices();
+		}
 	}
 
 	void SceneManager::DrawAll(Engine const& engine)
 	{
 		for(auto& renderer : meshRenderers)
 		{
-			renderer->Draw(engine);
+			renderer->Draw(mainCamera->GetProjView());
 		}
 	}
 

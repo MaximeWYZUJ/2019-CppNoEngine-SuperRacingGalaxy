@@ -38,6 +38,11 @@ namespace Cookie
 		return device.get();
 	}
 
+	InputManager* Engine::GetInputManager() const
+	{
+		return inputManager.get();
+	}
+
 	ActionManager* Engine::GetActionManager() const
 	{
 		return actionManager.get();

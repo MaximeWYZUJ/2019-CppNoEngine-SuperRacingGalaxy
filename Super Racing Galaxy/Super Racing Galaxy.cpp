@@ -2,41 +2,20 @@
 
 #define _USE_MATH_DEFINES
 
-#include <fstream>
 #include "EntryPoint.h"
 #include "BitmapToMeshAdapter.h"
 #include "SceneManager.h"
 #include "MaterialManager.h"
 #include <DeviceD3D11.h>
-#include <variant>
 #include "Material.h"
 #include "PhysicsBoxComponent.h"
+#include "Vector4.h"
 
-int c = 0;
-
-void onBeginCallback()
-{
-	std::cout << "Begin " << c << std::endl;
-	c++;
-}
-
-void onSuccessCallback()
-{
-	std::cout << "Success " << c << std::endl;
-	c++;
-}
-
-void onCancelCallback()
-{
-	std::cout << "Cancel " << c << std::endl;
-	c++;
-}
+using namespace std;
+using namespace Cookie;
 
 int main(int argc, char* argv[])
 {
-	using namespace std;
-	using namespace Cookie;
-
 	try
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
@@ -46,19 +25,9 @@ int main(int argc, char* argv[])
 
 		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
+		InputManager* inputManager = engine->GetInputManager();
 		ActionManager* actionManager = engine->GetActionManager();
-
-		actionManager->CreateContext(
-			"Test",
-			{
-				ActionDescriptor(
-					Key::A,
-					StateType::Pressed,
-					chrono::milliseconds(500),
-					ActionDescriptor::Callbacks(&onBeginCallback, &onSuccessCallback, &onCancelCallback))
-			});
-
-		actionManager->SetActiveContext("Test");
+		
 		TextureManager* tm = engine->GetTextureManager();
 		MaterialManager* mm = engine->GetMaterialManager();
 
@@ -81,11 +50,44 @@ int main(int argc, char* argv[])
 		//auto const mat2 = mm->GetNewMaterial("basique2");
 		smgr->AddMeshRenderer(mesh, mat, cubeNode);
 
-		// We should set the camera here
-		// Bind Input Actions for first "scene" (main menu)
-		// Bind lambda on Update Hook for game logic
+		SceneNode* camNode = smgr->AddSceneNode(root);
+		Camera* cam = smgr->AddCamera(camNode);
+		smgr->SetMainCamera(cam);
+		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
-		while (engine->Run([](){}));
+		while (engine->Run([&camNode, &inputManager]()
+		{
+			Transform<>& cam = camNode->localTransform;
+			Vector3<> curPos = cam.GetPosition();
+			Vector4<> forwardNoRot(0.0f, 0.0f, 1.0f, 1.0f);
+			Quaternion curRotation = cam.GetRotation();
+
+			Vector4<> forward = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
+			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
+			 
+			if (inputManager->IsKeyPressed(Key::W))
+			{
+				curPos += forward * 0.1f;
+			}
+			if (inputManager->IsKeyPressed(Key::A))
+			{
+				curPos += left * 0.1f;
+			}
+			if (inputManager->IsKeyPressed(Key::S))
+			{
+				curPos -= forward * 0.1f;
+			}
+			if (inputManager->IsKeyPressed(Key::D))
+			{
+				curPos += -left * 0.1f;
+			}
+			if (inputManager->IsKeyPressed(Key::Z))
+			{
+				cam.
+			}
+
+			cam.SetPosition(curPos);
+		}));
 
 		return (int)1;
 	}

@@ -34,6 +34,7 @@ namespace Cookie
 		bool Run(TUpdateFunc update);
 
 		Device* GetDevice() const;
+		InputManager* GetInputManager() const;
 		ActionManager* GetActionManager() const;
 		SceneManager* GetSceneManager() const;
 		TextureManager* GetTextureManager() const noexcept;

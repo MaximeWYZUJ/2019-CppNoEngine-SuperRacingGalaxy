@@ -29,6 +29,9 @@ namespace Cookie
 		// (21) (22) (23) y
 		// (31) (32) (33) z
 		// (41) (42) (43) (44)
+		//
+
+		Vector4<T> operator*(Vector4<T> const& rhs);
 
 		static Matrix4x4<T> Identity();
 		static Matrix4x4<T> FromScaling(Vector3<T> s);
@@ -40,6 +43,19 @@ namespace Cookie
 		static Matrix4x4<T> FromPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
 		static Matrix4x4<T> Transpose(Matrix4x4<> const& matrix);
 	};
+
+	template<class T>
+	Vector4<T> Matrix4x4<T>::operator*(Vector4<T> const& rhs)
+	{
+		Vector4<T> v;
+		
+		v.x = _11 * rhs.x + _12 * rhs.y + _13 * rhs.z + _14 * rhs.w;
+		v.y = _21 * rhs.x + _22 * rhs.y + _23 * rhs.z + _24 * rhs.w;
+		v.z = _31 * rhs.x + _32 * rhs.y + _33 * rhs.z + _34 * rhs.w;
+		v.w = _41 * rhs.x + _42 * rhs.y + _43 * rhs.z + _44 * rhs.w;
+		
+		return v;
+	}
 
 	template<class T>
 	Matrix4x4<T> Matrix4x4<T>::Identity()
