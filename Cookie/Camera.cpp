@@ -4,7 +4,7 @@
 namespace Cookie
 {
 	Camera::Camera(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
-		: fieldOfView(fieldOfView), aspectRatio(aspectRatio), nearPlane(nearPlane), farPlane(farPlane), isProjectionDirty(false)
+		: fieldOfView(fieldOfView), aspectRatio(aspectRatio), nearPlane(nearPlane), farPlane(farPlane), isProjectionDirty(true)
 	{
 	}
 	
@@ -18,23 +18,40 @@ namespace Cookie
 		return projection;
 	}
 	
-	void Camera::SetFieldOfView(float fieldOfView)
+	void Camera::SetFieldOfView(float fieldOfView_)
 	{
+		fieldOfView = fieldOfView_;
+		isProjectionDirty = true;
 	}
 	
-	void Camera::SetAspectRatio(float aspectRatio)
+	void Camera::SetAspectRatio(float aspectRatio_)
 	{
+		aspectRatio = aspectRatio_;
+		isProjectionDirty = true;
 	}
 	
-	void Camera::SetNearPlane(float nearPlane)
+	void Camera::SetNearPlane(float nearPlane_)
 	{
+		nearPlane = nearPlane_;
+		isProjectionDirty = true;
 	}
 	
-	void Camera::SetFarPlane(float farPlane)
+	void Camera::SetFarPlane(float farPlane_)
 	{
+		farPlane = farPlane_;
+		isProjectionDirty = true;
 	}
 	
 	void Camera::UpdateMatrices()
 	{
+		if (isProjectionDirty)
+		{
+			projection = Matrix4x4<>::FromPerspective(fieldOfView, aspectRatio, nearPlane, farPlane);
+			isProjectionDirty = false;
+		}
+
+		Vector3<> eyePosition = Vector3<>(parent->matrix._14, parent->matrix._24, parent->matrix._34);
+		Vector3<> focusPosition = Vector3<>(0.0f, 0.0f, 0.0f);
+		view = Matrix4x4<>::FromLookAt(eyePosition, focusPosition, Vector3<>(0.0f, 1.0f, 0.0f));
 	}
 }
