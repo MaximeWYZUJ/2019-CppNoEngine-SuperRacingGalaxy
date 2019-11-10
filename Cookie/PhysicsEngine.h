@@ -52,6 +52,7 @@ namespace Cookie
 		void UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified);
 
 	private:
+		PhysicsEngine();
 		physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;
 	};
 }

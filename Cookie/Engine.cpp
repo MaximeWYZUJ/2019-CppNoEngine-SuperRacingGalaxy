@@ -15,7 +15,8 @@ namespace Cookie
 		unique_ptr<PhysicsEngine>&& physicsEngine,
 		unique_ptr<SceneManager>&& smgr,
 		unique_ptr<TextureManager>&& textureManager,
-		unique_ptr<MaterialManager>&& materialManager)
+		unique_ptr<MaterialManager>&& materialManager,
+		unique_ptr<Synchronizer>&& synchronizer)
 		:
 		device{ move(device) },
 		inputManager{ move(inputManager) },
@@ -23,7 +24,8 @@ namespace Cookie
 		physics{ move(physicsEngine) },
 		sceneManager{ move(smgr) },
 		textureManager{ move(textureManager) },
-		materialManager { move(materialManager) }
+		materialManager { move(materialManager) },
+		synchronizer { move(synchronizer) }
 	{
 		InitScene();
 		InitAnimation();

@@ -19,6 +19,7 @@ namespace Cookie
 		auto sceneManager = make_unique<SceneManager>(device.get());
 		auto textureManager = make_unique<TextureManager>();
 		auto materialManager = make_unique<MaterialManager>();
+		auto synchronizer = make_unique<Synchronizer>();
 		
 		return make_unique<Engine>(
 			move(device),
@@ -27,7 +28,8 @@ namespace Cookie
 			move(physics),
 			move(sceneManager),
 			move(textureManager),
-			move(materialManager));
+			move(materialManager),
+			move(synchronizer));
 #else
 		throw exception("The standalone engine only supports windows platform with DirectX API");
 #endif

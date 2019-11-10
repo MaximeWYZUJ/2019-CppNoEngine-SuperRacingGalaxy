@@ -10,6 +10,7 @@
 #include "PhysicsEngine.h"
 #include "MaterialManager.h"
 #include "ActionManager.h"
+#include "Synchronizer.h"
 
 namespace Cookie
 {
@@ -28,7 +29,8 @@ namespace Cookie
 			std::unique_ptr<PhysicsEngine>&& physicsEngine,
 			std::unique_ptr<SceneManager>&& smgr,
 			std::unique_ptr<TextureManager>&& textureManager,
-			std::unique_ptr<MaterialManager>&& materialManager);
+			std::unique_ptr<MaterialManager>&& materialManager,
+			std::unique_ptr<Synchronizer>&& synchronizer);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
@@ -57,6 +59,7 @@ namespace Cookie
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<TextureManager> textureManager;
 		std::unique_ptr<MaterialManager> materialManager;
+		std::unique_ptr<Synchronizer> synchronizer;
 
 		int64_t previousTime;
 
@@ -75,7 +78,7 @@ namespace Cookie
 
 		// Physics
 		physics->step();
-		// Todo: synchronizer->SyncUp() should be here
+		synchronizer->SyncUp();
 
 		// Input Events
 		inputManager->Update();
@@ -84,7 +87,7 @@ namespace Cookie
 		// Game Logic
 		update();
 		sceneManager->UpdateMatrices();
-		// Todo: synchronizer->SyncDown() should be here
+		synchronizer->SyncDown(sceneManager);
 
 		// Scene Rendering
 		UpdateScene();

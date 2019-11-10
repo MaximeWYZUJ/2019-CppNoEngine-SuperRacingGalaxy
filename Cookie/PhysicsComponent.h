@@ -7,6 +7,7 @@
 #include "PhysicMaterial.h"
 #include "PhysicsCollisionCallback.h"
 #include "ExportMacro.h"
+#include "Component.h"
 
 namespace physx
 {
@@ -19,7 +20,7 @@ namespace Cookie
 	class NoVelocity_StaticObject_Exception {};
 	class NoShapeException {};
 
-	struct COOKIE_API PhysicsComponent
+	struct COOKIE_API PhysicsComponent : Component
 	{
 		enum BodyType { STATIC, DYNAMIC };
 		using PhysicsComponent_t = float;
@@ -27,7 +28,7 @@ namespace Cookie
 		Transform<PhysicsComponent_t> transform;
 		Vector3<PhysicsComponent_t> velocity;
 		Vector3<PhysicsComponent_t> massCenter{};
-		PhysicsComponent_t mass;
+		PhysicsComponent_t mass = 1;
 		BodyType type;
 		bool trigger = false;
 		PhysicMaterial material;

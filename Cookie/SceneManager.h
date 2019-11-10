@@ -9,6 +9,7 @@
 #include "Util.h"
 #include "Camera.h"
 #include "Shaders.h"
+#include "PhysicsComponent.h"
 
 namespace Cookie
 {
@@ -27,6 +28,13 @@ namespace Cookie
 
 		// Components
 		MeshRenderer* AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent);
+		PhysicsComponent* AddPhysicsBoxComponent(
+			Vector3<PhysicsComponent::PhysicsComponent_t> pos,
+			Quaternion<PhysicsComponent::PhysicsComponent_t> rot,
+			PhysicMaterial mat,
+			PhysicsComponent::BodyType type,
+			float dx, float dy, float dz,
+			SceneNode* parent);
 		Camera* AddCamera(SceneNode* parent);
 		
 		SceneNodePtr GetRoot();
@@ -39,6 +47,10 @@ namespace Cookie
 
 		void UpdateMatrices();
 		void DrawAll(Engine const& engine);
+
+
+		std::vector<PhysicsComponent*> addedPhysicsComponents;
+
 	private:
 		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
 		Device* device;

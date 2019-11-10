@@ -20,9 +20,6 @@ int main(int argc, char* argv[])
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 
-		PhysicsBoxComponent plane({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f);
-		PhysicsBoxComponent cube({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
-
 		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
 		InputManager* inputManager = engine->GetInputManager();
@@ -35,21 +32,34 @@ int main(int argc, char* argv[])
 
 		SceneNode* root = smgr->GetRoot();
 		
+		auto texture = tm->GetNewTexture(L"UneTexture.dds", device);
+
+		// Creation du plan
 		SceneNode* planeNode = smgr->AddSceneNode(root);
 		planeNode->localTransform.SetPosition({ 5.0f, 0.0f, 0.0f });
 		planeNode->localTransform.SetScale({ 2.5f, 0.05f, 5.0f });
 		planeNode->localTransform.SetRotation(Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }));
-
-		auto texture = tm->GetNewTexture(L"UneTexture.dds", device);
 		
 		auto mat = mm->GetNewMaterial("basic", texture, { 0.0f, 0.0f, 0.0f, 1.0f}, { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, 4, false);
 		smgr->AddMeshRenderer(mesh, mat, planeNode);
-		
+
+		smgr->AddPhysicsBoxComponent(
+			{ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f,
+			planeNode
+		);
+
+		// Creation du cube
 		SceneNode* cubeNode = smgr->AddSceneNode(root);
 		cubeNode->localTransform.SetPosition({ 3.0f, 0.0f, 2.0f });
 		auto const mat2 = mm->GetNewMaterial("basic2", texture);
 		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
-
+		
+		smgr->AddPhysicsBoxComponent(
+			{ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f,
+			cubeNode
+		);
+		
+		// Creation de la camera
 		SceneNode* camNode = smgr->AddSceneNode(root);
 		Camera* cam = smgr->AddCamera(camNode);
 		smgr->SetMainCamera(cam);
@@ -64,7 +74,7 @@ int main(int argc, char* argv[])
 
 			Vector4<> forward = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
 			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
-			 
+
 			if (inputManager->IsKeyPressed(Key::W))
 			{
 				curPos += forward * 0.1f;

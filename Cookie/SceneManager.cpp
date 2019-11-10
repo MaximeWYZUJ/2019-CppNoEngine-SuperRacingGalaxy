@@ -9,6 +9,7 @@
 #include "Engine.h"
 #include "Util.h"
 #include "AlgorithmShortcuts.h"
+#include "PhysicsBoxComponent.h"
 
 using namespace DirectX;
 
@@ -35,10 +36,24 @@ namespace Cookie
 	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
 	{
 		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
+		
 		parent->components.push_back(renderer);
 		renderer->parent = parent;
 		renderer->matrix = &parent->matrix;
+
 		return renderer;
+	}
+
+	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(Vector3<PhysicsComponent::PhysicsComponent_t> pos, Quaternion<PhysicsComponent::PhysicsComponent_t> rot, PhysicMaterial mat, PhysicsComponent::BodyType type, float dx, float dy, float dz, SceneNode* parent)
+	{
+		PhysicsBoxComponent* component = new PhysicsBoxComponent(pos, rot, mat, type, dx, dy, dz);
+		
+		parent->components.push_back(component);
+		component->parent = parent;
+		component->matrix = &parent->matrix;
+
+		addedPhysicsComponents.push_back(component);
+		return component;
 	}
 
 	Camera* SceneManager::AddCamera(SceneNode* parent)
