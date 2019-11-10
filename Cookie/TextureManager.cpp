@@ -3,22 +3,21 @@
 
 namespace Cookie
 {
-	Texture const* TextureManager::GetNewTexture(const std::wstring& fileName, Device* device)
+	Texture* TextureManager::GetNewTexture(const std::wstring& fileName, Device* device)
 	{
-		Texture const* pTexture = GetTexture(fileName);
+		Texture* pTexture = GetTexture(fileName);
 		
 		if (!pTexture)
 		{
-			auto texture = std::make_unique<Texture>(fileName, device);
-			pTexture = texture.get();
-			textures.push_back(std::move(texture));
+			pTexture = new Texture(fileName, device);
+			textures.push_back(pTexture);
 		}
 		
 		assert(pTexture);
 		return pTexture;
 	}
 	
-	Texture const* TextureManager::GetTexture(const std::wstring& fileName) noexcept
+	Texture* TextureManager::GetTexture(const std::wstring& fileName) noexcept
 	{
 		Texture* pTexture = nullptr;
 		
@@ -26,7 +25,7 @@ namespace Cookie
 		{
 			if (texture->GetFilename() == fileName)
 			{
-				pTexture = texture.get();
+				pTexture = texture;
 				break;
 			}
 		}

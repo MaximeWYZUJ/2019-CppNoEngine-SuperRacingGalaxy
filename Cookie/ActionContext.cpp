@@ -1,9 +1,13 @@
 #include "pch.h"
+
 #include "ActionContext.h"
 
 namespace Cookie
 {
-	ActionContext::ActionContext()
+	using namespace std;
+	
+	ActionContext::ActionContext(vector<ActionDescriptor>&& actions)
+		: actions(move(actions))
 	{
 	}
 }

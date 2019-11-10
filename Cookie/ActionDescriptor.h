@@ -17,17 +17,33 @@ namespace Cookie
 	class COOKIE_API ActionDescriptor
 	{
 	public:
-		ActionDescriptor(Key key, StateType state, std::chrono::milliseconds const& stateTime);
+		struct COOKIE_API Callbacks
+		{
+			using Action = void(*)();
 
-	private:
+			Callbacks() = default;
+			Callbacks(Action onBegin, Action onSuccess, Action onCancel)
+				: onBegin(onBegin), onSuccess(onSuccess), onCancel(onCancel)
+			{
+			}
+			
+			Action onBegin;
+			Action onSuccess;
+			Action onCancel;
+		};
+		
+		ActionDescriptor(Key key, StateType state, std::chrono::milliseconds const& delay, Callbacks callbacks);
+
 		Key key;
 		StateType state;
-		std::chrono::milliseconds stateTime;
+		std::chrono::milliseconds delay;
+		Callbacks callbacks;
 
 		friend struct std::hash<ActionDescriptor>;
 		friend struct std::equal_to<ActionDescriptor>;
 	};
 }
+
 
 template<>
 struct std::hash<Cookie::ActionDescriptor>
@@ -38,14 +54,14 @@ struct std::hash<Cookie::ActionDescriptor>
 		{
 			int32_t res = static_cast<int32_t>(descriptor.key) << 16;
 			res |= static_cast<int16_t>(descriptor.state) << 8;
-			res |= static_cast<int8_t>(descriptor.stateTime.count());
+			res |= static_cast<int8_t>(descriptor.delay.count());
 			return res;
 		}
 		else if constexpr (Cookie::ArchWidth == Cookie::_64bits)
 		{
 			int64_t res = static_cast<int64_t>(descriptor.key) << 32;
 			res |= static_cast<int32_t>(descriptor.state) << 16;
-			res |= static_cast<int16_t>(descriptor.stateTime.count());
+			res |= static_cast<int16_t>(descriptor.delay.count());
 			return res;
 		}
 	}
@@ -58,6 +74,6 @@ struct std::equal_to<Cookie::ActionDescriptor>
 	{
 		return lhs.key == rhs.key &&
 			lhs.state == rhs.state &&
-			lhs.stateTime == rhs.stateTime;
+			lhs.delay == rhs.delay;
 	}
 };

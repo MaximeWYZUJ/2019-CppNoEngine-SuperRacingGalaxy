@@ -8,6 +8,7 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 #include "Util.h"
+#include "AlgorithmShortcuts.h"
 
 using namespace DirectX;
 
@@ -15,16 +16,11 @@ namespace Cookie
 {
 	using namespace std;
 
-	SceneManager::SceneManager()
+	SceneManager::SceneManager(Device* device) : device { device }, shaders{ device }
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);
 		root.matrix = root.localMatrix;
-	}
-
-	void SceneManager::SetDevice(Device* device)
-	{
-		this->device = device;
 	}
 
 	Mesh* SceneManager::GetMesh(string const& filePath)
@@ -39,10 +35,19 @@ namespace Cookie
 	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
 	{
 		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
-		parent->components.emplace_back(renderer);
+		parent->components.push_back(renderer);
 		renderer->parent = parent;
 		renderer->matrix = &parent->matrix;
 		return renderer;
+	}
+
+	Camera* SceneManager::AddCamera(SceneNode* parent)
+	{
+		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 1000.0f));
+		parent->components.push_back(cam);
+		cam->parent = parent;
+		cam->matrix = &parent->matrix;
+		return cam;
 	}
 
 	auto SceneManager::GetRoot() -> SceneNodePtr
@@ -72,7 +77,14 @@ namespace Cookie
 		}
 	}
 	
-	void SceneManager::DrawAll(Engine const& engine)
+	void SceneManager::SetMainCamera(Camera* camera)
+	{
+		assert(Alg::Exists(cameras, camera));
+		
+		mainCamera = camera;
+	}
+
+	void SceneManager::UpdateMatrices()
 	{
 		// Update matrices
 		vector<SceneNode*> c;
@@ -93,7 +105,7 @@ namespace Cookie
 			{
 				node->localTransform.ResetDirty();
 				lastStackSize = min(static_cast<int64_t>(nextNodes.size()), lastStackSize);
-				
+
 				Transform<> const& t = node->localTransform;
 				node->localMatrix = Matrix4x4<>::FromTransform(t);
 				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
@@ -103,11 +115,19 @@ namespace Cookie
 				UpdateNodeAndStackChildren(node, StackInserter(nextNodes));
 			}
 		}
-		
-		// draw meshes
+
+		// Update main camera
+		if (mainCamera)
+		{
+			mainCamera->UpdateMatrices();
+		}
+	}
+
+	void SceneManager::DrawAll(Engine const& engine)
+	{
 		for(auto& renderer : meshRenderers)
 		{
-			renderer->Draw(engine);
+			renderer->Draw(mainCamera->GetProjView(), shaders);
 		}
 	}
 

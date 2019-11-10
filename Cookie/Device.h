@@ -57,7 +57,7 @@ namespace Cookie
 		virtual int Init(CdsMode cdsMode) = 0;
 
 		// Events
-		virtual std::vector<DeviceEvent<>> const& GetEvents() const;
+		virtual std::vector<DeviceEvent> const& GetEvents() const;
 
 		// Window
 		virtual bool HasFocus() const;
@@ -78,6 +78,6 @@ namespace Cookie
 		uint32_t screenWidth = 0;
 		uint32_t screenHeight = 0;
 		bool hasFocus = false;
-		std::vector<DeviceEvent<>> events;
+		std::vector<DeviceEvent> events;
 	};
 }

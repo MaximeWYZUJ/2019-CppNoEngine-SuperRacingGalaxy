@@ -1,6 +1,7 @@
 #pragma once
 
-#include <unordered_map>
+#include <vector>
+
 #include "ExportMacro.h"
 #include "ActionDescriptor.h"
 
@@ -9,9 +10,8 @@ namespace Cookie
 	class COOKIE_API ActionContext
 	{
 	public:
-		ActionContext();
+		ActionContext(std::vector<ActionDescriptor>&& actions);
 
-	private:
-		std::unordered_map<ActionDescriptor, void(*)()> actions;
+		std::vector<ActionDescriptor> actions;
 	};
 }

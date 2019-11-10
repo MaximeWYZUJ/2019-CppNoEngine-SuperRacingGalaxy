@@ -1,6 +1,6 @@
 cbuffer param
 {
-	float4x4 matWorldViewProj; // la matrice totale
+	float4x4 matProjViewWorld; // la matrice totale
 	float4x4 matWorld; // matrice de transformation dans le monde
 	float4 vLumiere; // la position de la source d’éclairage (Point)
 	float4 vCamera; // la position de la caméra
@@ -22,7 +22,7 @@ struct VS_Sortie
 VS_Sortie MiniPhongVS(float4 Pos : POSITION, float3 Normale : NORMAL, float2 texCoord : TEXCOORD)
 {
 	VS_Sortie sortie = (VS_Sortie)0;
-	sortie.Pos = mul(matWorldViewProj, Pos);
+	sortie.Pos = mul(matProjViewWorld, Pos);
 	sortie.Norm = mul(matWorld, float4(Normale, 0.0f)).xyz;
 	float3 PosWorld = mul(matWorld, Pos).xyz;
 	sortie.vDirLum = vLumiere.xyz - PosWorld;

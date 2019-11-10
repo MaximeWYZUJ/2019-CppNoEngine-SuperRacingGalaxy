@@ -3,8 +3,8 @@
 #include "DeviceD3D11.h"
 #include "SommetBloc.h"
 #include "Engine.h"
-#include "ShaderParams.h"
 #include "Material.h"
+#include "Shaders.h"
 
 namespace Cookie
 {
@@ -67,28 +67,8 @@ namespace Cookie
 		}
 	}
 
-	void MeshRenderer::Draw(Engine const& engine) // oof... is it normal that each renderer needs a ref to the engine?
+	void MeshRenderer::Draw(Matrix4x4<> const& projView, Shaders const& shader)
 	{
-		static float x = 0.0f;
-		static float z = 0.0f;
-		static float sign = 1.0f;
-		static bool isGrowing = true;
-
-		if (!isGrowing && x < -5.0f)
-		{
-			sign = 1.0f;
-			z += 1.0f;
-			isGrowing = true;
-		}
-		if (isGrowing && x > 10.0f)
-		{
-			sign = -1.0f;
-			z += 1.0f;
-			isGrowing = false;
-		}
-		
-		x += 0.05f * sign;
-		
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
 		pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -97,19 +77,7 @@ namespace Cookie
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer), DXGI_FORMAT_R32_UINT, 0);
 
-		ShadersParams sp;
-		XMMATRIX const viewProj = engine.GetMatViewProj();
-		XMMATRIX m = XMMATRIX(reinterpret_cast<float const*>(matrix));
-		sp.matWorldViewProj = m * viewProj;
-		sp.matWorld = m;
-		sp.vLumiere = XMVectorSet(x, 10.0f, z, 1.0f);
-		sp.vCamera = XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f);
-		sp.vAEcl = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);
-		sp.vAMat = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
-		sp.vDEcl = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
-		sp.vDMat = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
-
-		material->Activate(sp);
+		shader.Activate(*matrix, projView, material);
 		
 		pImmediateContext->DrawIndexed(mesh->GetTriangles().size() * 3, 0, 0);
 	}

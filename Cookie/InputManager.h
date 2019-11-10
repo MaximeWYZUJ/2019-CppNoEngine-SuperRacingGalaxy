@@ -4,6 +4,8 @@
 
 #include <dinput.h>
 #include "Vector2.h"
+#include <vector>
+#include <variant>
 
 namespace Cookie
 {
@@ -37,7 +39,7 @@ namespace Cookie
 		W = 0x16,
 		X = 0x17,
 		Y = 0x18,
-		Z = 0x19,
+		Z = 0x19
 	};
 
 	enum class MouseButton
@@ -45,6 +47,27 @@ namespace Cookie
 		LeftButton,
 		RightButton,
 		MiddleButton
+	};
+
+	enum class InputEventType
+	{
+		KeyStateChanged
+	};
+
+	struct KeyStateChanged
+	{
+		Key key;
+		
+		// 0 = initial state, 255 = fully pressed
+		uint8_t position;
+	};
+
+	struct InputEvent
+	{
+		using DataType = std::variant<KeyStateChanged>;
+		
+		InputEventType type;
+		DataType data;
 	};
 	
 	class COOKIE_API InputManager
@@ -56,9 +79,15 @@ namespace Cookie
 		bool Init();
 		void Update();
 		void PostUpdate();
+		
 		bool IsKeyPressed(Key key);
+
+		[[nodiscard]]
+		std::vector<InputEvent> const& GetEvents() const;
 	private:
 		void InitKeyMapping();
+		
+		static constexpr int nbKeys = 26;
 
 		DeviceD3D11* device;
 		bool isInitialized;
@@ -74,10 +103,17 @@ namespace Cookie
 		uint8_t keyboardBuffer2[256];
 		uint8_t keyToDirectXKey[256];
 
+		uint8_t* keyCurrentStates;
+		uint8_t* keyPreviousStates;
+		uint8_t keyStates1[nbKeys];
+		uint8_t keyStates2[nbKeys];
+
 		uint8_t mouseCurrentBuffer[16];
 		uint8_t mousePreviousBuffer[16];
 
 		Vector2<int> mouseCurrentPosition;
 		Vector2<int> mousePreviousPosition;
+
+		std::vector<InputEvent> events;
 	};
 }
