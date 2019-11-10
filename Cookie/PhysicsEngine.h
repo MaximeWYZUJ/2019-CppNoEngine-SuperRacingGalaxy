@@ -43,7 +43,7 @@ namespace Cookie
 
 		// Creation/Suppression d'objets dans la scene
 		void RemoveActor(ActorPtr actor);
-		ActorPtr CreateBox(const PhysicsBoxComponent* box);
+		ActorPtr CreateBox(PhysicsBoxComponent* box);
 		
 		// Modifications d'acteurs de la scene
 		void UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr toBeModified);

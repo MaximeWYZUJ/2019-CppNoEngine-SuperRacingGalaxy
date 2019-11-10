@@ -8,6 +8,6 @@ namespace Cookie {
 	class Synchronizer
 	{
 	private:
-		std::unordered_map<PhysicsEngine::ActorPtr, PhysicsComponent*> map;
+		std::unordered_map<PhysicsComponent*, PhysicsEngine::ActorPtr> map;
 	};
 }

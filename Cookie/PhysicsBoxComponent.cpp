@@ -14,19 +14,16 @@ namespace Cookie {
 		PxMaterial* material = engine.gPhysics->createMaterial(mat.staticFriction, mat.dynamicFriction, mat.bounce);
 
 		PxShape* shape = engine.gPhysics->createShape(PxBoxGeometry(dx / 2, dy / 2, dz / 2), *material);
-		shape->setSimulationFilterData(PxFilterData(DEFAULT, DEFAULT, 0, 0));
 
 		if (type == DYNAMIC) {
 			actor = engine.gPhysics->createRigidDynamic(transform);
-			//actor = PxCreateDynamic(*engine.gPhysics, transform, PxBoxGeometry(dx / 2, dy / 2, dz / 2), *material, 1.0f);
 		}
 		else {
 			actor = engine.gPhysics->createRigidStatic(transform);
-			//actor = PxCreateStatic(*engine.gPhysics, transform, PxBoxGeometry(dx / 2, dy / 2, dz / 2), *material);
 		}
 
-		PxFilterData filterNull{};
-		shape->setSimulationFilterData(filterNull);
+		PxFilterData filterDefault{};
+		shape->setSimulationFilterData(filterDefault);
 		actor->attachShape(*shape);
 
 		actor->userData = this;
