@@ -11,12 +11,11 @@ namespace Cookie
 	using namespace std;
 
 	InputManager::InputManager(DeviceD3D11* device)
-		: device{device}
+		: device{device}, mouseCurrentPosition(0, 0), mousePreviousPosition(0, 0)
 	{
 		isInitialized = false;
 		directInput = nullptr;
 		keyboardInput = nullptr;
-		mouseInput = nullptr;
 		joystickInput = nullptr;
 
 		keyboardCurrentBuffer = keyboardBuffer1;
@@ -40,18 +39,14 @@ namespace Cookie
 			keyboardInput->Release();
 			keyboardInput = nullptr;
 		}
-		if (mouseInput)
-		{
-			mouseInput->Unacquire();
-			mouseInput->Release();
-			mouseInput = nullptr;
-		}
+
 		if (joystickInput)
 		{
 			joystickInput->Unacquire();
 			joystickInput->Release();
 			joystickInput = nullptr;
 		}
+
 		if (directInput)
 		{
 			directInput->Release();
@@ -97,9 +92,28 @@ namespace Cookie
 				keyboardInput->Unacquire();
 				break;
 			case DeviceEventType::MouseMove:
-				auto const ev = get<MouseMove>(e.data);
+			{
+				auto const ev = get<MouseMoveData>(e.data);
 				mouseCurrentPosition = ev.pos;
 				break;
+			}
+			case DeviceEventType::MouseButton:
+			{
+				auto const ev = get<MouseButtonData>(e.data);
+
+				if (ev.data == MouseButtonEventType::LeftButtonDown)
+				{
+					mouseCurrentPosition = ev.pos;
+					mouseCurrentBuffer[static_cast<uint8_t>(MouseButton::LeftMouseButton)] = 0xFF;
+				}
+				else if (ev.data == MouseButtonEventType::LeftButtonUp)
+				{
+					mouseCurrentPosition = ev.pos;
+					mouseCurrentBuffer[static_cast<uint8_t>(MouseButton::LeftMouseButton)] = 0x00;
+				}
+
+				break;
+			}
 			default:
 				break;
 			}
@@ -143,6 +157,21 @@ namespace Cookie
 	bool InputManager::IsKeyPressed(Key key)
 	{
 		return keyboardCurrentBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]] & 0x80;
+	}
+
+	bool InputManager::IsMouseButtonPressed(MouseButton button)
+	{
+		return mouseCurrentBuffer[static_cast<uint8_t>(button)] & 0xFF;
+	}
+
+	Vector2<int> InputManager::GetMousePosition()
+	{
+		return mouseCurrentPosition;
+	}
+
+	Vector2<int> InputManager::GetMouseDelta()
+	{
+		return mouseCurrentPosition - mousePreviousPosition;
 	}
 
 	std::vector<InputEvent> const& InputManager::GetEvents() const

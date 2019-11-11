@@ -44,9 +44,8 @@ namespace Cookie
 
 	enum class MouseButton
 	{
-		LeftButton,
-		RightButton,
-		MiddleButton
+		LeftMouseButton = 0x00,
+		RightMouseButton = 0x01
 	};
 
 	enum class InputEventType
@@ -81,6 +80,9 @@ namespace Cookie
 		void PostUpdate();
 		
 		bool IsKeyPressed(Key key);
+		bool IsMouseButtonPressed(MouseButton button);
+		Vector2<int> GetMousePosition();
+		Vector2<int> GetMouseDelta();
 
 		[[nodiscard]]
 		std::vector<InputEvent> const& GetEvents() const;
@@ -94,7 +96,6 @@ namespace Cookie
 		
 		IDirectInput8* directInput;
 		IDirectInputDevice8* keyboardInput;
-		IDirectInputDevice8* mouseInput;
 		IDirectInputDevice8* joystickInput;
 
 		uint8_t* keyboardCurrentBuffer;

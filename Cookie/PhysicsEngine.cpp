@@ -108,7 +108,7 @@ namespace Cookie
 	{
 		Vector3<PhysicsComponent::PhysicsComponent_t> pos = box->transform.GetPosition();
 		Quaternion<PhysicsComponent::PhysicsComponent_t> rot = box->transform.GetRotation();
-		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z), PxQuat(rot.x, rot.y, rot.z, rot.w));
+		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z), PxQuat(-rot.x, rot.y, rot.z, rot.w));
 		
 		PxMaterial* material = gPhysics->createMaterial(box->material.staticFriction, box->material.dynamicFriction, box->material.bounce);
 		Vector3<> scaling = box->transform.GetScale();
@@ -180,7 +180,7 @@ namespace Cookie
 		PxVec3 pos = actor->getGlobalPose().p;
 		toBeModified->transform.SetPosition(Vector3<PhysicsComponent::PhysicsComponent_t>(-pos.x, pos.y, pos.z));
 		PxQuat rot = actor->getGlobalPose().q;
-		toBeModified->transform.SetRotation(Quaternion<PhysicsComponent::PhysicsComponent_t>(rot.x, rot.y, rot.z, rot.w));
+		toBeModified->transform.SetRotation(Quaternion<PhysicsComponent::PhysicsComponent_t>(-rot.x, rot.y, rot.z, rot.w));
 		toBeModified->transform.SetScale(toBeModified->parent->localTransform.GetScale());
 
 		if (toBeModified->type == PhysicsComponent::DYNAMIC) {

@@ -36,15 +36,18 @@ int main(int argc, char* argv[])
 
 		// Creation du plan
 		SceneNode* planeNode = smgr->AddSceneNode(root);
-		planeNode->localTransform.SetPosition({ 5.0f, 0.0f, 0.0f });
-		planeNode->localTransform.SetScale({ 2.5f, 0.05f, 5.0f });
-		planeNode->localTransform.SetRotation(Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }));
+		planeNode->localTransform.SetPosition({ 0.0f, 0.0f, 0.0f });
+		planeNode->localTransform.SetScale({ 10.0f, 0.05f, 10.0f });
 		
 		auto mat = mm->GetNewMaterial("basic", texture, { 1.0f, 0.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 4, false);
 		smgr->AddMeshRenderer(mesh, mat, planeNode);
 
 		smgr->AddPhysicsBoxComponent(
-			{ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f,
+			planeNode->localTransform.GetPosition(),
+			planeNode->localTransform.GetRotation(),
+			PhysicMaterial(0.5f, 0.5f, 0.6f),
+			PhysicsComponent::STATIC,
+			planeNode->localTransform.GetScale() * 2.0f,
 			planeNode
 		);
 
@@ -54,8 +57,12 @@ int main(int argc, char* argv[])
 		auto const mat2 = mm->GetNewMaterial("basic2", texture);
 		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
 		
-		smgr->AddPhysicsBoxComponent(
-			{ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f,
+		PhysicsComponent* boxComponent = smgr->AddPhysicsBoxComponent(
+			{ 3.0f, 10.0f, 0.0f },
+			{ 0.0f, 0.0f, 0.0f, 1.0f },
+			PhysicMaterial(0.0f, 0.5f, 0.0f),
+			PhysicsComponent::DYNAMIC,
+			cubeNode->localTransform.GetScale() * 2.0f,
 			cubeNode
 		);
 		
@@ -65,7 +72,7 @@ int main(int argc, char* argv[])
 		smgr->SetMainCamera(cam);
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
-		while (engine->Run([&camNode, &inputManager]()
+		while (engine->Run([&camNode, &inputManager, &boxComponent]()
 		{
 			Transform<>& cam = camNode->localTransform;
 			Vector3<> curPos = cam.GetPosition();
@@ -75,24 +82,55 @@ int main(int argc, char* argv[])
 			Vector4<> forward = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
 			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
 
+			Vector4<> up = Vector4<>::Normalize(Vector4<>::CrossProduct(left, forward));
+
+			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
+			Quaternion<> xDeltaRot = Quaternion<>::FromDirection(-mouseDelta.x * 0.005f, up);
+			Quaternion<> yDeltaRot = Quaternion<>::FromDirection(mouseDelta.y * 0.005f, left);
+
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				curPos += forward * 0.1f;
+				curPos += forward * 0.2f;
 			}
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				curPos += left * 0.1f;
+				curPos += left * 0.2f;
 			}
 			if (inputManager->IsKeyPressed(Key::S))
 			{
-				curPos -= forward * 0.1f;
+				curPos -= forward * 0.2f;
 			}
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				curPos += -left * 0.1f;
+				curPos += -left * 0.2f;
+			}
+
+			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
+			{
+				cam.SetRotation(cam.GetRotation() * xDeltaRot * yDeltaRot);
 			}
 
 			cam.SetPosition(curPos);
+
+			if (inputManager->IsKeyPressed(Key::I))
+			{
+				boxComponent->addForce({ 0.0f, 0.0f, 10.0f });
+			}
+
+			if (inputManager->IsKeyPressed(Key::J))
+			{
+				boxComponent->addForce({ -10.0f, 0.0f, 0.0f });
+			}
+
+			if (inputManager->IsKeyPressed(Key::K))
+			{
+				boxComponent->addForce({ 0.0f, 0.0f, -10.0f });
+			}
+
+			if (inputManager->IsKeyPressed(Key::L))
+			{
+				boxComponent->addForce({ 10.0f, 0.0f, 0.0f });
+			}
 		}));
 
 		return (int)1;

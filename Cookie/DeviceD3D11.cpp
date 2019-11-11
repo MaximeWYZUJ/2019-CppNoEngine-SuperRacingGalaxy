@@ -365,15 +365,21 @@ namespace Cookie
 		switch (message)
 		{
 		case WM_SETFOCUS:
-			c->events.push_back(DeviceEvent{.type = DeviceEventType::Focus });
+			c->events.push_back(DeviceEvent(DeviceEventType::Focus));
 			c->hasFocus = true;
 			break;
 		case WM_KILLFOCUS:
-			c->events.push_back(DeviceEvent{ .type = DeviceEventType::FocusLost });
+			c->events.push_back(DeviceEvent(DeviceEventType::FocusLost));
 			c->hasFocus = false;
 			break;
 		case WM_MOUSEMOVE:
-			c->events.push_back(DeviceEvent{ .type = DeviceEventType::MouseMove, .data = MouseMove{ .pos = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) } } });
+			c->events.push_back(DeviceEvent(DeviceEventType::MouseMove, MouseMoveData{ .pos = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) } }));
+			break;
+		case WM_LBUTTONDOWN:
+			c->events.push_back(DeviceEvent(DeviceEventType::MouseButton, MouseButtonData(MouseButtonEventType::LeftButtonDown, { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) })));
+			break;
+		case WM_LBUTTONUP:
+			c->events.push_back(DeviceEvent(DeviceEventType::MouseButton, MouseButtonData(MouseButtonEventType::LeftButtonUp, { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) })));
 			break;
 		case WM_COMMAND:
 			wmId = LOWORD(wParam);

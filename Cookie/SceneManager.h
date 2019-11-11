@@ -21,8 +21,6 @@ namespace Cookie
 		using SceneNodePtr = SceneNode::SceneNodePtr;
 		using MeshPtr = Mesh*;
 		SceneManager(Device* device);
-
-		// Todo: bof... comment découpler SceneManager et Device ?
 		
 		MeshPtr GetMesh(std::string const& filePath);
 
@@ -33,7 +31,7 @@ namespace Cookie
 			Quaternion<PhysicsComponent::PhysicsComponent_t> rot,
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
-			float dx, float dy, float dz,
+			Vector3<> size,
 			SceneNode* parent);
 		Camera* AddCamera(SceneNode* parent);
 		

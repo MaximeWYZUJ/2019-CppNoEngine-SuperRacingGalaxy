@@ -44,9 +44,9 @@ namespace Cookie
 		return renderer;
 	}
 
-	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(Vector3<PhysicsComponent::PhysicsComponent_t> pos, Quaternion<PhysicsComponent::PhysicsComponent_t> rot, PhysicMaterial mat, PhysicsComponent::BodyType type, float dx, float dy, float dz, SceneNode* parent)
+	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(Vector3<PhysicsComponent::PhysicsComponent_t> pos, Quaternion<PhysicsComponent::PhysicsComponent_t> rot, PhysicMaterial mat, PhysicsComponent::BodyType type, Vector3<> size, SceneNode* parent)
 	{
-		PhysicsBoxComponent* component = new PhysicsBoxComponent(pos, rot, mat, type, dx, dy, dz);
+		PhysicsBoxComponent* component = new PhysicsBoxComponent(pos, rot, mat, type, size.x, size.y, size.z);
 		
 		parent->components.push_back(component);
 		component->parent = parent;
