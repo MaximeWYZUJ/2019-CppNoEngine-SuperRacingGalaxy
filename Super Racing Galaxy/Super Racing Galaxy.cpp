@@ -8,11 +8,16 @@
 #include "MaterialManager.h"
 #include <DeviceD3D11.h>
 #include "Material.h"
-#include "PhysicsBoxComponent.h"
 #include "Vector4.h"
+#include "ScenarioLoader.h"
+#include "DemoScenario.h"
 
 using namespace std;
 using namespace Cookie;
+
+float camRadY = M_PI;
+float camRadZX = 0.0f;
+float camDistance = 10.0f;
 
 int main(int argc, char* argv[])
 {
@@ -23,33 +28,16 @@ int main(int argc, char* argv[])
 		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
 		InputManager* inputManager = engine->GetInputManager();
-		ActionManager* actionManager = engine->GetActionManager();
-		
 		TextureManager* tm = engine->GetTextureManager();
 		MaterialManager* mm = engine->GetMaterialManager();
 
 		Mesh* mesh = smgr->GetMesh("cube.obj");
-
 		SceneNode* root = smgr->GetRoot();
-		
 		auto texture = tm->GetNewTexture(L"UneTexture.dds", device);
 
-		// Creation du plan
-		SceneNode* planeNode = smgr->AddSceneNode(root);
-		planeNode->localTransform.SetPosition({ 0.0f, 0.0f, 0.0f });
-		planeNode->localTransform.SetScale({ 10.0f, 0.05f, 10.0f });
-		
-		auto mat = mm->GetNewMaterial("basic", texture, { 1.0f, 0.0f, 0.0f, 1.0f}, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 4, false);
-		smgr->AddMeshRenderer(mesh, mat, planeNode);
-
-		smgr->AddPhysicsBoxComponent(
-			planeNode->localTransform.GetPosition(),
-			planeNode->localTransform.GetRotation(),
-			PhysicMaterial(0.5f, 0.5f, 0.6f),
-			PhysicsComponent::STATIC,
-			planeNode->localTransform.GetScale() * 2.0f,
-			planeNode
-		);
+		// Create Scenario
+		Scenario scenario = ScenarioCreator::CreateDemoScenario();
+		ScenarioLoader::LoadScenario(engine.get(), scenario);
 
 		// Creation du cube
 		SceneNode* cubeNode = smgr->AddSceneNode(root);
@@ -72,64 +60,58 @@ int main(int argc, char* argv[])
 		smgr->SetMainCamera(cam);
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
-		while (engine->Run([&camNode, &inputManager, &boxComponent]()
+		while (engine->Run([camNode, cubeNode, inputManager, boxComponent]()
 		{
-			Transform<>& cam = camNode->localTransform;
-			Vector3<> curPos = cam.GetPosition();
-			Vector4<> forwardNoRot(0.0f, 0.0f, 1.0f, 1.0f);
-			Quaternion curRotation = cam.GetRotation();
-
-			Vector4<> forward = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
-			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
-
-			Vector4<> up = Vector4<>::Normalize(Vector4<>::CrossProduct(left, forward));
-
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
-			Quaternion<> xDeltaRot = Quaternion<>::FromDirection(-mouseDelta.x * 0.005f, up);
-			Quaternion<> yDeltaRot = Quaternion<>::FromDirection(mouseDelta.y * 0.005f, left);
+			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
+			{
+				camRadY -= mouseDelta.x * 0.005f;
+				camRadZX -= mouseDelta.y * 0.005f;
+			}
+
+			Transform<>& cam = camNode->localTransform;
+			Vector4<> initialPosNoRot(0.0f, 0.0f, camDistance, 1.0f);
+
+			// Find Camera position
+			Quaternion<> yCamRot = Quaternion<>::FromDirection(camRadY, { 0.0f, 1.0f, 0.0f });
+			Vector4<> zxDir = Matrix4x4<>::FromRotation(yCamRot) * initialPosNoRot;
+			Vector4<> zxRotAxis = Vector4<>::CrossProduct(zxDir, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
+			zxRotAxis.Normalize();
+			Quaternion zxCamRot = Quaternion<>::FromDirection(camRadZX, zxRotAxis);
+			Vector3<> curPos = Matrix4x4<>::FromRotation(yCamRot * zxCamRot) * initialPosNoRot;
+			Vector3<> cubeOffset = cubeNode->localTransform.GetPosition();
+			curPos += cubeOffset;
+			cam.SetPosition(curPos);
+
+			// Find camera rotation
+			Quaternion<> rCamRotY = Quaternion<>::FromDirection(camRadY - M_PI, { 0.0f, 1.0f, 0.0f });
+			Vector4<> forward = cubeOffset - curPos;
+			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
+			left.Normalize();
+			Quaternion<> rCamRotZX = Quaternion<>::FromDirection(-camRadZX, left);
+			cam.SetRotation(rCamRotY * rCamRotZX);
+
+			Vector4<> forwardForceDir = Vector4<>::Normalize(-zxDir);
+			Vector4<> leftForceDir = Vector4<>::Normalize(Vector4<>::CrossProduct(forwardForceDir, { 0.0f, 1.0f, 0.0f, 1.0f }));
 
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				curPos += forward * 0.2f;
+				boxComponent->addForce(forwardForceDir * 10.0f);
 			}
+
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				curPos += left * 0.2f;
+				boxComponent->addForce(leftForceDir * 10.0f);
 			}
+
 			if (inputManager->IsKeyPressed(Key::S))
 			{
-				curPos -= forward * 0.2f;
+				boxComponent->addForce(forwardForceDir * -10.0f);
 			}
+
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				curPos += -left * 0.2f;
-			}
-
-			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
-			{
-				cam.SetRotation(cam.GetRotation() * xDeltaRot * yDeltaRot);
-			}
-
-			cam.SetPosition(curPos);
-
-			if (inputManager->IsKeyPressed(Key::I))
-			{
-				boxComponent->addForce({ 0.0f, 0.0f, 10.0f });
-			}
-
-			if (inputManager->IsKeyPressed(Key::J))
-			{
-				boxComponent->addForce({ -10.0f, 0.0f, 0.0f });
-			}
-
-			if (inputManager->IsKeyPressed(Key::K))
-			{
-				boxComponent->addForce({ 0.0f, 0.0f, -10.0f });
-			}
-
-			if (inputManager->IsKeyPressed(Key::L))
-			{
-				boxComponent->addForce({ 10.0f, 0.0f, 0.0f });
+				boxComponent->addForce(leftForceDir * -10.0f);
 			}
 		}));
 

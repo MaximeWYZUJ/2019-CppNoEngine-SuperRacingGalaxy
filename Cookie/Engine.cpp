@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "Engine.h"
 #include <chrono>
 #include <thread>
+#include "Engine.h"
+#include "Color.h"
 
 namespace Cookie
 {

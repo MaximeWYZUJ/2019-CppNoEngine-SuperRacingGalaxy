@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "ExportMacro.h"
-#include "Color.h"
 #include "SceneManager.h"
 #include "TextureManager.h"
 #include "InputManager.h"

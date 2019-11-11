@@ -10,6 +10,7 @@ namespace Cookie
 	{
 	public:
 		Transform();
+		Transform(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation);
 
 		void SetPosition(Vector3<T> pos_);
 		void SetScale(Vector3<T> scale_);
@@ -35,6 +36,15 @@ namespace Cookie
 		  scale(static_cast<T>(1), static_cast<T>(1), static_cast<T>(1)),
 		  rotation(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(1)),
 		  isDirty { false }
+	{
+	}
+
+	template<class T>
+	Transform<T>::Transform(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation)
+		: position(pos),
+		scale(scale),
+		rotation(rotation),
+		isDirty(true)
 	{
 	}
 	

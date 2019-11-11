@@ -1,10 +1,12 @@
 #pragma once
 
 #include <iostream>
-#include "Vector4.h"
 
 namespace Cookie
 {
+	template<typename T = float>
+	class Vector4;
+
 	template<typename T = float>
 	class Vector3
 	{
@@ -17,7 +19,7 @@ namespace Cookie
 		Vector3<T>() : x(0), y(0), z(0) {}
 		Vector3<T>(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
 		Vector3<T>(const Vector3<T>& v) : x(v.x), y(v.y), z(v.z) {}
-		Vector3<T>(const Vector4<T>& v) : x(v.x), y(v.y), z(v.z) {}
+		Vector3<T>(const Vector4<T>& v);
 
 		float distance(const Vector3<T>& v) const;
 		float squareDistance(const Vector3<T>& v) const;
@@ -94,6 +96,12 @@ namespace Cookie
 			lhs.y * rhs.z - lhs.z * rhs.y,
 			lhs.z * rhs.x - lhs.x * rhs.z,
 			lhs.x * rhs.y - lhs.y * rhs.x);
+	}
+
+	template<typename T>
+	Vector3<T>::Vector3(const Vector4<T>& v)
+		: x(v.x), y(v.y), z(v.z)
+	{
 	}
 
 	template<typename T>

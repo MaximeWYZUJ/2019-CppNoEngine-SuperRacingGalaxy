@@ -9,25 +9,12 @@ namespace Cookie
 	class Quaternion : public Vector4<T>
 	{
 	public:
-		Quaternion();
-		Quaternion(T x, T y, T z, T w);
 		static Quaternion<T> FromDirection(T radAngle, Vector3<T> unitDir);
 		static Quaternion<T> FromYawPitchRoll(T yaw, T pitch, T roll);
+
+		Quaternion();
+		Quaternion(T x, T y, T z, T w);
 	};
-
-	template<class T>
-	Quaternion<T>::Quaternion()
-	{
-	}
-
-	template<class T>
-	Quaternion<T>::Quaternion(T x, T y, T z, T w)
-	{
-		Vector4<T>::x = x;
-		Vector4<T>::y = y;
-		Vector4<T>::z = z;
-		Vector4<T>::w = w;
-	}
 
 	template <class T>
 	Quaternion<T> Quaternion<T>::FromDirection(T radAngle, Vector3<T> unitDir)
@@ -61,6 +48,20 @@ namespace Cookie
 		q.z = sy * cp * cr - cy * sp * sr;
 
 		return q;
+	}
+
+	template<class T>
+	Quaternion<T>::Quaternion()
+	{
+	}
+
+	template<class T>
+	Quaternion<T>::Quaternion(T x, T y, T z, T w)
+	{
+		Vector4<T>::x = x;
+		Vector4<T>::y = y;
+		Vector4<T>::z = z;
+		Vector4<T>::w = w;
 	}
 
 	template<class T>
