@@ -111,8 +111,9 @@ namespace Cookie
 		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z), PxQuat(rot.x, rot.y, rot.z, rot.w));
 		
 		PxMaterial* material = gPhysics->createMaterial(box->material.staticFriction, box->material.dynamicFriction, box->material.bounce);
+		Vector3<> scaling = box->transform.GetScale();
 
-		PxShape* shape = gPhysics->createShape(PxBoxGeometry(box->dx / 2, box->dy / 2, box->dz / 2), *material);
+		PxShape* shape = gPhysics->createShape(PxBoxGeometry(box->dx / 2 * scaling.x, box->dy / 2 * scaling.y, box->dz / 2 * scaling.z), *material);
 		shape->setSimulationFilterData(PxFilterData(DEFAULT, DEFAULT, 0, 0));
 
 		PxRigidActor* actor = nullptr;
@@ -180,6 +181,7 @@ namespace Cookie
 		toBeModified->transform.SetPosition(Vector3<PhysicsComponent::PhysicsComponent_t>(-pos.x, pos.y, pos.z));
 		PxQuat rot = actor->getGlobalPose().q;
 		toBeModified->transform.SetRotation(Quaternion<PhysicsComponent::PhysicsComponent_t>(rot.x, rot.y, rot.z, rot.w));
+		toBeModified->transform.SetScale(toBeModified->parent->localTransform.GetScale());
 
 		if (toBeModified->type == PhysicsComponent::DYNAMIC) {
 			PxVec3 velo = static_cast<PxRigidDynamic*>(actor)->getLinearVelocity();
