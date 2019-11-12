@@ -11,6 +11,25 @@
 #include "Material.h"
 #include "PhysicsBoxComponent.h"
 
+//-------------TEST----------------------------------------------------
+namespace Cookie {
+	class synchronize {
+	private:
+		std::vector<std::pair<SceneNode*, PhysicsComponent*>> links;
+	public:
+		void addLink(SceneNode* node, PhysicsComponent* physx ) {
+			links.push_back(std::pair{ node, physx });
+		};
+		void update() {
+			PhysicsEngine::getInstance().step();
+			for (auto link : links) {
+				link.first->localTransform = link.second->getTransform();
+			}
+		};
+	};
+}
+//---------------------------------------------------------------------
+
 int main(int argc, char* argv[])
 {
 	using namespace std;
@@ -20,8 +39,15 @@ int main(int argc, char* argv[])
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 
-		PhysicsBoxComponent plane({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f);
-		PhysicsBoxComponent cube({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
+		//-------------TEST----------------------------------------------------
+		synchronize sync;
+
+		PhysicsBoxComponent* plane = new PhysicsBoxComponent({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f);
+		PhysicsBoxComponent* cube = new PhysicsBoxComponent({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
+
+		//PhysicsBoxComponent plane ({ 5.0f, 0.0f, 0.0f }, Quaternion<>::FromDirection(M_PI / 6, { 0.0f, 0.0f, 1.0f }), PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, 5.0f, 0.1f, 10.0f);
+		//PhysicsBoxComponent cube ({ 3.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }, PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, 2.0f, 2.0f, 2.0f);
+		//---------------------------------------------------------------------
 
 		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
@@ -41,11 +67,25 @@ int main(int argc, char* argv[])
 		cubeNode->localTransform.SetPosition({ 3.0f, 0.0f, 2.0f });
 		smgr->AddMeshRenderer(mesh, mat, cubeNode);
 
+
+		//-------------TEST----------------------------------------------------
+
+		PhysicsEngine::getInstance().init();
+
+		sync.addLink(cubeNode, cube);
+		sync.addLink(planeNode, plane);
+
+		//---------------------------------------------------------------------
+
 		// We should set the camera here
 		// Bind Input Actions for first "scene" (main menu)
 		// Bind lambda on Update Hook for game logic
 
-		while (engine->Run([](){}));
+		while (engine->Run([&](){
+			//-------------TEST----------------------------------------------------
+			sync.update();
+			//---------------------------------------------------------------------
+		}));
 
 		return (int)1;
 	}
