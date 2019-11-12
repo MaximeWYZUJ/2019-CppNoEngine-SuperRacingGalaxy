@@ -16,8 +16,6 @@ namespace Cookie
 		MeshRenderer(Mesh* mesh, Material* material, Device* device);
 		void Draw(Matrix4x4<> const& projView, Vector3<> camPos, Shaders const& shader);
 	private:
-		static D3D11_INPUT_ELEMENT_DESC layout[];
-		static UINT nbElements;
 
 		Mesh* mesh;
 		Material* material;

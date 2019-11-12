@@ -1,6 +1,7 @@
 #pragma once
 
-#include "DirectXMath.h"
+#include "Vector3.h"
+#include "Vector2.h"
 
 namespace Cookie
 {
@@ -12,20 +13,24 @@ namespace Cookie
 
 	struct LayoutPosition
 	{
-		DirectX::XMFLOAT3 position;
+		Vector3<> position;
 	};
 
 	struct LayoutNormal
 	{
-		DirectX::XMFLOAT3 normal;
+		Vector3<> normal;
 	};
 
 	struct LayoutTexCoord
 	{
-		DirectX::XMFLOAT2 texCoord;
+		Vector2<> texCoord;
 	};
 
-	struct Layout3d : Layout<LayoutPosition, LayoutNormal, LayoutTexCoord>
+	struct VertexData : Layout<LayoutPosition, LayoutNormal, LayoutTexCoord>
 	{
+		static D3D11_INPUT_ELEMENT_DESC layout[];
+
+		VertexData() = default;
+		VertexData(Vector3<> const& position_, Vector3<> const& normal_, Vector2<> const& texCoord_);
 	};
 }

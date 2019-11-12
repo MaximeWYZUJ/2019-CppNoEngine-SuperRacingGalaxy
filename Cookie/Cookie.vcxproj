@@ -241,7 +241,6 @@
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Size.h" />
-    <ClInclude Include="SommetBloc.h" />
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
@@ -299,7 +298,6 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shaders.cpp" />
-    <ClCompile Include="SommetBloc.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="Test_API_PhysX.cpp" />
     <ClCompile Include="Texture.cpp" />
