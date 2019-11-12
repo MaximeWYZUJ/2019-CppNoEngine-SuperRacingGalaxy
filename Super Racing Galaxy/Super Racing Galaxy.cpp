@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 		// Creation du cube
 		SceneNode* cubeNode = smgr->AddSceneNode(root);
 		cubeNode->localTransform.SetPosition({ 3.0f, 0.0f, 2.0f });
-		auto const mat2 = mm->GetNewMaterial("basic2", texture);
+		auto const mat2 = mm->GetNewMaterial("basic2", texture, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
 		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
 		
 		PhysicsComponent* boxComponent = smgr->AddPhysicsBoxComponent(

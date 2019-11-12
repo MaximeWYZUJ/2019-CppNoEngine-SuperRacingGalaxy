@@ -25,8 +25,8 @@ VS_Sortie MiniPhongVS(float4 Pos : POSITION, float3 Normale : NORMAL, float2 tex
 	sortie.Pos = mul(matProjViewWorld, Pos);
 	sortie.Norm = mul(matWorld, float4(Normale, 0.0f)).xyz;
 	float3 PosWorld = mul(matWorld, Pos).xyz;
-	sortie.vDirLum = PosWorld -vLumiere.xyz;
-	sortie.vDirCam = PosWorld - vCamera.xyz;
+	sortie.vDirLum = vLumiere.xyz - PosWorld;
+	sortie.vDirCam = vCamera.xyz - PosWorld;
 
 	sortie.texCoord = texCoord;
 

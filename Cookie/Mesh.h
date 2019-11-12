@@ -3,13 +3,12 @@
 #include <vector>
 #include "Vector3.h"
 #include "IndexedTriangle.h"
-#include "Component.h"
 #include <string>
 
 namespace Cookie
 {
 	/* Mesh that supports a maximum of std::numeric_limits<int>::max() vertices */
-	class Mesh : public Component
+	class Mesh
 	{
 	public:
 		using MeshPtr = Mesh*;

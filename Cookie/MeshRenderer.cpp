@@ -67,7 +67,7 @@ namespace Cookie
 		}
 	}
 
-	void MeshRenderer::Draw(Matrix4x4<> const& projView, Shaders const& shader)
+	void MeshRenderer::Draw(Matrix4x4<> const& projView, Vector3<> camPos, Shaders const& shader)
 	{
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
@@ -77,7 +77,7 @@ namespace Cookie
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer), DXGI_FORMAT_R32_UINT, 0);
 
-		shader.Activate(*matrix, projView, material);
+		shader.Activate(*matrix, projView, camPos, material);
 		
 		pImmediateContext->DrawIndexed(mesh->GetTriangles().size() * 3, 0, 0);
 	}

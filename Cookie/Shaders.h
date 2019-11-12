@@ -13,7 +13,7 @@ namespace Cookie
 	{
 	public:
 		Shaders(Device* device);
-		void Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, const Material* mat) const;
+		void Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, Vector3<> const& camPos, const Material* mat) const;
 
 	private:
 		Device* device;

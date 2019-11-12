@@ -140,9 +140,16 @@ namespace Cookie
 
 	void SceneManager::DrawAll(Engine const& engine)
 	{
-		for(auto& renderer : meshRenderers)
+		Vector3<> camPos(5.0f, 5.0f, 5.0f);
+		if (mainCamera)
 		{
-			renderer->Draw(mainCamera->GetProjView(), shaders);
+			// Todo: should have access to globalTransform here (there is only localTransform)
+			camPos = Vector3<>(mainCamera->parent->matrix._14, mainCamera->parent->matrix._24, mainCamera->parent->matrix._34);
+			
+			for (auto& renderer : meshRenderers)
+			{
+				renderer->Draw(mainCamera->GetProjView(), camPos, shaders);
+			}
 		}
 	}
 

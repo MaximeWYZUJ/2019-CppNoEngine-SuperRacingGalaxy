@@ -66,38 +66,37 @@ namespace Cookie
 		pPSBlob->Release();
 	}
 
-	void Shaders::Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, const Material* mat) const
+	void Shaders::Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, Vector3<> const& camPos, const Material* mat) const
 	{
 		static float x = 0.0f;
 		static float z = 0.0f;
 		static float sign = 1.0f;
 		static bool isGrowing = true;
 
-		if (!isGrowing && x < -5.0f)
+		if (!isGrowing && x < -10.0f)
 		{
 			sign = 1.0f;
-			z += 1.0f;
 			isGrowing = true;
 		}
 		if (isGrowing && x > 10.0f)
 		{
 			sign = -1.0f;
-			z += 1.0f;
 			isGrowing = false;
 		}
 
 		x += 0.05f * sign;
+		z += 0.01f;
 
 		
 		ShadersParams sp;
 
 		sp.matProjViewWorld = matViewProj * matWorld;
 		sp.matWorld = matWorld;
-		sp.vLumiere = XMVectorSet(x, 10.0f, z, 1.0f);
-		sp.vCamera = XMVectorSet(-5.0f, 5.0f, 1.0f, 1.0f);
-		sp.vAEcl = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);
+		sp.vLumiere = XMVectorSet(x, 25.0f, z, 0.0f);
+		sp.vCamera = XMVectorSet(camPos.x, camPos.y, camPos.z, 1.0f);
+		sp.vAEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
 		sp.vAMat = XMVectorSet(mat->ambient.x, mat->ambient.y, mat->ambient.z, mat->ambient.w);
-		sp.vDEcl = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+		sp.vDEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
 		sp.vDMat = XMVectorSet(mat->diffuse.x, mat->diffuse.y, mat->diffuse.z, mat->diffuse.w);
 		
 		ID3D11DeviceContext* pImmediateContext;
