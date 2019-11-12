@@ -2,19 +2,19 @@
 
 #include "ExportMacro.h"
 #include "Component.h"
-#include "Mesh.h"
 #include "Device.h"
-#include "Material.h"
 
 namespace Cookie
 {
-	class Engine;
+	class Shaders;
+	class Material;
+	class Mesh;
 	
 	class COOKIE_API MeshRenderer : public Component
 	{
 	public:
 		MeshRenderer(Mesh* mesh, Material* material, Device* device);
-		void Draw(Engine const& engine);
+		void Draw(Matrix4x4<> const& projView, Vector3<> camPos, Shaders const& shader);
 	private:
 		static D3D11_INPUT_ELEMENT_DESC layout[];
 		static UINT nbElements;

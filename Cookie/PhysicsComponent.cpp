@@ -5,6 +5,7 @@
 #include "PhysicsComponent.h"
 #include "PxPhysicsAPI.h"
 #include "PhysicsEngine.h"
+#include "PxFiltering.h"
 
 using namespace physx;
 
@@ -15,13 +16,13 @@ namespace Cookie
 		if (type == STATIC)
 			return;
 		
+		addedForces.push_back(force);
 		actor->is<PxRigidDynamic>()->addForce(PxVec3(-force.x, force.y, force.z));
 	}
 	
 	void PhysicsComponent::addFilterGroup(FilterGroup f)
 	{
-		if (std::find(selfGroup.begin(), selfGroup.end(), f) == selfGroup.end())
-			selfGroup.push_back(f);
+		selfGroup.insert(f);
 	}
 
 	void PhysicsComponent::removeFilterGroup(FilterGroup f)
@@ -32,8 +33,7 @@ namespace Cookie
 
 	void PhysicsComponent::addFilterMask(FilterGroup f)
 	{
-		if (std::find(mask.begin(), mask.end(), f) == mask.end())
-			mask.push_back(f);
+		mask.insert(f);
 	}
 
 	void PhysicsComponent::removeFilterMask(FilterGroup f)
@@ -42,7 +42,7 @@ namespace Cookie
 			mask.erase(it);
 	}
 	
-	void PhysicsComponent::updateFilters()
+	/*void PhysicsComponent::updateFilters()
 	{
 		int nbShapes = actor->getNbShapes();
 		if (nbShapes == 0) {
@@ -53,16 +53,16 @@ namespace Cookie
 		actor->getShapes(shapes, sizeof(PxShape) * nbShapes);
 
 
-		PxFilterData filterData;
-		std::for_each(selfGroup.begin(), selfGroup.end(), [&filterData](FilterGroup f) {
-			filterData.word0 |= f;
+		PxFilterData filter{};
+		std::for_each(selfGroup.begin(), selfGroup.end(), [&filter](FilterGroup f) {
+			filter.word0 |= f;
 		});
-		std::for_each(mask.begin(), mask.end(), [&filterData](FilterGroup f) {
-			filterData.word1 |= f;
+		std::for_each(mask.begin(), mask.end(), [&filter](FilterGroup f) {
+			filter.word1 |= f;
 		});
 
 		for (int i = 0; i < nbShapes; i++) {
-			shapes[i]->setSimulationFilterData(filterData);
+			shapes[i]->setSimulationFilterData(filter);
 		}
 	}
 
@@ -148,5 +148,5 @@ namespace Cookie
 		}
 
 		trigger = isTrigger_;
-	}
+	}*/
 }

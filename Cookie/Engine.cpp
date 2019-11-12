@@ -1,20 +1,33 @@
 #include "pch.h"
-#include "Engine.h"
 #include <chrono>
 #include <thread>
+#include "Engine.h"
+#include "Color.h"
 
 namespace Cookie
 {
 	using namespace std;
 	using namespace DirectX;
 
-	Engine::Engine(unique_ptr<Device>&& uninitializedDevice, unique_ptr<InputManager>&& uninitializedInputManager, unique_ptr<PhysicsEngine>&& uninitializedPhysicsEngine, unique_ptr<SceneManager>&& smgr)
-		: device{ move(uninitializedDevice) }, inputManager{ move(uninitializedInputManager) }, physics{ move(uninitializedPhysicsEngine) }, sceneManager{ move(smgr) }
+	Engine::Engine(
+		unique_ptr<Device>&& device,
+		unique_ptr<InputManager>&& inputManager,
+		unique_ptr<ActionManager>&& actionManager,
+		unique_ptr<PhysicsEngine>&& physicsEngine,
+		unique_ptr<SceneManager>&& smgr,
+		unique_ptr<TextureManager>&& textureManager,
+		unique_ptr<MaterialManager>&& materialManager,
+		unique_ptr<Synchronizer>&& synchronizer)
+		:
+		device{ move(device) },
+		inputManager{ move(inputManager) },
+		actionManager{ move(actionManager) },
+		physics{ move(physicsEngine) },
+		sceneManager{ move(smgr) },
+		textureManager{ move(textureManager) },
+		materialManager { move(materialManager) },
+		synchronizer { move(synchronizer) }
 	{
-		device->Init(CdsMode::Windowed);
-		inputManager->Init();
-		physics->init();
-		sceneManager->SetDevice(device.get());
 		InitScene();
 		InitAnimation();
 	}
@@ -22,6 +35,16 @@ namespace Cookie
 	Device* Engine::GetDevice() const
 	{
 		return device.get();
+	}
+
+	InputManager* Engine::GetInputManager() const
+	{
+		return inputManager.get();
+	}
+
+	ActionManager* Engine::GetActionManager() const
+	{
+		return actionManager.get();
 	}
 
 	SceneManager* Engine::GetSceneManager() const
@@ -34,38 +57,37 @@ namespace Cookie
 		return textureManager.get();
 	}
 
-	const XMMATRIX& Engine::GetMatView() const
+	MaterialManager* Engine::GetMaterialManager() const noexcept
+	{
+		return materialManager.get();
+	}
+	
+	Matrix4x4<> const& Engine::GetMatView() const
 	{
 		return m_MatView;
 	}
 
-	const XMMATRIX& Engine::GetMatProj() const
+	Matrix4x4<> const& Engine::GetMatProj() const
 	{
 		return m_MatProj;
 	}
 
-	const XMMATRIX& Engine::GetMatViewProj() const
+	Matrix4x4<> const& Engine::GetMatViewProj() const
 	{
 		return m_MatViewProj;
 	}
 
 	int Engine::InitScene()
 	{
-		m_MatView = XMMatrixLookAtLH(XMVectorSet(0.0f, 5.0f, -5.0f, 1.0f),
-			XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f),
-			XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
 		float champDeVision = XM_PI / 2.2; // 45 degrés
 		const float ratioDAspect = static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight());
 		float planRapproche = 2.0;
 		float planEloigne = 1000.0;
 
-		m_MatProj = XMMatrixPerspectiveFovLH(
-			champDeVision,
-			ratioDAspect,
-			planRapproche,
-			planEloigne);
+		m_MatView = Matrix4x4<>::FromLookAt({ 0.0f, 5.0f, -5.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
+		m_MatProj = Matrix4x4<>::FromPerspective(champDeVision, ratioDAspect, planRapproche, planEloigne);
 
-		m_MatViewProj = m_MatView * m_MatProj;
+		m_MatViewProj = m_MatProj * m_MatView;
 
 		return 0;
 	}

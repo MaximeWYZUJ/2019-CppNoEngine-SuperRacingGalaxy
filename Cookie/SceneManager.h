@@ -7,6 +7,9 @@
 #include "MeshRenderer.h"
 #include <stack>
 #include "Util.h"
+#include "Camera.h"
+#include "Shaders.h"
+#include "PhysicsComponent.h"
 
 namespace Cookie
 {
@@ -17,30 +20,48 @@ namespace Cookie
 	public:
 		using SceneNodePtr = SceneNode::SceneNodePtr;
 		using MeshPtr = Mesh*;
-		SceneManager();
-
-		// Todo: bof... comment découpler SceneManager et Device ?
-		void SetDevice(Device* device);
+		SceneManager(Device* device);
 		
 		MeshPtr GetMesh(std::string const& filePath);
 
 		// Components
 		MeshRenderer* AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent);
-
+		PhysicsComponent* AddPhysicsBoxComponent(
+			Vector3<PhysicsComponent::PhysicsComponent_t> pos,
+			Quaternion<PhysicsComponent::PhysicsComponent_t> rot,
+			PhysicMaterial mat,
+			PhysicsComponent::BodyType type,
+			Vector3<> size,
+			SceneNode* parent);
+		Camera* AddCamera(SceneNode* parent);
+		
 		SceneNodePtr GetRoot();
 		SceneNodePtr AddSceneNode(SceneNodePtr parent);
 		void RemoveSceneNode(SceneNodePtr node);
 		template<class T>
 		void AddComponent(T* component, SceneNodePtr parent);
 
+		void SetMainCamera(Camera* camera);
+
+		void UpdateMatrices();
 		void DrawAll(Engine const& engine);
+
+
+		std::vector<PhysicsComponent*> addedPhysicsComponents;
+
 	private:
 		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
 		Device* device;
 		SceneNode root;
+		
+		Camera* mainCamera;
+
+		Shaders shaders;
+		
 		std::vector<MeshPtr> meshes;
 		std::vector<SceneNode*> nodes;
 		std::vector<MeshRenderer*> meshRenderers;
+		std::vector<Camera*> cameras;
 	};
 	
 	template<class T>

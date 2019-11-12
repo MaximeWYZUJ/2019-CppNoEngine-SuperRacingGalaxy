@@ -1,23 +1,29 @@
 #pragma once
 
+#include <string>
+
 #include "ExportMacro.h"
+#include "Vector4.h"
 
 namespace Cookie
 {
-	class Device;
-	struct ShadersParams;
+	class Texture;
 
 	class COOKIE_API Material
 	{
 	public:
-		Material(Device* device);
-		void Activate(ShadersParams const& params) const;
-	private:
-		Device* device;
+		Material(std::string name, Texture const* texture, Vector4<> const& ambient, Vector4<> const& diffuse, Vector4<> const& specular, float power, bool transparent);
+
+		~Material() = default;
 		
-		ID3D11VertexShader* pVertexShader;
-		ID3D11PixelShader* pPixelShader;
-		ID3D11InputLayout* pVertexLayout;
-		ID3D11Buffer* pConstantBuffer;
+		const std::string matName;
+
+		const Vector4<> ambient;
+		const Vector4<> diffuse;
+		const Vector4<> specular;
+		const float power;
+		const bool transparent;
+
+		const Texture* texture;
 	};
 }

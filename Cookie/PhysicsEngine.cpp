@@ -2,6 +2,7 @@
 #include "PhysicsEngine.h"
 #include "PhysicsContactCallback.h"
 #include "PxPhysicsAPI.h"
+#include <algorithm>
 
 using namespace physx;
 
@@ -33,6 +34,10 @@ PxFilterFlags filterShader(
 
 namespace Cookie
 {
+	PhysicsEngine::PhysicsEngine()
+	{
+		init();
+	}
 	PhysicsEngine::~PhysicsEngine()
 	{
 		clean();
@@ -92,5 +97,112 @@ namespace Cookie
 			PX_RELEASE(transport);
 		}
 		PX_RELEASE(gFoundation);
+	}
+	
+	void PhysicsEngine::RemoveActor(ActorPtr actor)
+	{
+		gScene->removeActor(*actor);
+	}
+
+	PhysicsEngine::ActorPtr PhysicsEngine::CreateBox(PhysicsBoxComponent* box)
+	{
+		Vector3<PhysicsComponent::PhysicsComponent_t> pos = box->transform.GetPosition();
+		Quaternion<PhysicsComponent::PhysicsComponent_t> rot = box->transform.GetRotation();
+		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z), PxQuat(-rot.x, rot.y, rot.z, rot.w));
+		
+		PxMaterial* material = gPhysics->createMaterial(box->material.staticFriction, box->material.dynamicFriction, box->material.bounce);
+		Vector3<> scaling = box->transform.GetScale();
+
+		PxShape* shape = gPhysics->createShape(PxBoxGeometry(box->dx / 2 * scaling.x, box->dy / 2 * scaling.y, box->dz / 2 * scaling.z), *material);
+		shape->setSimulationFilterData(PxFilterData(DEFAULT, DEFAULT, 0, 0));
+
+		PxRigidActor* actor = nullptr;
+		if (box->type == PhysicsComponent::DYNAMIC) {
+			actor = gPhysics->createRigidDynamic(transform);
+		}
+		else {
+			actor = gPhysics->createRigidStatic(transform);
+		}
+
+		PxFilterData filterNull{};
+		shape->setSimulationFilterData(filterNull);
+		actor->attachShape(*shape);
+
+		actor->userData = box;
+		gScene->addActor(*actor);
+
+		return actor;
+	}
+
+	void PhysicsEngine::UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr actor)
+	{
+		// ON NE PEUT PAS CHANGER LE BODY TYPE POUR LE MOMENT
+
+		Vector3<PhysicsComponent::PhysicsComponent_t> modP = modifs->transform.GetPosition();
+		Quaternion<PhysicsComponent::PhysicsComponent_t> modR = modifs->transform.GetRotation();
+		actor->setGlobalPose(PxTransform(PxVec3(-modP.x, modP.y, modP.z), PxQuat(modR.x, modR.y, modR.z, modR.w)));
+
+		if (modifs->type == PhysicsComponent::BodyType::DYNAMIC) {
+			static_cast<PxRigidDynamic*>(actor)->setMass(modifs->mass);
+			static_cast<PxRigidDynamic*>(actor)->setCMassLocalPose(PxTransform(PxVec3(-modifs->massCenter.x, modifs->massCenter.y, modifs->massCenter.z)));
+			static_cast<PxRigidDynamic*>(actor)->setLinearVelocity(PxVec3(modifs->velocity.x, modifs->velocity.y, modifs->velocity.z));
+		}
+
+		// On calcule les nouveaux word0 et word1
+		PxFilterData filter{};
+		std::for_each(modifs->selfGroup.begin(), modifs->selfGroup.end(), [&filter](FilterGroup f) {
+			filter.word0 |= f;
+		});
+		std::for_each(modifs->mask.begin(), modifs->mask.end(), [&filter](FilterGroup f) {
+			filter.word1 |= f;
+		});
+
+		// Calcul du nouveau material
+		PxMaterial* mat = PhysicsEngine::getInstance().gPhysics->createMaterial(modifs->material.staticFriction, modifs->material.dynamicFriction, modifs->material.bounce);
+
+		// Parcourt de toutes les shapes
+		int nbShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+
+		for (int i = 0; i < nbShapes; i++) {
+			shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, modifs->trigger);
+			shapes[i]->setMaterials(&mat, 1);
+			shapes[i]->setSimulationFilterData(filter);
+		}
+
+		// On met les data dans le userData de l'actor, utile pour les callbacks
+		actor->userData = modifs;
+	}
+	
+	void PhysicsEngine::UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified)
+	{
+		PxVec3 pos = actor->getGlobalPose().p;
+		toBeModified->transform.SetPosition(Vector3<PhysicsComponent::PhysicsComponent_t>(-pos.x, pos.y, pos.z));
+		PxQuat rot = actor->getGlobalPose().q;
+		toBeModified->transform.SetRotation(Quaternion<PhysicsComponent::PhysicsComponent_t>(-rot.x, rot.y, rot.z, rot.w));
+		toBeModified->transform.SetScale(toBeModified->parent->localTransform.GetScale());
+
+		if (toBeModified->type == PhysicsComponent::DYNAMIC) {
+			PxVec3 velo = static_cast<PxRigidDynamic*>(actor)->getLinearVelocity();
+			toBeModified->velocity = Vector3<PhysicsComponent::PhysicsComponent_t>(-velo.x, velo.y, velo.z);
+
+			toBeModified->mass = static_cast<PxRigidDynamic*>(actor)->getMass();
+			PxVec3 cmass = static_cast<PxRigidDynamic*>(actor)->getCMassLocalPose().p;
+			toBeModified->massCenter = Vector3<PhysicsComponent::PhysicsComponent_t>(-cmass.x, cmass.y, cmass.z);
+		}
+
+		int nbShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		PxShape* shape = shapes[0];
+
+		PxMaterial** materials = new PxMaterial * [1];
+		shape->getMaterials(materials, sizeof(PxMaterial*));
+
+		toBeModified->trigger = shape->getFlags().isSet(PxShapeFlag::eTRIGGER_SHAPE);
+		toBeModified->material = PhysicMaterial(materials[0]->getRestitution(), materials[0]->getStaticFriction(), materials[0]->getDynamicFriction());
+
+		toBeModified->actor = actor;
 	}
 }

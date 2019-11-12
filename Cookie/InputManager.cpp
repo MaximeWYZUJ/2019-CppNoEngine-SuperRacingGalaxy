@@ -11,18 +11,24 @@ namespace Cookie
 	using namespace std;
 
 	InputManager::InputManager(DeviceD3D11* device)
-		: device{device}
+		: device{device}, mouseCurrentPosition(0, 0), mousePreviousPosition(0, 0)
 	{
 		isInitialized = false;
 		directInput = nullptr;
 		keyboardInput = nullptr;
-		mouseInput = nullptr;
 		joystickInput = nullptr;
 
 		keyboardCurrentBuffer = keyboardBuffer1;
 		keyboardPreviousBuffer = keyboardBuffer2;
 
+		keyCurrentStates = keyStates1;
+		keyPreviousStates = keyStates2;
+
+		fill(begin(keyStates1), end(keyStates1), 0);
+		fill(begin(keyStates2), end(keyStates2), 0);
+
 		InitKeyMapping();
+		Init();
 	}
 
 	InputManager::~InputManager()
@@ -33,18 +39,14 @@ namespace Cookie
 			keyboardInput->Release();
 			keyboardInput = nullptr;
 		}
-		if (mouseInput)
-		{
-			mouseInput->Unacquire();
-			mouseInput->Release();
-			mouseInput = nullptr;
-		}
+
 		if (joystickInput)
 		{
 			joystickInput->Unacquire();
 			joystickInput->Release();
 			joystickInput = nullptr;
 		}
+
 		if (directInput)
 		{
 			directInput->Release();
@@ -78,8 +80,8 @@ namespace Cookie
 	
 	void InputManager::Update()
 	{
-		auto events = device->GetEvents();
-		for (auto e : events)
+		auto deviceEvents = device->GetEvents();
+		for (auto e : deviceEvents)
 		{
 			switch (e.type)
 			{
@@ -90,9 +92,28 @@ namespace Cookie
 				keyboardInput->Unacquire();
 				break;
 			case DeviceEventType::MouseMove:
-				auto const ev = e.As<MouseMove>();
-				mouseCurrentPosition = ev.data->pos;
+			{
+				auto const ev = get<MouseMoveData>(e.data);
+				mouseCurrentPosition = ev.pos;
 				break;
+			}
+			case DeviceEventType::MouseButton:
+			{
+				auto const ev = get<MouseButtonData>(e.data);
+
+				if (ev.data == MouseButtonEventType::LeftButtonDown)
+				{
+					mouseCurrentPosition = ev.pos;
+					mouseCurrentBuffer[static_cast<uint8_t>(MouseButton::LeftMouseButton)] = 0xFF;
+				}
+				else if (ev.data == MouseButtonEventType::LeftButtonUp)
+				{
+					mouseCurrentPosition = ev.pos;
+					mouseCurrentBuffer[static_cast<uint8_t>(MouseButton::LeftMouseButton)] = 0x00;
+				}
+
+				break;
+			}
 			default:
 				break;
 			}
@@ -105,6 +126,20 @@ namespace Cookie
 			if (res != DI_OK)
 			{
 				std::cout << "Unable to get keyboard state!" << std::endl;
+				return;
+			}
+		}
+		
+		for (int i = 0; i < nbKeys; ++i)
+		{
+			keyCurrentStates[i] = IsKeyPressed(static_cast<Key>(i)) * numeric_limits<uint8_t>::max();
+
+			if (keyCurrentStates[i] != keyPreviousStates[i])
+			{
+				events.push_back(InputEvent{
+					.type = InputEventType::KeyStateChanged,
+					.data = KeyStateChanged{ .key = static_cast<Key>(i), .position = keyCurrentStates[i] }
+				});
 			}
 		}
 	}
@@ -112,13 +147,36 @@ namespace Cookie
 	void InputManager::PostUpdate()
 	{
 		swap(keyboardCurrentBuffer, keyboardPreviousBuffer);
+		swap(keyCurrentStates, keyPreviousStates);
 		copy(begin(mouseCurrentBuffer), end(mouseCurrentBuffer), begin(mousePreviousBuffer));
 		mousePreviousPosition = mouseCurrentPosition;
+
+		events.clear();
 	}
 	
 	bool InputManager::IsKeyPressed(Key key)
 	{
 		return keyboardCurrentBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]] & 0x80;
+	}
+
+	bool InputManager::IsMouseButtonPressed(MouseButton button)
+	{
+		return mouseCurrentBuffer[static_cast<uint8_t>(button)] & 0xFF;
+	}
+
+	Vector2<int> InputManager::GetMousePosition()
+	{
+		return mouseCurrentPosition;
+	}
+
+	Vector2<int> InputManager::GetMouseDelta()
+	{
+		return mouseCurrentPosition - mousePreviousPosition;
+	}
+
+	std::vector<InputEvent> const& InputManager::GetEvents() const
+	{
+		return events;
 	}
 
 	void InputManager::InitKeyMapping()
