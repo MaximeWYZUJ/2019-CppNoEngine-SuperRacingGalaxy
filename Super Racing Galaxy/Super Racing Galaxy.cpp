@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
 		
 		PhysicsComponent* boxComponent = smgr->AddPhysicsBoxComponent(
-			{ 3.0f, 10.0f, 0.0f },
+			{ 0.0f, 1300.0f, 0.0f },
 			{ 0.0f, 0.0f, 0.0f, 1.0f },
 			PhysicMaterial(0.0f, 0.5f, 0.0f),
 			PhysicsComponent::DYNAMIC,
