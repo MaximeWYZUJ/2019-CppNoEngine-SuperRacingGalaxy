@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MeshRenderer.h"
 #include "DeviceD3D11.h"
-#include "SommetBloc.h"
+#include "Layout.h"
 #include "Engine.h"
 #include "Material.h"
 #include "Shaders.h"
@@ -11,14 +11,6 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	D3D11_INPUT_ELEMENT_DESC MeshRenderer::layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-
-	UINT MeshRenderer::nbElements = ARRAYSIZE(MeshRenderer::layout);
-
 	MeshRenderer::MeshRenderer(Mesh* mesh, Material* material, Device* device)
 		: mesh{ mesh }, material{ material }, device{ device }
 	{
@@ -27,25 +19,25 @@ namespace Cookie
 		{
 			auto& vertices = mesh->GetVertices();
 			auto& normals = mesh->GetNormals();
-			unique_ptr<CSommetBloc[]> sommets = make_unique<CSommetBloc[]>(vertices.size());
+			unique_ptr<VertexData[]> gpuVertices = make_unique<VertexData[]>(vertices.size());
 
-			for (auto i = 0; i < vertices.size(); ++i)
+			for (int i = 0; i < vertices.size(); ++i)
 			{
-				sommets[i] = CSommetBloc(
-					XMFLOAT3(vertices[i].x, vertices[i].z, vertices[i].y),
-					*reinterpret_cast<XMFLOAT3 const*>(&normals[i]),
-					XMFLOAT2(0.0f, 0.0f));
+				gpuVertices[i] = VertexData(
+					{ vertices[i].x, vertices[i].z, vertices[i].y },
+					{ normals[i].x, normals[i].z, normals[i].y },
+					Vector2<>(0.0f, 0.0f));
 			}
 
 			BufferDescription desc
 			{
-				.size = static_cast<uint32_t>(sizeof(CSommetBloc) * vertices.size()),
+				.size = static_cast<uint32_t>(sizeof(VertexData) * vertices.size()),
 				.buffer = BufferFlag::Vertex,
 				.GpuMemory = GpuMemoryType::ReadOnly,
 				.CpuAccess = CpuAccessFlag::Nothing
 			};
 
-			pVertexBuffer = device->CreateBuffer(desc, sommets.get());
+			pVertexBuffer = device->CreateBuffer(desc, gpuVertices.get());
 		}
 
 		{
@@ -72,7 +64,7 @@ namespace Cookie
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
 		pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		constexpr UINT stride = sizeof(CSommetBloc);
+		constexpr UINT stride = sizeof(VertexData);
 		constexpr UINT offset = 0;
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer), DXGI_FORMAT_R32_UINT, 0);

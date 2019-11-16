@@ -233,6 +233,7 @@
     <ClInclude Include="PhysicsContactCallback.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicMaterial.h" />
+    <ClInclude Include="PhysicsSphereComponent.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneManager.h" />
@@ -241,7 +242,6 @@
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Size.h" />
-    <ClInclude Include="SommetBloc.h" />
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
@@ -295,11 +295,11 @@
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PhysicsContactCallback.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="PhysicsSphereComponent.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shaders.cpp" />
-    <ClCompile Include="SommetBloc.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="Test_API_PhysX.cpp" />
     <ClCompile Include="Texture.cpp" />

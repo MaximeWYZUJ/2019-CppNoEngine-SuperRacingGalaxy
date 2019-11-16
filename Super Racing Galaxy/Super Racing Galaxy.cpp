@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				boxComponent->addForce(forwardForceDir * 10.0f);
+				boxComponent->addForce(forwardForceDir * 15.0f);
 			}
 
 			if (inputManager->IsKeyPressed(Key::A))

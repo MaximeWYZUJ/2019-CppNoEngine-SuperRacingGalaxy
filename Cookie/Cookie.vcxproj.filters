@@ -114,9 +114,6 @@
     <ClInclude Include="Size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SommetBloc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -216,6 +213,9 @@
     <ClInclude Include="Synchronizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsSphereComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -293,9 +293,6 @@
     <ClCompile Include="SceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SommetBloc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -366,6 +363,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Synchronizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSphereComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

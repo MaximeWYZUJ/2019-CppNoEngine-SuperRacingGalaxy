@@ -4,7 +4,7 @@
 #include "util.h"
 #include "resource.h"
 #include "ShaderParams.h"
-#include "SommetBloc.h"
+#include "Layout.h"
 #include "Material.h"
 
 namespace Cookie
@@ -33,8 +33,8 @@ namespace Cookie
 
 		pVertexLayout = nullptr;
 		ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		DXEssayer(d->CreateInputLayout(CSommetBloc::layout,
-			CSommetBloc::numElements,
+		DXEssayer(d->CreateInputLayout(VertexData::layout,
+			VertexData::nbElements,
 			pVSBlob->GetBufferPointer(),
 			pVSBlob->GetBufferSize(),
 			&pVertexLayout),
