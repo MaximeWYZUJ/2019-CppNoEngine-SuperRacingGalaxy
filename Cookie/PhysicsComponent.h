@@ -23,6 +23,7 @@ namespace Cookie
 	struct COOKIE_API PhysicsComponent : Component
 	{
 		enum BodyType { STATIC, DYNAMIC };
+		enum ShapeType { BOX, SPHERE, MESH };
 		using PhysicsComponent_t = float;
 
 		Transform<PhysicsComponent_t> transform;
@@ -47,6 +48,8 @@ namespace Cookie
 		std::vector<Vector3<PhysicsComponent_t>> addedForces;
 
 	public:
+		virtual ShapeType getShapeType() = 0;
+
 		void addFilterGroup(FilterGroup f);
 		void removeFilterGroup(FilterGroup f);
 		void addFilterMask(FilterGroup f);

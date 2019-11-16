@@ -104,20 +104,32 @@ namespace Cookie
 		gScene->removeActor(*actor);
 	}
 
-	PhysicsEngine::ActorPtr PhysicsEngine::CreateBox(PhysicsBoxComponent* box)
+	PhysicsEngine::ActorPtr PhysicsEngine::CreateComponent(PhysicsComponent* compo)
 	{
-		Vector3<PhysicsComponent::PhysicsComponent_t> pos = box->transform.GetPosition();
-		Quaternion<PhysicsComponent::PhysicsComponent_t> rot = box->transform.GetRotation();
+		Vector3<PhysicsComponent::PhysicsComponent_t> pos = compo->transform.GetPosition();
+		Quaternion<PhysicsComponent::PhysicsComponent_t> rot = compo->transform.GetRotation();
 		PxTransform transform(PxVec3(-pos.x, pos.y, pos.z), PxQuat(-rot.x, rot.y, rot.z, rot.w));
 		
-		PxMaterial* material = gPhysics->createMaterial(box->material.staticFriction, box->material.dynamicFriction, box->material.bounce);
-		Vector3<> scaling = box->transform.GetScale();
+		PxMaterial* material = gPhysics->createMaterial(compo->material.staticFriction, compo->material.dynamicFriction, compo->material.bounce);
+		//Vector3<> scaling = box->transform.GetScale();
 
-		PxShape* shape = gPhysics->createShape(PxBoxGeometry(box->dx / 2 * scaling.x, box->dy / 2 * scaling.y, box->dz / 2 * scaling.z), *material);
+		PxShape* shape = nullptr;
+		switch (compo->getShapeType()) {
+		case PhysicsComponent::ShapeType::BOX:
+			shape = CreateBoxShape(static_cast<PhysicsBoxComponent*>(compo), *material);
+			break;
+
+		case PhysicsComponent::ShapeType::SPHERE:
+			shape = CreateSphereShape(static_cast<PhysicsSphereComponent*>(compo), *material);
+			break;
+
+		default:
+			break;
+		}
 		shape->setSimulationFilterData(PxFilterData(DEFAULT, DEFAULT, 0, 0));
 
 		PxRigidActor* actor = nullptr;
-		if (box->type == PhysicsComponent::DYNAMIC) {
+		if (compo->type == PhysicsComponent::DYNAMIC) {
 			actor = gPhysics->createRigidDynamic(transform);
 		}
 		else {
@@ -128,15 +140,39 @@ namespace Cookie
 		shape->setSimulationFilterData(filterNull);
 		actor->attachShape(*shape);
 
-		actor->userData = box;
+		actor->userData = compo;
 		gScene->addActor(*actor);
 
 		return actor;
 	}
 
-	void PhysicsEngine::UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr actor)
+	PxShape* PhysicsEngine::CreateBoxShape(PhysicsBoxComponent* box, PxMaterial& mat)
+	{
+		Vector3<> scaling = box->transform.GetScale();
+		return gPhysics->createShape(PxBoxGeometry(box->dx / 2 * scaling.x, box->dy / 2 * scaling.y, box->dz / 2 * scaling.z), mat);
+	}
+
+	PxShape* PhysicsEngine::CreateSphereShape(PhysicsSphereComponent* sphere, PxMaterial& mat)
+	{
+		return gPhysics->createShape(PxSphereGeometry(sphere->transform.GetScale().x * sphere->radius), mat);
+	}
+
+	void PhysicsEngine::UpdateActor(PhysicsComponent* modifs, ActorPtr actor)
 	{
 		// ON NE PEUT PAS CHANGER LE BODY TYPE POUR LE MOMENT
+
+		switch (modifs->getShapeType()) {
+		case PhysicsComponent::ShapeType::BOX:
+			UpdateBoxActor(static_cast<PhysicsBoxComponent*>(modifs), actor);
+			break;
+
+		case PhysicsComponent::ShapeType::SPHERE:
+			UpdateSphereActor(static_cast<PhysicsSphereComponent*>(modifs), actor);
+			break;
+
+		default:
+			break;
+		}
 
 		Vector3<PhysicsComponent::PhysicsComponent_t> modP = modifs->transform.GetPosition();
 		Quaternion<PhysicsComponent::PhysicsComponent_t> modR = modifs->transform.GetRotation();
@@ -174,9 +210,48 @@ namespace Cookie
 		// On met les data dans le userData de l'actor, utile pour les callbacks
 		actor->userData = modifs;
 	}
-	
-	void PhysicsEngine::UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified)
+
+	void PhysicsEngine::UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr toBeModified)
 	{
+		Vector3<> scaling = modifs->transform.GetScale();
+
+		int nbShapes = toBeModified->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		toBeModified->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+
+		for (int i = 0; i < nbShapes; i++) {
+			shapes[i]->setGeometry(PxBoxGeometry(modifs->dx / 2 * scaling.x, modifs->dy / 2 * scaling.y, modifs->dz / 2 * scaling.z));
+		}
+	}
+
+	void PhysicsEngine::UpdateSphereActor(PhysicsSphereComponent* modifs, ActorPtr toBeModified)
+	{
+		Vector3<> scaling = modifs->transform.GetScale();
+
+		int nbShapes = toBeModified->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		toBeModified->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+
+		for (int i = 0; i < nbShapes; i++) {
+			shapes[i]->setGeometry(PxSphereGeometry(scaling.x * modifs->radius));
+		}
+	}
+	
+	void PhysicsEngine::UpdateComponent(ActorPtr actor, PhysicsComponent* toBeModified)
+	{
+		switch (toBeModified->getShapeType()) {
+		case PhysicsComponent::ShapeType::BOX:
+			UpdateBoxComponent(actor, static_cast<PhysicsBoxComponent*>(toBeModified));
+			break;
+
+		case PhysicsComponent::ShapeType::SPHERE:
+			UpdateSphereComponent(actor, static_cast<PhysicsSphereComponent*>(toBeModified));
+			break;
+
+		default:
+			break;
+		}
+
 		PxVec3 pos = actor->getGlobalPose().p;
 		toBeModified->transform.SetPosition(Vector3<PhysicsComponent::PhysicsComponent_t>(-pos.x, pos.y, pos.z));
 		PxQuat rot = actor->getGlobalPose().q;
@@ -204,5 +279,30 @@ namespace Cookie
 		toBeModified->material = PhysicMaterial(materials[0]->getRestitution(), materials[0]->getStaticFriction(), materials[0]->getDynamicFriction());
 
 		toBeModified->actor = actor;
+	}
+
+	void PhysicsEngine::UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified)
+	{
+		int nbShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+
+		PxBoxGeometry geom;
+		shapes[0]->getBoxGeometry(geom);
+		
+		toBeModified->dx = (geom.halfExtents.x / toBeModified->transform.GetScale().x) * 2;
+		toBeModified->dy = (geom.halfExtents.y / toBeModified->transform.GetScale().y) * 2;
+		toBeModified->dz = (geom.halfExtents.z / toBeModified->transform.GetScale().z) * 2;
+	}
+	void PhysicsEngine::UpdateSphereComponent(ActorPtr actor, PhysicsSphereComponent* toBeModified)
+	{
+		int nbShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+
+		PxSphereGeometry geom;
+		shapes[0]->getSphereGeometry(geom);
+
+		toBeModified->radius = geom.radius / toBeModified->transform.GetScale().x;
 	}
 }

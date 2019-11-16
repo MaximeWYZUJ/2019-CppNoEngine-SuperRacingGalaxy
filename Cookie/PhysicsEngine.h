@@ -3,6 +3,7 @@
 #include "incopiable.h"
 #include "ExportMacro.h"
 #include "PhysicsBoxComponent.h"
+#include "PhysicsSphereComponent.h"
 #include "PhysicsComponent.h"
 
 namespace physx {
@@ -14,6 +15,8 @@ namespace physx {
 	class PxPhysics;
 	class PxScene;
 	class PxActor;
+	class PxShape;
+	class PxMaterial;
 }
 
 namespace Cookie
@@ -43,13 +46,24 @@ namespace Cookie
 
 		// Creation/Suppression d'objets dans la scene
 		void RemoveActor(ActorPtr actor);
-		ActorPtr CreateBox(PhysicsBoxComponent* box);
+		ActorPtr CreateComponent(PhysicsComponent* component);
+	private:
+		physx::PxShape* CreateBoxShape(PhysicsBoxComponent* box, physx::PxMaterial& mat);
+		physx::PxShape* CreateSphereShape(PhysicsSphereComponent* sphere, physx::PxMaterial& mat);
 		
 		// Modifications d'acteurs de la scene
+	public:
+		void UpdateActor(PhysicsComponent* modifs, ActorPtr toBeModified);
+	private:
 		void UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr toBeModified);
+		void UpdateSphereActor(PhysicsSphereComponent* modifs, ActorPtr toBeModified);
 
 		// Modifications de composant
+	public:
+		void UpdateComponent(ActorPtr actor, PhysicsComponent* toBeModified);
+	private:
 		void UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified);
+		void UpdateSphereComponent(ActorPtr actor, PhysicsSphereComponent* toBeModified);
 
 	private:
 		PhysicsEngine();

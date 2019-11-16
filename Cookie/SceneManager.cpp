@@ -56,6 +56,18 @@ namespace Cookie
 		return component;
 	}
 
+	PhysicsComponent* SceneManager::AddPhysicsSphereComponent(Vector3<PhysicsComponent::PhysicsComponent_t> pos, Quaternion<PhysicsComponent::PhysicsComponent_t> rot, PhysicMaterial mat, PhysicsComponent::BodyType type, float radius, SceneNode* parent)
+	{
+		PhysicsSphereComponent* component = new PhysicsSphereComponent(pos, rot, mat, type, radius);
+
+		parent->components.push_back(component);
+		component->parent = parent;
+		component->matrix = &parent->matrix;
+
+		addedPhysicsComponents.push_back(component);
+		return component;
+	}
+
 	Camera* SceneManager::AddCamera(SceneNode* parent)
 	{
 		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 1000.0f));

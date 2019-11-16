@@ -17,4 +17,8 @@ namespace Cookie {
 
 		type = type_;
 	}
+	PhysicsComponent::ShapeType PhysicsBoxComponent::getShapeType()
+	{
+		return ShapeType::BOX;
+	}
 }
