@@ -38,13 +38,12 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 
 		smgr->AddMeshRenderer(mesh, mat, node);
 
-		smgr->AddPhysicsBoxComponent(
+		smgr->AddPhysicsSphereComponent(
 			node->localTransform.GetPosition(),
 			node->localTransform.GetRotation(),
 			PhysicMaterial(0.5f, 0.5f, 0.6f),
 			PhysicsComponent::STATIC,
-			//node->localTransform.GetScale() * 2.0f,
-			{1000.f, 1000.f, 1000.f},
+			node->localTransform.GetScale().x * 500,
 			node);
 	}
 }
