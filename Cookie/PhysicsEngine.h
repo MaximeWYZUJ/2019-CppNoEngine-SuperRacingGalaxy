@@ -4,7 +4,9 @@
 #include "ExportMacro.h"
 #include "PhysicsBoxComponent.h"
 #include "PhysicsSphereComponent.h"
+#include "PhysicsMeshComponent.h"
 #include "PhysicsComponent.h"
+#include "Mesh.h"
 
 namespace physx {
 	class PxDefaultAllocator;
@@ -17,6 +19,7 @@ namespace physx {
 	class PxActor;
 	class PxShape;
 	class PxMaterial;
+	class PxCooking;
 }
 
 namespace Cookie
@@ -31,6 +34,7 @@ namespace Cookie
 		physx::PxFoundation* gFoundation = nullptr;
 		physx::PxScene* gScene = nullptr;
 		physx::PxPvd* gPvd = nullptr;
+		physx::PxCooking* cooking = nullptr;
 
 		// Boucles principales du moteur
 		void init();
@@ -50,6 +54,7 @@ namespace Cookie
 	private:
 		physx::PxShape* CreateBoxShape(PhysicsBoxComponent* box, physx::PxMaterial& mat);
 		physx::PxShape* CreateSphereShape(PhysicsSphereComponent* sphere, physx::PxMaterial& mat);
+		physx::PxShape* CreateMeshShape(PhysicsMeshComponent* meshComponent, physx::PxMaterial& mat);
 		
 		// Modifications d'acteurs de la scene
 	public:
@@ -57,6 +62,7 @@ namespace Cookie
 	private:
 		void UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr toBeModified);
 		void UpdateSphereActor(PhysicsSphereComponent* modifs, ActorPtr toBeModified);
+		void UpdateMeshActor(PhysicsMeshComponent* modifs, ActorPtr toBeModified);
 
 		// Modifications de composant
 	public:
@@ -64,6 +70,7 @@ namespace Cookie
 	private:
 		void UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified);
 		void UpdateSphereComponent(ActorPtr actor, PhysicsSphereComponent* toBeModified);
+		void UpdateMeshComponent(ActorPtr actor, PhysicsMeshComponent* toBeModified);
 
 	private:
 		PhysicsEngine();

@@ -44,9 +44,16 @@ namespace Cookie
 		return renderer;
 	}
 
-	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(Vector3<PhysicsComponent::PhysicsComponent_t> pos, Quaternion<PhysicsComponent::PhysicsComponent_t> rot, PhysicMaterial mat, PhysicsComponent::BodyType type, Vector3<> size, SceneNode* parent)
+	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent)
 	{
-		PhysicsBoxComponent* component = new PhysicsBoxComponent(pos, rot, mat, type, size.x, size.y, size.z);
+		PhysicsBoxComponent* component = new PhysicsBoxComponent(
+			parent->localTransform.GetPosition(),
+			parent->localTransform.GetRotation(),
+			mat,
+			type,
+			parent->localTransform.GetScale().x,
+			parent->localTransform.GetScale().y,
+			parent->localTransform.GetScale().z);
 		
 		parent->components.push_back(component);
 		component->parent = parent;
@@ -56,9 +63,32 @@ namespace Cookie
 		return component;
 	}
 
-	PhysicsComponent* SceneManager::AddPhysicsSphereComponent(Vector3<PhysicsComponent::PhysicsComponent_t> pos, Quaternion<PhysicsComponent::PhysicsComponent_t> rot, PhysicMaterial mat, PhysicsComponent::BodyType type, float radius, SceneNode* parent)
+	PhysicsComponent* SceneManager::AddPhysicsSphereComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent)
 	{
-		PhysicsSphereComponent* component = new PhysicsSphereComponent(pos, rot, mat, type, radius);
+		PhysicsSphereComponent* component = new PhysicsSphereComponent(
+			parent->localTransform.GetPosition(),
+			parent->localTransform.GetRotation(),
+			mat,
+			type,
+			parent->localTransform.GetScale().x);
+
+		parent->components.push_back(component);
+		component->parent = parent;
+		component->matrix = &parent->matrix;
+
+		addedPhysicsComponents.push_back(component);
+		return component;
+	}
+
+	PhysicsComponent* SceneManager::AddPhysicsMeshComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, Mesh& mesh, SceneNode* parent)
+	{
+		PhysicsMeshComponent* component = new PhysicsMeshComponent(
+			parent->localTransform.GetPosition(),
+			parent->localTransform.GetRotation(),
+			mat,
+			type,
+			mesh,
+			parent->localTransform.GetScale());
 
 		parent->components.push_back(component);
 		component->parent = parent;

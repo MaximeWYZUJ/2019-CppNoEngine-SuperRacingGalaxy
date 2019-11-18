@@ -15,7 +15,7 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	MaterialManager* materialManager = engine->GetMaterialManager();
 	TextureManager* textureManager = engine->GetTextureManager();
 	Device* device = engine->GetDevice();
-	Mesh* mesh = smgr->GetMesh("planete.obj");
+	Mesh* mesh = smgr->GetMesh("cube.obj");
 
 	SceneNode* root = smgr->GetRoot();
 	auto texture = textureManager->GetNewTexture(L"UneTexture.dds", device);
@@ -38,12 +38,10 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 
 		smgr->AddMeshRenderer(mesh, mat, node);
 
-		smgr->AddPhysicsSphereComponent(
-			node->localTransform.GetPosition(),
-			node->localTransform.GetRotation(),
+		smgr->AddPhysicsBoxComponent(
 			PhysicMaterial(0.5f, 0.5f, 0.6f),
 			PhysicsComponent::STATIC,
-			node->localTransform.GetScale().x * 500,
+			//*mesh,
 			node);
 	}
 }

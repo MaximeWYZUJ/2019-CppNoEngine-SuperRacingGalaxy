@@ -3,6 +3,7 @@
 #include "PhysicsContactCallback.h"
 #include "PxPhysicsAPI.h"
 #include <algorithm>
+#include <vector>
 
 using namespace physx;
 
@@ -55,6 +56,10 @@ namespace Cookie
 		gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
 		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+
+		PxTolerancesScale tolScale;
+		PxCookingParams params(tolScale);
+		cooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, params);
 
 		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
@@ -123,6 +128,10 @@ namespace Cookie
 			shape = CreateSphereShape(static_cast<PhysicsSphereComponent*>(compo), *material);
 			break;
 
+		case PhysicsComponent::ShapeType::MESH:
+			shape = CreateMeshShape(static_cast<PhysicsMeshComponent*>(compo), *material);
+			break;
+
 		default:
 			break;
 		}
@@ -157,6 +166,35 @@ namespace Cookie
 		return gPhysics->createShape(PxSphereGeometry(sphere->transform.GetScale().x * sphere->radius), mat);
 	}
 
+	physx::PxShape* PhysicsEngine::CreateMeshShape(PhysicsMeshComponent* meshComponent, physx::PxMaterial& mat)
+	{
+		Mesh& mesh = meshComponent->mesh;
+
+		PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = mesh.GetVerticesPx().size();
+		meshDesc.points.stride = sizeof(mesh.GetVerticesPx().at(0));
+		meshDesc.points.data = mesh.GetVerticesPx().data();
+
+		meshDesc.triangles.count = mesh.GetTriangles().size();
+		meshDesc.triangles.stride = sizeof(mesh.GetTriangles().at(0));
+		meshDesc.triangles.data = mesh.GetTriangles().data();
+
+		PxDefaultMemoryOutputStream writeBuffer;
+		PxTriangleMeshCookingResult::Enum* result = nullptr;
+		bool status = cooking->cookTriangleMesh(meshDesc, writeBuffer, result);
+		if (!status)
+			return nullptr;
+
+		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+		PxTriangleMesh* triangleMesh = gPhysics->createTriangleMesh(readBuffer);
+
+		Vector3<> scale = meshComponent->transform.GetScale();
+		PxMeshScale meshScale(PxVec3(scale.x, scale.y, scale.z));
+		PxTriangleMeshGeometry geom(triangleMesh, meshScale);
+
+		return gPhysics->createShape(geom, mat);
+	}
+
 	void PhysicsEngine::UpdateActor(PhysicsComponent* modifs, ActorPtr actor)
 	{
 		// ON NE PEUT PAS CHANGER LE BODY TYPE POUR LE MOMENT
@@ -168,6 +206,10 @@ namespace Cookie
 
 		case PhysicsComponent::ShapeType::SPHERE:
 			UpdateSphereActor(static_cast<PhysicsSphereComponent*>(modifs), actor);
+			break;
+
+		case PhysicsComponent::ShapeType::MESH:
+			UpdateMeshActor(static_cast<PhysicsMeshComponent*>(modifs), actor);
 			break;
 
 		default:
@@ -236,6 +278,11 @@ namespace Cookie
 			shapes[i]->setGeometry(PxSphereGeometry(scaling.x * modifs->radius));
 		}
 	}
+
+	void PhysicsEngine::UpdateMeshActor(PhysicsMeshComponent* modifs, ActorPtr toBeModified)
+	{
+		// CHANGER LE MESH
+	}
 	
 	void PhysicsEngine::UpdateComponent(ActorPtr actor, PhysicsComponent* toBeModified)
 	{
@@ -246,6 +293,10 @@ namespace Cookie
 
 		case PhysicsComponent::ShapeType::SPHERE:
 			UpdateSphereComponent(actor, static_cast<PhysicsSphereComponent*>(toBeModified));
+			break;
+
+		case PhysicsComponent::ShapeType::MESH:
+			UpdateMeshComponent(actor, static_cast<PhysicsMeshComponent*>(toBeModified));
 			break;
 
 		default:
@@ -304,5 +355,9 @@ namespace Cookie
 		shapes[0]->getSphereGeometry(geom);
 
 		toBeModified->radius = geom.radius / toBeModified->transform.GetScale().x;
+	}
+	void PhysicsEngine::UpdateMeshComponent(ActorPtr actor, PhysicsMeshComponent* toBeModified)
+	{
+		// MAJ LE MESH A PARTIR DE LA PHYSIQUE
 	}
 }
