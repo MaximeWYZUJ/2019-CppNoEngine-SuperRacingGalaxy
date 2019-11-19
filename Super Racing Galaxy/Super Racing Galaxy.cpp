@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
 		Mesh* mesh = smgr->GetMesh("cube.obj");
 		SceneNode* root = smgr->GetRoot();
-		auto texture = tm->GetNewTexture(L"UneTexture.dds", device);
+		auto texture = tm->GetNewTexture(L"cube.dds", device);
 
 		// Create Scenario
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();

@@ -19,6 +19,9 @@ struct VS_Sortie
 	float3 vDirCam : TEXCOORD3;
 };
 
+Texture2D textureInput;
+SamplerState samplerState;
+
 float4 MiniPhongPS(VS_Sortie vs) : SV_Target0
 {
 	float3 couleur;
@@ -32,8 +35,13 @@ float4 MiniPhongPS(VS_Sortie vs) : SV_Target0
 	float3 R = normalize(2 * diff.xyz * N - L);
 	// Puissance de 4 - pour l’exemple
 	float S = pow(saturate(dot(R, V)), 256);
+
+	float3 textureColor = textureInput.Sample(samplerState, vs.texCoord).rgb;
 	// I = A + D * N.L + (R.V)n
-	couleur = vAEcl.rgb * vAMat.rgb + vDEcl.rgb * vDMat.rgb * diff;
+	couleur = textureColor * vAEcl.rgb * vAMat.rgb +
+		textureColor * vDEcl.rgb * vDMat.rgb * diff;
+
 	couleur += S;
+
 	return float4(couleur, 1.0f);
 }
