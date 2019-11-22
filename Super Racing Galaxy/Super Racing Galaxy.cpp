@@ -11,6 +11,7 @@
 #include "Vector4.h"
 #include "ScenarioLoader.h"
 #include "DemoScenario.h"
+#include "Vehicle.h"
 
 using namespace std;
 using namespace Cookie;
@@ -39,6 +40,7 @@ int main(int argc, char* argv[])
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
 
+
 		// Creation du cube
 		SceneNode* cubeNode = smgr->AddSceneNode(root);
 		cubeNode->localTransform.SetPosition({ 0.0f, 1200.0f, 0.0f });
@@ -51,6 +53,7 @@ int main(int argc, char* argv[])
 			PhysicsComponent::DYNAMIC,
 			cubeNode
 		);
+		
 		
 		// Creation de la camera
 		SceneNode* camNode = smgr->AddSceneNode(root);

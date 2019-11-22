@@ -163,7 +163,7 @@ namespace Cookie
 
 	PxShape* PhysicsEngine::CreateSphereShape(PhysicsSphereComponent* sphere, PxMaterial& mat)
 	{
-		return gPhysics->createShape(PxSphereGeometry(sphere->transform.GetScale().x * sphere->radius), mat);
+		return gPhysics->createShape(PxSphereGeometry(sphere->transform.GetScale().x * sphere->radius / 2), mat);
 	}
 
 	physx::PxShape* PhysicsEngine::CreateMeshShape(PhysicsMeshComponent* meshComponent, physx::PxMaterial& mat)

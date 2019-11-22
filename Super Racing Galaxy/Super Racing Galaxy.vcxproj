@@ -163,8 +163,11 @@
   <ItemGroup>
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="ScenarioLoader.cpp" />
     <ClCompile Include="Super Racing Galaxy.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cookie\Cookie.vcxproj">
@@ -188,8 +191,12 @@
   <ItemGroup>
     <ClInclude Include="DemoScenario.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="Prefab.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioLoader.h" />
+    <ClInclude Include="Scenery.h" />
+    <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

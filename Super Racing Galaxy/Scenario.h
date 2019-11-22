@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "Transform.h"
+#include "Prefab.h"
 
 class Scenario
 {
 public:
-	std::vector<Cookie::Transform<>> objects;
+	std::vector<Prefab*> objects;
 };
