@@ -9,6 +9,7 @@
 #include "Prefab.h"
 #include "Planet.h"
 #include "Scenery.h"
+#include "Vehicle.h"
 
 using namespace std;
 using namespace Cookie;
@@ -25,6 +26,8 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}
+
+	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
@@ -72,7 +75,7 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Planet* obj)
 
 void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Vehicle* obj)
 {
-	smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.0f), PhysicsComponent::DYNAMIC, obj->root);
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.0f), PhysicsComponent::DYNAMIC, obj->root);
 }
 
 void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Scenery* obj)

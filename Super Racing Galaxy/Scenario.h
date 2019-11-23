@@ -1,10 +1,12 @@
 #pragma once
 
 #include <vector>
-#include "Prefab.h"
+
+class Prefab;
 
 class Scenario
 {
 public:
 	std::vector<Prefab*> objects;
+	Prefab* vehicle;
 };

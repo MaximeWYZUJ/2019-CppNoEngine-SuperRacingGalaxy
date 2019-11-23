@@ -8,6 +8,7 @@
 namespace Cookie
 {
 	class Component;
+	class PhysicsComponent;
 	
 	struct COOKIE_API SceneNode
 	{
@@ -18,5 +19,7 @@ namespace Cookie
 		Matrix4x4<> matrix;
 		std::vector<SceneNode*> children;
 		std::vector<Component*> components;
+
+		PhysicsComponent* physics;
 	};
 }

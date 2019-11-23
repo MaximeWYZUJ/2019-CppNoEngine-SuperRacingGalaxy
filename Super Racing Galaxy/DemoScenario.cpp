@@ -28,11 +28,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.objects.push_back(new Planet(Transform<>({ 2000.0f, 0.0f, 7000.0f }, { 5000.0f, 5000.0f, 5000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }),
 										  -9.81f, Vector3<>(0, 1, 0), 5.f, "planete.obj", L"UneTexture.dds"));
 
-	scenario.objects.push_back(new Vehicle(Transform<>({ 0.0f, 1200.0f, 100.0f }, { 4.f, 4.f, 4.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "cube.obj", L"UneTexture.dds"));
-
-	scenario.objects.push_back(new Vehicle(Transform<>({ 0.0f, 1200.0f, 1000.0f }, { 40.f, 40.f, 40.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "cube.obj", L"UneTexture.dds"));
-
-	scenario.objects.push_back(new Vehicle(Transform<>({ 2000.0f, 3000.0f, 6500.0f }, { 400.f, 400.f, 400.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "cube.obj", L"UneTexture.dds"));
+	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 1200.0f, 100.0f }, { 2.f, 2.f, 2.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "vehicle.obj", L"UneTexture.dds");
 
 	return scenario;
 }
