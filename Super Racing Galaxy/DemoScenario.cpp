@@ -10,7 +10,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 
 	scenario.objects.push_back(Transform<>(
 		{ 0.0f, 0.0f, 0.0f },
-		{ 1.0f, 1.0f, 1.0f },
+		{ 1000.0f, 1000.0f, 1000.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f }));
 
 	scenario.objects.push_back(Transform<>(

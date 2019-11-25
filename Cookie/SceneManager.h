@@ -27,18 +27,17 @@ namespace Cookie
 		// Components
 		MeshRenderer* AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent);
 		PhysicsComponent* AddPhysicsBoxComponent(
-			Vector3<PhysicsComponent::PhysicsComponent_t> pos,
-			Quaternion<PhysicsComponent::PhysicsComponent_t> rot,
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
-			Vector3<> size,
 			SceneNode* parent);
 		PhysicsComponent* AddPhysicsSphereComponent(
-			Vector3<PhysicsComponent::PhysicsComponent_t> pos,
-			Quaternion<PhysicsComponent::PhysicsComponent_t> rot,
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
-			float radius,
+			SceneNode* parent);
+		PhysicsComponent* AddPhysicsMeshComponent(
+			PhysicMaterial mat,
+			PhysicsComponent::BodyType type,
+			Mesh& mesh,
 			SceneNode* parent);
 		Camera* AddCamera(SceneNode* parent);
 		
