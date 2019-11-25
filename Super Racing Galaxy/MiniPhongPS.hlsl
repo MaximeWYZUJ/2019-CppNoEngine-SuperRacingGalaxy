@@ -20,7 +20,9 @@ struct VS_Sortie
 };
 
 Texture2D textureInput;
+Texture2D textureInput2;
 SamplerState samplerState;
+SamplerState samplerState2;
 
 float4 MiniPhongPS(VS_Sortie vs) : SV_Target0
 {
@@ -37,9 +39,10 @@ float4 MiniPhongPS(VS_Sortie vs) : SV_Target0
 	float S = pow(saturate(dot(R, V)), 256);
 
 	float3 textureColor = textureInput.Sample(samplerState, vs.texCoord).rgb;
+	float3 textureColor2 = textureInput2.Sample(samplerState2, vs.texCoord).rgb;
 	// I = A + D * N.L + (R.V)n
-	couleur = textureColor * vAEcl.rgb * vAMat.rgb +
-		textureColor * vDEcl.rgb * vDMat.rgb * diff;
+	couleur = textureColor * textureColor2 * vAEcl.rgb * vAMat.rgb +
+		textureColor * textureColor2 * vDEcl.rgb * vDMat.rgb * diff;
 
 	couleur += S;
 

@@ -22,6 +22,7 @@ namespace Cookie
 		ID3D11PixelShader* pPixelShader;
 		ID3D11InputLayout* pVertexLayout;
 		ID3D11SamplerState* pSamplerState;
+		ID3D11SamplerState* pSamplerState2;
 		ID3D11Buffer* pConstantBuffer;
 	};
 }

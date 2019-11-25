@@ -25,5 +25,6 @@ namespace Cookie
 		const bool transparent;
 
 		const Texture* texture;
+		const Texture* texture2;
 	};
 }

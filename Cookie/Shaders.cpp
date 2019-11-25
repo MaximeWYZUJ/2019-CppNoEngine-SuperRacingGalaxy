@@ -83,6 +83,7 @@ namespace Cookie
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 		// Création de l’état de sampling
 		pD3DDevice->CreateSamplerState(&samplerDesc, &pSamplerState);
+		pD3DDevice->CreateSamplerState(&samplerDesc, &pSamplerState2);
 	}
 
 	void Shaders::Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, Vector3<> const& camPos, const Material* mat) const
@@ -132,5 +133,12 @@ namespace Cookie
 		pImmediateContext->PSSetSamplers(0, 1, &pSamplerState);
 		auto* texture = mat->texture->GetD3DTexture();
 		pImmediateContext->PSSetShaderResources(0, 1, &texture);
+
+		if (mat->texture2)
+		{
+			pImmediateContext->PSSetSamplers(1, 1, &pSamplerState2);
+			auto* texture2 = mat->texture2->GetD3DTexture();
+			pImmediateContext->PSSetShaderResources(1, 1, &texture2);
+		}
 	}
 }
