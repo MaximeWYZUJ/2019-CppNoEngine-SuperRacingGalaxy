@@ -26,7 +26,7 @@ namespace Cookie
 			ss << "vn " << normals[i].x << " " << normals[i].y << " " << normals[i].z << "\n";
 		}
 
-		vector<IndexedTriangle> const& triangles = mesh.GetTriangles();
+		vector<IndexedTriangle> const& triangles = mesh.GetTrianglesDx();
 		for (int i = 0; i < triangles.size(); ++i)
 		{
 			ss << "f " << triangles[i].A + 1 << "//" << triangles[i].A + 1 

@@ -42,7 +42,7 @@ namespace Cookie
 		}
 
 		{
-			auto& triangleSources = mesh->GetTriangles();
+			auto& triangleSources = mesh->GetTrianglesDx();
 			unique_ptr<uint32_t[]> triangles = make_unique<uint32_t[]>(triangleSources.size() * 3);
 			for (auto i = 0; i < triangleSources.size(); ++i)
 			{
@@ -72,6 +72,6 @@ namespace Cookie
 
 		shader.Activate(*matrix, projView, camPos, material);
 		
-		pImmediateContext->DrawIndexed(mesh->GetTriangles().size() * 3, 0, 0);
+		pImmediateContext->DrawIndexed(mesh->GetTrianglesDx().size() * 3, 0, 0);
 	}
 }

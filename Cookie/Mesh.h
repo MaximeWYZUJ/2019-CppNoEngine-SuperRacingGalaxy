@@ -19,13 +19,15 @@ namespace Cookie
 		std::vector<Vector2<>> const& GetTextureCoords() const noexcept;
 		std::vector<Vector3<>> const& GetVerticesPx() const noexcept;
 		std::vector<Vector3<>> const& GetNormals() const noexcept;
-		std::vector<IndexedTriangle> const& GetTriangles() const noexcept;
+		std::vector<IndexedTriangle> const& GetTrianglesDx() const noexcept;
+		std::vector<IndexedTriangle> const& GetTrianglesPx() const noexcept;
 	private:
 		std::string filePath;
-		std::vector<Vector3<>> vertices;
+		std::vector<Vector3<>> verticesDx;
 		std::vector<Vector3<>> verticesPx;
 		std::vector<Vector2<>> textureCoords;
 		std::vector<Vector3<>> normals;
-		std::vector<IndexedTriangle> triangles;
+		std::vector<IndexedTriangle> trianglesDx;
+		std::vector<IndexedTriangle> trianglesPx;
 	};
 }

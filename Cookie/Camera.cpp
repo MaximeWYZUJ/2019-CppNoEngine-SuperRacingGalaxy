@@ -51,7 +51,7 @@ namespace Cookie
 		Vector4<> dir = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
 		Vector3<> focusPosition = eyePosition + dir;
 		view = Matrix4x4<>::FromLookAt(eyePosition, focusPosition, Vector3<>(0.0f, 1.0f, 0.0f));
-
+		
 		projView = projection * view;
 	}
 }

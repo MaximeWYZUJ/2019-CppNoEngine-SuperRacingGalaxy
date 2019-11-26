@@ -175,9 +175,9 @@ namespace Cookie
 		meshDesc.points.stride = sizeof(mesh.GetVerticesPx().at(0));
 		meshDesc.points.data = mesh.GetVerticesPx().data();
 
-		meshDesc.triangles.count = mesh.GetTriangles().size();
-		meshDesc.triangles.stride = sizeof(mesh.GetTriangles().at(0));
-		meshDesc.triangles.data = mesh.GetTriangles().data();
+		meshDesc.triangles.count = mesh.GetTrianglesPx().size();
+		meshDesc.triangles.stride = sizeof(mesh.GetTrianglesPx().at(0));
+		meshDesc.triangles.data = mesh.GetTrianglesPx().data();
 
 		PxDefaultMemoryOutputStream writeBuffer;
 		PxTriangleMeshCookingResult::Enum* result = nullptr;

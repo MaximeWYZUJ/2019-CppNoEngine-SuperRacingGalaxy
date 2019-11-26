@@ -100,7 +100,7 @@ namespace Cookie
 
 	Camera* SceneManager::AddCamera(SceneNode* parent)
 	{
-		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 100000.0f));
+		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 100'000.0f));
 		parent->components.push_back(cam);
 		cam->parent = parent;
 		cam->matrix = &parent->matrix;

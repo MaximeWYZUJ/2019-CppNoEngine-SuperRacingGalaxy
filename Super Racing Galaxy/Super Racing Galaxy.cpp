@@ -19,7 +19,7 @@ using namespace Cookie;
 
 float camRadY = M_PI;
 float camRadZX = 0.0f;
-float camDistance = 10.0f;
+float camDistance = 5.0f;
 
 int main(int argc, char* argv[])
 {
@@ -40,28 +40,33 @@ int main(int argc, char* argv[])
 		// Create Scenario
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-		SceneNode* cubeNode = scenario.vehicle->root;
-		PhysicsComponent* boxComponent = cubeNode->physics;
+		SceneNode* vehicleNode = scenario.vehicle->root;
+		PhysicsComponent* boxComponent = vehicleNode->physics;
 
 		Vehicle* vehicle = static_cast<Vehicle*>(scenario.vehicle);
 		Planet* planet = static_cast<Planet*>(scenario.objects[0]);
+
+		// Axis
+		/*Mesh* axisMesh = smgr->GetMesh("triangle.obj");
+		SceneNode* axisNode = smgr->AddSceneNode(root);
+		Material* axisMaterial = mm->GetNewMaterial("triangle", texture, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+		smgr->AddMeshRenderer(axisMesh, axisMaterial, axisNode);
+
+		smgr->AddPhysicsMeshComponent({ 0.0f, 0.5f, 0.0f }, PhysicsComponent::STATIC, *axisMesh, axisNode);*/
 		
 
-
 		// Creation du cube
-		/*
-		SceneNode* cubeNode = smgr->AddSceneNode(root);
-		cubeNode->localTransform.SetPosition({ 0.0f, 1200.0f, 0.0f });
-		cubeNode->localTransform.SetScale({ 2.0f, 2.0f, 2.0f });
+		/*SceneNode* cubeNode = smgr->AddSceneNode(root);
+		cubeNode->localTransform.SetPosition({ 0.0f, 0.0f, 0.0f });
+		cubeNode->localTransform.SetScale({ 0.5f, 0.5f, 0.5f });
 		auto const mat2 = mm->GetNewMaterial("basic2", texture, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
 		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
 		
-		PhysicsComponent* boxComponent = smgr->AddPhysicsBoxComponent(
+		auto* cubeBoxComponent = smgr->AddPhysicsBoxComponent(
 			PhysicMaterial(0.0f, 0.5f, 0.0f),
-			PhysicsComponent::DYNAMIC,
+			PhysicsComponent::STATIC,
 			cubeNode
-		);
-		*/
+		);*/
 		
 		// Creation de la camera
 		SceneNode* camNode = smgr->AddSceneNode(root);
@@ -69,10 +74,8 @@ int main(int argc, char* argv[])
 		smgr->SetMainCamera(cam);
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
-		while (engine->Run([camNode, cubeNode, inputManager, boxComponent, vehicle, planet]()
+		while (engine->Run([camNode, inputManager, vehicleNode, boxComponent, vehicle, planet]()
 		{
-			
-
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
 			{
@@ -90,7 +93,7 @@ int main(int argc, char* argv[])
 			zxRotAxis.Normalize();
 			Quaternion zxCamRot = Quaternion<>::FromDirection(camRadZX, zxRotAxis);
 			Vector3<> curPos = Matrix4x4<>::FromRotation(yCamRot * zxCamRot) * initialPosNoRot;
-			Vector3<> cubeOffset = cubeNode->localTransform.GetPosition();
+			Vector3<> cubeOffset = vehicleNode->localTransform.GetPosition();
 			curPos += cubeOffset;
 			cam.SetPosition(curPos);
 
@@ -107,7 +110,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::K))
 			{
-				vehicle->gravityApplied = (cubeNode->localTransform.GetPosition() - planet->gravityCenter);
+				vehicle->gravityApplied = (vehicleNode->localTransform.GetPosition() - planet->gravityCenter);
 				vehicle->gravityApplied.normalize();
 				Vector4<> testDeMerde = vehicle->gravityApplied;
 				boxComponent->addForce(testDeMerde * -9.81f);
