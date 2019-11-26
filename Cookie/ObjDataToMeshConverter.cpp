@@ -6,6 +6,9 @@
 #include <unordered_set>
 #include "ObjDataToMeshConverter.h"
 #include "Vector2.h"
+#include "Quaternion.h"
+#include <corecrt_math_defines.h>
+#include "Matrix4x4.h"
 
 namespace Cookie
 {
@@ -45,8 +48,14 @@ namespace Cookie
 
 				if (!remap.contains(comb))
 				{
-					vertices.emplace_back(source.vertices[comb.vertex]);
-					textureCoords.emplace_back(source.textureCoords[comb.texture]);
+					auto rot = Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(M_PI, { 0.0f, 0.0f, 1.0f }));
+					auto rot2 = Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(M_PI / 2.0f, { 1.0f, 0.0f, 0.0f }));
+					Vector3<>& v = vertices.emplace_back(source.vertices[comb.vertex]);
+					v = rot2 * rot * v;
+					
+					Vector2<>& t = textureCoords.emplace_back(source.textureCoords[comb.texture]);
+					t.y = 1.0f - t.y;
+					
 					normals.emplace_back(source.normals[comb.normal]);
 
 					remappedComb.vertex = vertices.size() - 1;
@@ -63,7 +72,6 @@ namespace Cookie
 				*(reinterpret_cast<int32_t*>(&vIndices) + i) = remappedComb.vertex;
 			}
 
-			// .obj are in CCW but our engine is in CW, swap Y <-> Z
 			triangles.push_back(IndexedTriangle{ .A = vIndices.x, .B = vIndices.z, .C = vIndices.y });
 		}
 
