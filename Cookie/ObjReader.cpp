@@ -70,7 +70,26 @@ namespace Cookie
 			}
 			else if (segments[0] == "vt")
 			{
-				// Not supported
+				// Todo: Support 3D textures
+				if (segments.size() < 2 || segments.size() > 3)
+				{
+					return {};
+				}
+
+				Vector3<>& textureCoord = res.textureCoords.emplace_back(Vector3<>());
+				textureCoord.y = 0.0f;
+				textureCoord.z = 0.0f;
+
+				for (int i = 1; i < segments.size(); ++i)
+				{
+					auto val = reinterpret_cast<float*>(&textureCoord) + i - 1;
+					string_view const& sv = segments[i];
+					if (auto [p, ec] = from_chars(sv.data(), sv.data() + sv.length(), *val);
+						ec == std::errc::invalid_argument)
+					{
+						return {};
+					}
+				}
 			}
 			else if (segments[0] == "vn")
 			{
@@ -98,7 +117,7 @@ namespace Cookie
 			}
 			else if (segments[0] == "f")
 			{
-				if (segments.size() > 4)
+				if (segments.size() < 3 || segments.size() > 4)
 				{
 					// Does not support complex faces, only triangles
 					return {};

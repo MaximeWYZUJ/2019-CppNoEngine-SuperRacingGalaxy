@@ -120,7 +120,7 @@ namespace Cookie
 				normals[x + y * mapSize.Height] = avgNormal;
 			}
 		}
-
-		return Mesh(move(vertices), move(normals), move(triangles));
+		throw;
+		//return Mesh(move(vertices), move(normals), move(triangles));
 	}
 }

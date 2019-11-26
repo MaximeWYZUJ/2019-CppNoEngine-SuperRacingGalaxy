@@ -18,6 +18,7 @@ namespace Cookie
 		
 		{
 			auto& vertices = mesh->GetVertices();
+			auto& textureCoords = mesh->GetTextureCoords();
 			auto& normals = mesh->GetNormals();
 			unique_ptr<VertexData[]> gpuVertices = make_unique<VertexData[]>(vertices.size());
 
@@ -26,7 +27,7 @@ namespace Cookie
 				gpuVertices[i] = VertexData(
 					{ vertices[i].x, vertices[i].z, vertices[i].y },
 					{ normals[i].x, normals[i].z, normals[i].y },
-					Vector2<>(0.0f, 0.0f));
+					textureCoords[i]);
 			}
 
 			BufferDescription desc

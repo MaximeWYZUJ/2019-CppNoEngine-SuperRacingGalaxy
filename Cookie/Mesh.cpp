@@ -6,8 +6,8 @@ namespace Cookie
 {
 	using namespace std;
 
-	Mesh::Mesh(vector<Vector3<>>&& points, vector<Vector3<>> normals, vector<IndexedTriangle>&& triangles) noexcept
-		: vertices{ move(points) }, normals{ move(normals) }, triangles{ move(triangles) }
+	Mesh::Mesh(vector<Vector3<>>&& vertices, std::vector<Vector2<>>&& textureCoords, vector<Vector3<>> normals, vector<IndexedTriangle>&& triangles) noexcept
+		: vertices{ move(vertices) }, textureCoords(move(textureCoords)), normals{ move(normals) }, triangles{ move(triangles) }
 	{
 		verticesPx.clear();
 		for (auto v : vertices) {
@@ -29,6 +29,11 @@ namespace Cookie
 	{
 		
 		return verticesPx;
+	}
+
+	std::vector<Vector2<>> const& Mesh::GetTextureCoords() const noexcept
+	{
+		return textureCoords;
 	}
 
 	std::vector<Vector3<>> const& Mesh::GetNormals() const noexcept
