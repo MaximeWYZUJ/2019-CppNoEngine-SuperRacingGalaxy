@@ -62,7 +62,7 @@ namespace Cookie
 		cooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, params);
 
 		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+		sceneDesc.gravity = PxVec3(0.0f, 0.0f, 0.0f);
 		gDispatcher = PxDefaultCpuDispatcherCreate(2);
 		sceneDesc.cpuDispatcher = gDispatcher;
 

@@ -12,6 +12,7 @@
 #include "ScenarioLoader.h"
 #include "DemoScenario.h"
 #include "Vehicle.h"
+#include "Planet.h"
 
 using namespace std;
 using namespace Cookie;
@@ -41,6 +42,9 @@ int main(int argc, char* argv[])
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
 		SceneNode* cubeNode = scenario.vehicle->root;
 		PhysicsComponent* boxComponent = cubeNode->physics;
+		Vehicle* vehicle = static_cast<Vehicle*>(scenario.vehicle);
+		Planet* planet = static_cast<Planet*>(scenario.objects[0]);
+
 
 
 		// Creation du cube
@@ -64,8 +68,10 @@ int main(int argc, char* argv[])
 		smgr->SetMainCamera(cam);
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
-		while (engine->Run([camNode, cubeNode, inputManager, boxComponent]()
+		while (engine->Run([camNode, cubeNode, inputManager, boxComponent, vehicle, planet]()
 		{
+			
+
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
 			{
@@ -97,6 +103,14 @@ int main(int argc, char* argv[])
 
 			Vector4<> forwardForceDir = Vector4<>::Normalize(-zxDir);
 			Vector4<> leftForceDir = Vector4<>::Normalize(Vector4<>::CrossProduct(forwardForceDir, { 0.0f, 1.0f, 0.0f, 1.0f }));
+
+			if (inputManager->IsKeyPressed(Key::K))
+			{
+				vehicle->gravityApplied = (cubeNode->localTransform.GetPosition() - planet->gravityCenter);
+				vehicle->gravityApplied.normalize();
+				Vector4<> testDeMerde = vehicle->gravityApplied;
+				boxComponent->addForce(testDeMerde * -9.81f);
+			}
 
 			if (inputManager->IsKeyPressed(Key::W))
 			{
