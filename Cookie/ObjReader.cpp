@@ -167,6 +167,11 @@ namespace Cookie
 			return {};
 		}
 
+		if (res.textureCoords.empty())
+		{
+			res.textureCoords.emplace_back(0.0f, 0.0f, 0.0f);
+		}
+
 		return res;
 	}
 
