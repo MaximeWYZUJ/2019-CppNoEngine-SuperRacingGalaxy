@@ -42,9 +42,10 @@ int main(int argc, char* argv[])
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
 		SceneNode* cubeNode = scenario.vehicle->root;
 		PhysicsComponent* boxComponent = cubeNode->physics;
+
 		Vehicle* vehicle = static_cast<Vehicle*>(scenario.vehicle);
 		Planet* planet = static_cast<Planet*>(scenario.objects[0]);
-
+		
 
 
 		// Creation du cube
