@@ -7,8 +7,8 @@ namespace Cookie
 {
 	using namespace std;
 
-	Mesh::Mesh(vector<Vector3<>>&& vertices, std::vector<Vector2<>>&& textureCoords, vector<Vector3<>> normals, vector<IndexedTriangle>&& triangles) noexcept
-		: verticesPx{ move(vertices) }, textureCoords(move(textureCoords)), normals{ move(normals) }, trianglesPx{ move(triangles) }
+	Mesh::Mesh(string const& filePath, vector<Vector3<>>&& vertices, std::vector<Vector2<>>&& textureCoords, vector<Vector3<>> normals, vector<IndexedTriangle>&& triangles) noexcept
+		: filePath(filePath), verticesPx{ move(vertices) }, textureCoords(move(textureCoords)), normals{ move(normals) }, trianglesPx{ move(triangles) }
 	{
 		auto rot = Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(M_PI, { 0.0f, 0.0f, 1.0f }));
 		auto rot2 = Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(M_PI / 2.0f, { 1.0f, 0.0f, 0.0f }));
@@ -17,7 +17,7 @@ namespace Cookie
 
 		for (auto const& v : verticesPx)
 		{
-			auto& v1 = verticesDx.emplace_back(v.x, v.y, v.z);
+			auto& v1 = verticesDx.emplace_back(-v.x, v.y, v.z);
 			v1 = rot2 * rot * v1;
 		}
 
@@ -56,7 +56,7 @@ namespace Cookie
 
 	vector<IndexedTriangle> const& Mesh::GetTrianglesDx() const noexcept
 	{
-		return trianglesDx;
+		return trianglesPx;
 	}
 
 	vector<IndexedTriangle> const& Mesh::GetTrianglesPx() const noexcept

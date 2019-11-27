@@ -13,7 +13,7 @@ namespace Cookie
 	{
 	public:
 		using MeshPtr = Mesh*;
-		Mesh(std::vector<Vector3<>>&& vertices, std::vector<Vector2<>>&& textureCoords, std::vector<Vector3<>> normals, std::vector<IndexedTriangle>&& triangles) noexcept;
+		Mesh(std::string const& filePath, std::vector<Vector3<>>&& vertices, std::vector<Vector2<>>&& textureCoords, std::vector<Vector3<>> normals, std::vector<IndexedTriangle>&& triangles) noexcept;
 		std::string const& GetFilePath() const noexcept;
 		std::vector<Vector3<>> const& GetVertices() const noexcept;
 		std::vector<Vector2<>> const& GetTextureCoords() const noexcept;

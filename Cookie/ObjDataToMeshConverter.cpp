@@ -14,7 +14,7 @@ namespace Cookie
 {
 	using namespace std;
 
-	auto ObjDataToMeshConverter::Convert(ObjData const& source) -> MeshPtr
+	auto ObjDataToMeshConverter::Convert(ObjData const& source, string const& filePath) -> MeshPtr
 	{
 		vector<Vector3<>> vertices;
 		vertices.reserve(source.vertices.size());
@@ -73,6 +73,6 @@ namespace Cookie
 			triangles.push_back(IndexedTriangle{ .A = vIndices.x, .B = vIndices.z, .C = vIndices.y });
 		}
 
-		return new Mesh{ move(vertices), move(textureCoords), move(normals), move(triangles) };
+		return new Mesh{ filePath, move(vertices), move(textureCoords), move(normals), move(triangles) };
 	}
 }

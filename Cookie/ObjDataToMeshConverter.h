@@ -12,7 +12,7 @@ namespace Cookie
 	{
 	public:
 		using MeshPtr = Mesh::MeshPtr;
-		static MeshPtr Convert(ObjData const& source);
+		static MeshPtr Convert(ObjData const& source, std::string const& filePath);
 	};
 
 	struct Indices

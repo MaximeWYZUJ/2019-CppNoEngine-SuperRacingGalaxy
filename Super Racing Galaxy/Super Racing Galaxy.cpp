@@ -74,8 +74,13 @@ int main(int argc, char* argv[])
 		smgr->SetMainCamera(cam);
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
-		while (engine->Run([camNode, inputManager, vehicleNode, boxComponent, vehicle, planet]()
+		int skip = 0;
+		while (engine->Run([&skip, camNode, inputManager, vehicleNode, boxComponent, vehicle, planet]()
 		{
+			vehicle->gravityApplied = vehicleNode->localTransform.GetPosition() - planet->gravityCenter;
+			vehicle->gravityApplied.normalize();
+			skip++;
+			
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
 			{
@@ -108,32 +113,38 @@ int main(int argc, char* argv[])
 			Vector4<> forwardForceDir = Vector4<>::Normalize(-zxDir);
 			Vector4<> leftForceDir = Vector4<>::Normalize(Vector4<>::CrossProduct(forwardForceDir, { 0.0f, 1.0f, 0.0f, 1.0f }));
 
-			if (inputManager->IsKeyPressed(Key::K))
+			if (skip > 5) // bof...
 			{
-				vehicle->gravityApplied = (vehicleNode->localTransform.GetPosition() - planet->gravityCenter);
-				vehicle->gravityApplied.normalize();
-				Vector4<> testDeMerde = vehicle->gravityApplied;
-				boxComponent->addForce(testDeMerde * -9.81f);
+				boxComponent->addForce(vehicle->gravityApplied * planet->gravityValue);
 			}
 
+			auto rot = Matrix4x4<>::FromRotation(vehicle->root->localTransform.GetRotation());
+			Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
+			Vector3<> rightSource = rot * Vector3<>{ 1.0f, 0.0f, 1.0f };
+			Vector4<> vehicleRight = rightSource - vehicleForward;
+			Vector4<> vehicleUp = Vector4<>::CrossProduct(vehicleForward, vehicleRight);
+			vehicleUp.Normalize();
+			
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				boxComponent->addForce(forwardForceDir * 15.0f);
+				boxComponent->addForce(vehicleForward * 15.0f);
 			}
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				boxComponent->addForce(leftForceDir * 10.0f);
+				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
+				vehicle->root->localTransform.SetRotation(rot * vehicle->root->localTransform.GetRotation());
 			}
 
 			if (inputManager->IsKeyPressed(Key::S))
 			{
-				boxComponent->addForce(forwardForceDir * -10.0f);
+				boxComponent->addForce(-vehicleForward * 15.0f);
 			}
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				boxComponent->addForce(leftForceDir * -10.0f);
+				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
+				vehicle->root->localTransform.SetRotation(rot * vehicle->root->localTransform.GetRotation());
 			}
 		}));
 

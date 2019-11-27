@@ -26,8 +26,14 @@ namespace Cookie
 
 	Mesh* SceneManager::GetMesh(string const& filePath)
 	{
+		auto it = find_if(meshes.begin(), meshes.end(), [&filePath](auto& mesh) { return mesh->GetFilePath() == filePath; });
+		if (it != meshes.end())
+		{
+			return *it;
+		}
+		
 		ObjData res = ObjReader::Read(filePath);
-		MeshPtr meshRes = ObjDataToMeshConverter::Convert(res);
+		MeshPtr meshRes = ObjDataToMeshConverter::Convert(res, filePath);
 		Mesh* mesh = meshes.emplace_back(meshRes);
 
 		return mesh;

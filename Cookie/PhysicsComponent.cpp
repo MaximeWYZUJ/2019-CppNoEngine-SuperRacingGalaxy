@@ -17,7 +17,7 @@ namespace Cookie
 			return;
 		
 		addedForces.push_back(force);
-		actor->is<PxRigidDynamic>()->addForce(PxVec3(-force.x, force.y, force.z));
+		actor->is<PxRigidDynamic>()->addForce(PxVec3(force.x, force.y, force.z));
 	}
 	
 	void PhysicsComponent::addFilterGroup(FilterGroup f)

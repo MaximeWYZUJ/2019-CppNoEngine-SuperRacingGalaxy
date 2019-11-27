@@ -28,6 +28,11 @@ void Cookie::Synchronizer::SyncDown(std::unique_ptr<SceneManager> const & sceneM
 		mapPhysics.insert(pair{ newCompo, actor });
 	}
 
+	for_each(mapPhysics.begin(), mapPhysics.end(), [&engine](pair<PhysicsComponent*, PhysicsEngine::ActorPtr> p) {
+		p.first->transform = p.first->parent->localTransform;
+		engine.UpdateActor(p.first, p.second);
+	});
+
 	sceneManager->addedPhysicsComponents.clear();
 }
 

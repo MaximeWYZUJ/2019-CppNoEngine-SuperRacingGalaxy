@@ -1,5 +1,10 @@
 Super Racing Galaxy Team
 
+Départ dans le hangar.
+La gravité attire le vaisseau sur la première planète.
+
 Touches de déplacement :
 WASD - déplacement du véhicule
-K - Appliquer la gravité vers la planète principale
+
+Bugs :
+La rotation visuelle ne correspond pas à la rotation physique
