@@ -4,5 +4,6 @@
 
 class Scenery : public Prefab {
 public:
+	Scenery(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath);
 
 };

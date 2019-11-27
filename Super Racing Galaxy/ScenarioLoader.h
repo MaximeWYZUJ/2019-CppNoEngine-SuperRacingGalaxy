@@ -5,10 +5,10 @@ namespace Cookie {
 }
 
 class Scenario;
-class Prefab;
 class Planet;
 class Scenery;
 class Vehicle;
+class Prefab;
 
 class ScenarioLoader
 {

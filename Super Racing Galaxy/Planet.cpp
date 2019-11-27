@@ -25,5 +25,5 @@ void Planet::addElement(Scenery* scenery)
 
 void Planet::anime()
 {
-
+	cout << "Ca tourne !" << endl;
 }

@@ -8,7 +8,7 @@ void Cookie::Synchronizer::SyncUp()
 {
 	PhysicsEngine& engine = PhysicsEngine::getInstance();
 
-	for_each(mapPhysics.begin(), mapPhysics.end(), [&engine](pair<PhysicsComponent*, PhysicsEngine::ActorPtr> p) {
+	for_each(mapPhysics.begin(), mapPhysics.end(), [&engine](pair<PhysicsComponent *, PhysicsEngine::ActorPtr> p) {
 		engine.UpdateComponent(p.second, p.first);
 
 		p.first->parent->localTransform = p.first->transform;

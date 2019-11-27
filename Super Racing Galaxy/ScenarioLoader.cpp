@@ -22,7 +22,12 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	Device* device = engine->GetDevice();
 	SceneNode* root = smgr->GetRoot();
 
-	for (auto& elem : scenario.objects)
+	for (auto& elem : scenario.planets)
+	{
+		CreateObject(smgr, materialManager, textureManager, device, root, elem);
+	}
+
+	for (auto &elem : scenario.sceneries)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}
@@ -80,4 +85,5 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Vehicle* obj)
 
 void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Scenery* obj)
 {
+	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 }

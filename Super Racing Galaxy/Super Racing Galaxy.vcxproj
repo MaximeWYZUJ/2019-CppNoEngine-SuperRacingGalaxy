@@ -131,6 +131,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -164,8 +165,8 @@
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
-    <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="ScenarioLoader.cpp" />
+    <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Super Racing Galaxy.cpp" />
     <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>

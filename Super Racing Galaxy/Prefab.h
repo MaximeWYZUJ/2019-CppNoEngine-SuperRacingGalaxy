@@ -3,12 +3,15 @@
 #include "Transform.h"
 
 namespace Cookie {
+	class Component;
+	class PhysicsComponent;
 	class SceneNode;
 	class Mesh;
 	class Texture;
 }
 
-class Prefab {
+class Prefab
+{
 public:
 	enum Type {
 		PLANET, SCENERY, VEHICLE, NOTHING
@@ -18,11 +21,11 @@ public:
 
 	Cookie::Transform<> transform_;
 
-	Cookie::SceneNode* root;
+	Cookie::SceneNode *root;
 
 	std::string meshPath_;
 	std::wstring texturePath_;
 
-	Cookie::Mesh* mesh;
-	Cookie::Texture* texture;
+	Cookie::Mesh *mesh;
+	Cookie::Texture *texture;
 };

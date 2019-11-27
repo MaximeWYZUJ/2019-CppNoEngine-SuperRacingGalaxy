@@ -27,24 +27,22 @@ int main(int argc, char* argv[])
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 
-		Device* device = engine->GetDevice();
+		//Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
-		InputManager* inputManager = engine->GetInputManager();
+		SceneNode *root = smgr->GetRoot();
+		InputManager *inputManager = engine->GetInputManager();
+
+		/*
 		TextureManager* tm = engine->GetTextureManager();
 		MaterialManager* mm = engine->GetMaterialManager();
 
 		Mesh* mesh = smgr->GetMesh("cube.obj");
-		SceneNode* root = smgr->GetRoot();
 		auto texture = tm->GetNewTexture(L"cube.dds", device);
+		*/
 
 		// Create Scenario
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-		SceneNode* vehicleNode = scenario.vehicle->root;
-		PhysicsComponent* boxComponent = vehicleNode->physics;
-
-		Vehicle* vehicle = static_cast<Vehicle*>(scenario.vehicle);
-		Planet* planet = static_cast<Planet*>(scenario.objects[0]);
 
 		// Axis
 		/*Mesh* axisMesh = smgr->GetMesh("triangle.obj");
@@ -75,10 +73,31 @@ int main(int argc, char* argv[])
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
 		int skip = 0;
-		while (engine->Run([&skip, camNode, inputManager, vehicleNode, boxComponent, vehicle, planet]()
+		while (engine->Run([&skip, camNode, inputManager, scenario]()
 		{
-			vehicle->gravityApplied = vehicleNode->localTransform.GetPosition() - planet->gravityCenter;
-			vehicle->gravityApplied.normalize();
+			if (skip > 5) {
+				Vehicle *vehicle = static_cast<Vehicle *>(scenario.vehicle);
+				vehicle->transform_ = vehicle->root->localTransform;
+				Planet *closestPlanet = nullptr;
+				long double distanceMin = (numeric_limits<long double>::max)();
+				for (auto &planet : scenario.planets) {
+					planet->transform_ = planet->root->localTransform;
+					if (long double newDistanceMin = planet->transform_.GetPosition().distance(vehicle->transform_.GetPosition()) - (planet->transform_.GetScale().x / 2); newDistanceMin < distanceMin) {
+						distanceMin = newDistanceMin;
+						closestPlanet = static_cast<Planet*>(planet);
+					}
+				}
+
+				for (auto &scenery : scenario.sceneries) {
+					scenery->transform_ = scenery->root->localTransform;
+				}
+
+				vehicle->gravityApplied = (vehicle->transform_.GetPosition() - closestPlanet->gravityCenter);
+				vehicle->gravityApplied.normalize();
+				vehicle->gravityApplied = vehicle->gravityApplied * closestPlanet->gravityValue;
+
+				vehicle->root->physics->addForce(vehicle->gravityApplied);
+			}
 			skip++;
 			
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
@@ -98,13 +117,13 @@ int main(int argc, char* argv[])
 			zxRotAxis.Normalize();
 			Quaternion zxCamRot = Quaternion<>::FromDirection(camRadZX, zxRotAxis);
 			Vector3<> curPos = Matrix4x4<>::FromRotation(yCamRot * zxCamRot) * initialPosNoRot;
-			Vector3<> cubeOffset = vehicleNode->localTransform.GetPosition();
-			curPos += cubeOffset;
+			Vector3<> vehicleOffset = scenario.vehicle->transform_.GetPosition();
+			curPos += vehicleOffset;
 			cam.SetPosition(curPos);
 
 			// Find camera rotation
 			Quaternion<> rCamRotY = Quaternion<>::FromDirection(camRadY - M_PI, { 0.0f, 1.0f, 0.0f });
-			Vector4<> forward = cubeOffset - curPos;
+			Vector4<> forward = vehicleOffset - curPos;
 			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
 			left.Normalize();
 			Quaternion<> rCamRotZX = Quaternion<>::FromDirection(-camRadZX, left);
@@ -113,12 +132,7 @@ int main(int argc, char* argv[])
 			Vector4<> forwardForceDir = Vector4<>::Normalize(-zxDir);
 			Vector4<> leftForceDir = Vector4<>::Normalize(Vector4<>::CrossProduct(forwardForceDir, { 0.0f, 1.0f, 0.0f, 1.0f }));
 
-			if (skip > 5) // bof...
-			{
-				boxComponent->addForce(vehicle->gravityApplied * planet->gravityValue);
-			}
-
-			auto rot = Matrix4x4<>::FromRotation(vehicle->root->localTransform.GetRotation());
+			auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->transform_.GetRotation());
 			Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
 			Vector3<> rightSource = rot * Vector3<>{ 1.0f, 0.0f, 1.0f };
 			Vector4<> vehicleRight = rightSource - vehicleForward;
@@ -127,24 +141,24 @@ int main(int argc, char* argv[])
 			
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				boxComponent->addForce(vehicleForward * 15.0f);
+				scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
 			}
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
 				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
-				vehicle->root->localTransform.SetRotation(rot * vehicle->root->localTransform.GetRotation());
+				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			}
 
 			if (inputManager->IsKeyPressed(Key::S))
 			{
-				boxComponent->addForce(-vehicleForward * 15.0f);
+				scenario.vehicle->root->physics->addForce(-vehicleForward * 100.0f);
 			}
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
 				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
-				vehicle->root->localTransform.SetRotation(rot * vehicle->root->localTransform.GetRotation());
+				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
 			}
 		}));
 
