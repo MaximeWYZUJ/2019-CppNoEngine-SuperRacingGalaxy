@@ -36,7 +36,7 @@ namespace Cookie
 
 	vector<Vector3<>> const& Mesh::GetVertices() const noexcept
 	{
-		return verticesDx;
+		return verticesPx;
 	}
 
 	std::vector<Vector3<>> const& Mesh::GetVerticesPx() const noexcept
