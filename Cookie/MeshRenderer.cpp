@@ -25,8 +25,8 @@ namespace Cookie
 			for (int i = 0; i < vertices.size(); ++i)
 			{
 				gpuVertices[i] = VertexData(
-					{ vertices[i].x, vertices[i].z, vertices[i].y },
-					{ normals[i].x, normals[i].z, normals[i].y },
+					{ vertices[i].x, vertices[i].y, vertices[i].z },
+					{ normals[i].x, normals[i].y, normals[i].z },
 					textureCoords[i]);
 			}
 

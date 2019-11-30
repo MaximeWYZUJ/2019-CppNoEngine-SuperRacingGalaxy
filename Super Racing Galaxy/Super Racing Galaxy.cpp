@@ -27,44 +27,17 @@ int main(int argc, char* argv[])
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 
-		//Device* device = engine->GetDevice();
+		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
 		SceneNode *root = smgr->GetRoot();
 		InputManager *inputManager = engine->GetInputManager();
 
-		/*
 		TextureManager* tm = engine->GetTextureManager();
 		MaterialManager* mm = engine->GetMaterialManager();
-
-		Mesh* mesh = smgr->GetMesh("cube.obj");
-		auto texture = tm->GetNewTexture(L"cube.dds", device);
-		*/
-
+		
 		// Create Scenario
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-
-		// Axis
-		/*Mesh* axisMesh = smgr->GetMesh("triangle.obj");
-		SceneNode* axisNode = smgr->AddSceneNode(root);
-		Material* axisMaterial = mm->GetNewMaterial("triangle", texture, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
-		smgr->AddMeshRenderer(axisMesh, axisMaterial, axisNode);
-
-		smgr->AddPhysicsMeshComponent({ 0.0f, 0.5f, 0.0f }, PhysicsComponent::STATIC, *axisMesh, axisNode);*/
-		
-
-		// Creation du cube
-		/*SceneNode* cubeNode = smgr->AddSceneNode(root);
-		cubeNode->localTransform.SetPosition({ 0.0f, 0.0f, 0.0f });
-		cubeNode->localTransform.SetScale({ 0.5f, 0.5f, 0.5f });
-		auto const mat2 = mm->GetNewMaterial("basic2", texture, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f });
-		smgr->AddMeshRenderer(mesh, mat2, cubeNode);
-		
-		auto* cubeBoxComponent = smgr->AddPhysicsBoxComponent(
-			PhysicMaterial(0.0f, 0.5f, 0.0f),
-			PhysicsComponent::STATIC,
-			cubeNode
-		);*/
 		
 		// Creation de la camera
 		SceneNode* camNode = smgr->AddSceneNode(root);
@@ -73,9 +46,8 @@ int main(int argc, char* argv[])
 		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
 
 		int skip = 0;
-		while (engine->Run([&skip, camNode, inputManager, scenario]()
-		{
-			if (skip > 5) {
+		while (engine->Run([&skip, camNode, inputManager, scenario]() {
+			if (skip > 1) {
 				Vehicle *vehicle = static_cast<Vehicle *>(scenario.vehicle);
 				vehicle->transform_ = vehicle->root->localTransform;
 				Planet *closestPlanet = nullptr;
@@ -99,7 +71,7 @@ int main(int argc, char* argv[])
 				vehicle->root->physics->addForce(vehicle->gravityApplied);
 			}
 			skip++;
-			
+
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
 			{
@@ -146,7 +118,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			}
 
@@ -157,7 +129,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
 			}
 		}));
