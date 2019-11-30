@@ -31,7 +31,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.sceneries.push_back(new Scenery(Transform<>({ 0.0f, 1500.0f, 100.0f }, { 100.0f, 100.0f, 100.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   "cargo.obj", L"GODtexture.dds"));
 
-	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 1510.0f, 100.0f }, { 2.f, 1.f, 2.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "ultimateShip.obj", L"textureUltimateShip.dds");
+	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 1510.0f, 100.0f }, { 10.f, 4.f, 10.f }, { 0.0f, 1.0f, 0.0f, 0.0f }), "ultimateShip.obj", L"textureUltimateShip.dds");
 	
 
 	return scenario;

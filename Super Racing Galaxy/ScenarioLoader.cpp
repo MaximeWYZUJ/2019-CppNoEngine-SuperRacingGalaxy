@@ -42,6 +42,26 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 	obj->root = smgr->AddSceneNode(root);
 	obj->root->localTransform = obj->transform_;
 
+	switch (obj->type_) {
+	case Prefab::Type::PLANET:
+		InitPlanetObject(smgr, materialManager, static_cast<Planet*>(obj));
+		break;
+
+	case Prefab::Type::VEHICLE:
+		InitVehicleObject(smgr, materialManager, static_cast<Vehicle*>(obj));
+		break;
+
+	case Prefab::Type::SCENERY:
+		InitSceneryObject(smgr, materialManager, static_cast<Scenery*>(obj));
+		break;
+
+	case Prefab::Type::NOTHING:
+		break;
+	}
+}
+
+void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Planet* obj)
+{
 	random_device dev;
 	mt19937 rng(dev());
 	uniform_real_distribution<float> dist(0.5f, 1.0f);
@@ -55,35 +75,33 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	switch (obj->type_) {
-	case Prefab::Type::PLANET:
-		InitPlanetObject(smgr, static_cast<Planet*>(obj));
-		break;
-
-	case Prefab::Type::VEHICLE:
-		InitVehicleObject(smgr, static_cast<Vehicle*>(obj));
-		break;
-
-	case Prefab::Type::SCENERY:
-		InitSceneryObject(smgr, static_cast<Scenery*>(obj));
-		break;
-
-	case Prefab::Type::NOTHING:
-		break;
-	}
-}
-
-void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Planet* obj)
-{
 	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 }
 
-void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Vehicle* obj)
+void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Vehicle* obj)
 {
+	auto mat = materialManager->GetNewMaterial(
+		"basic " + to_string(obj->transform_.GetPosition().x) + to_string(obj->transform_.GetPosition().y) + to_string(obj->transform_.GetPosition().z),
+		obj->texture,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
+
 	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.0f), PhysicsComponent::DYNAMIC, obj->root);
 }
 
-void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Scenery* obj)
+void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj)
 {
+	auto mat = materialManager->GetNewMaterial(
+		"basic " + to_string(obj->transform_.GetPosition().x) + to_string(obj->transform_.GetPosition().y) + to_string(obj->transform_.GetPosition().z),
+		obj->texture,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
+
 	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 }
