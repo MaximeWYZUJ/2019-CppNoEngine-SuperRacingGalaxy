@@ -28,10 +28,10 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.planets.push_back(new Planet(Transform<>({ 2000.0f, 0.0f, 7000.0f }, { 5000.0f, 5000.0f, 5000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }),
 										  -30.f, Vector3<>(0, 1, 0), 5.f, "newPlanet.obj", L"textureNewPlanet.dds"));
 
-	scenario.sceneries.push_back(new Scenery(Transform<>({ 0.0f, 1500.0f, 100.0f }, { 100.0f, 100.0f, 100.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
-										   "cargo.obj", L"GODtexture.dds"));
+	scenario.sceneries.push_back(new Scenery(Transform<>({ 0.0f, 1500.0f, 100.0f }, { 100.0f, 50.0f, 150.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
+										   "cargo.obj", L"textureCargo.dds"));
 
-	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 1510.0f, 100.0f }, { 10.f, 4.f, 10.f }, { 0.0f, 1.0f, 0.0f, 0.0f }), "ultimateShip.obj", L"textureUltimateShip.dds");
+	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 1510.0f, 100.0f }, { 40.f, 16.f, 40.f }, { 0.0f, 1.0f, 0.0f, 0.0f }), "ultimateShip.obj", L"textureUltimateShip.dds");
 	
 
 	return scenario;
