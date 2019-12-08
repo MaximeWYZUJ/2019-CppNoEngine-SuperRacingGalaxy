@@ -75,8 +75,8 @@ int main(int argc, char* argv[])
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
 			{
-				camRadY -= mouseDelta.x * 0.005f;
-				camRadZX -= mouseDelta.y * 0.005f;
+				camRadY += mouseDelta.x * 0.005f;
+				camRadZX += mouseDelta.y * 0.005f;
 			}
 
 			Transform<>& cam = camNode->localTransform;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 			Vector4<> zxRotAxis = Vector4<>::CrossProduct(zxDir, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
 			zxRotAxis.Normalize();
 			Quaternion zxCamRot = Quaternion<>::FromDirection(camRadZX, zxRotAxis);
-			Vector3<> curPos = Matrix4x4<>::FromRotation(yCamRot * zxCamRot) * initialPosNoRot;
+			Vector3<> curPos = Matrix4x4<>::FromRotation(zxCamRot * yCamRot) * initialPosNoRot;
 			Vector3<> vehicleOffset = scenario.vehicle->transform_.GetPosition();
 			curPos += vehicleOffset;
 			cam.SetPosition(curPos);
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
 			left.Normalize();
 			Quaternion<> rCamRotZX = Quaternion<>::FromDirection(-camRadZX, left);
-			cam.SetRotation(rCamRotY * rCamRotZX);
+			cam.SetRotation(rCamRotZX * rCamRotY);
 
 			Vector4<> forwardForceDir = Vector4<>::Normalize(-zxDir);
 			Vector4<> leftForceDir = Vector4<>::Normalize(Vector4<>::CrossProduct(forwardForceDir, { 0.0f, 1.0f, 0.0f, 1.0f }));

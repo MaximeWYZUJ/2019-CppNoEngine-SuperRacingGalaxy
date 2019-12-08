@@ -29,7 +29,6 @@ namespace Cookie
 		// (21) (22) (23) y
 		// (31) (32) (33) z
 		// (41) (42) (43) (44)
-		//
 
 		Vector4<T> operator*(Vector4<T> const& rhs);
 
@@ -39,8 +38,8 @@ namespace Cookie
 		static Matrix4x4<T> FromTranslation(Vector3<T> t);
 		
 		static Matrix4x4<T> FromTransform(Transform<T> const& t);
-		static Matrix4x4<T> FromLookAt(Vector3<T> eyePosition, Vector3<T> focusPosition, Vector3<T> upDirection);
-		static Matrix4x4<T> FromPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
+		static Matrix4x4<T> FromLookAtLH(Vector3<T> eyePosition, Vector3<T> focusPosition, Vector3<T> upDirection);
+		static Matrix4x4<T> FromPerspectiveLH(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
 		static Matrix4x4<T> Transpose(Matrix4x4<> const& matrix);
 	};
 
@@ -117,23 +116,23 @@ namespace Cookie
 		Matrix4x4<T> m;
 
 		m._11 = 1.0f - 2.0f * r.y * r.y - 2.0f * r.z * r.z;
-		m._12 = 2.0f * r.x * r.y + 2.0f * r.z * r.w;
-		m._13 = 2.0f * r.x * r.z - 2.0f * r.y * r.w;
-		m._14 = 0.0f;
-
-		m._21 = 2.0f * r.x * r.y - 2.0f * r.z * r.w;
-		m._22 = 1.0f - 2.0f * r.x * r.x - 2.0f * r.z * r.z;
-		m._23 = 2.0f * r.y * r.z + 2.0f * r.x * r.w;
-		m._24 = 0.0f;
-
-		m._31 = 2.0f * r.x * r.z + 2.0f * r.y * r.w;
-		m._32 = 2.0f * r.y * r.z - 2.0f * r.x * r.w;
-		m._33 = 1.0f - 2.0f * r.x * r.x - 2.0f * r.y * r.y;
-		m._34 = 0.0f;
-
+		m._21 = 2.0f * r.x * r.y + 2.0f * r.z * r.w;
+		m._31 = 2.0f * r.x * r.z - 2.0f * r.y * r.w;
 		m._41 = 0.0f;
+
+		m._12 = 2.0f * r.x * r.y - 2.0f * r.z * r.w;
+		m._22 = 1.0f - 2.0f * r.x * r.x - 2.0f * r.z * r.z;
+		m._32 = 2.0f * r.y * r.z + 2.0f * r.x * r.w;
 		m._42 = 0.0f;
+
+		m._13 = 2.0f * r.x * r.z + 2.0f * r.y * r.w;
+		m._23 = 2.0f * r.y * r.z - 2.0f * r.x * r.w;
+		m._33 = 1.0f - 2.0f * r.x * r.x - 2.0f * r.y * r.y;
 		m._43 = 0.0f;
+
+		m._14 = 0.0f;
+		m._24 = 0.0f;
+		m._34 = 0.0f;
 		m._44 = 1.0f;
 
 		return m;
@@ -159,7 +158,7 @@ namespace Cookie
 	}
 
 	template<class T>
-	Matrix4x4<T> Matrix4x4<T>::FromLookAt(Vector3<T> eyePosition, Vector3<T> focusPosition, Vector3<T> upDirection)
+	Matrix4x4<T> Matrix4x4<T>::FromLookAtLH(Vector3<T> eyePosition, Vector3<T> focusPosition, Vector3<T> upDirection)
 	{
 		Vector3<T> eyeDirection = focusPosition - eyePosition;
 		
@@ -191,7 +190,7 @@ namespace Cookie
 	}
 
 	template<class T>
-	Matrix4x4<T> Matrix4x4<T>::FromPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
+	Matrix4x4<T> Matrix4x4<T>::FromPerspectiveLH(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 	{
 		//
 		// Calculate Sin/Cos

@@ -41,7 +41,7 @@ namespace Cookie
 	{
 		if (isProjectionDirty)
 		{
-			projection = Matrix4x4<>::FromPerspective(fieldOfView, aspectRatio, nearPlane, farPlane);
+			projection = Matrix4x4<>::FromPerspectiveLH(fieldOfView, aspectRatio, nearPlane, farPlane);
 			isProjectionDirty = false;
 		}
 
@@ -50,7 +50,7 @@ namespace Cookie
 		Quaternion curRotation = parent->localTransform.GetRotation();
 		Vector4<> dir = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
 		Vector3<> focusPosition = eyePosition + dir;
-		view = Matrix4x4<>::FromLookAt(eyePosition, focusPosition, Vector3<>(0.0f, 1.0f, 0.0f));
+		view = Matrix4x4<>::FromLookAtLH(eyePosition, focusPosition, Vector3<>(0.0f, 1.0f, 0.0f));
 		
 		projView = projection * view;
 	}
