@@ -20,9 +20,12 @@ PxFilterFlags filterShader(
 
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 	{
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+		pairFlags = PxPairFlag::eSOLVE_CONTACT;
+		pairFlags |= PxPairFlag::eDETECT_DISCRETE_CONTACT;
+		pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
+		/*pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= PxPairFlag::eMODIFY_CONTACTS;
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;*/
 	}
 
 	/*if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
@@ -62,6 +65,7 @@ namespace Cookie
 		cooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, params);
 
 		PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+		sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
 		sceneDesc.gravity = PxVec3(0.0f, 0.0f, 0.0f);
 		gDispatcher = PxDefaultCpuDispatcherCreate(2);
 		sceneDesc.cpuDispatcher = gDispatcher;
@@ -139,12 +143,14 @@ namespace Cookie
 
 		PxRigidActor* actor = nullptr;
 		if (compo->type == PhysicsComponent::DYNAMIC) {
-			actor = gPhysics->createRigidDynamic(transform);
+			PxRigidBody *x = gPhysics->createRigidDynamic(transform);
+			x->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
+			actor = x;
 		}
 		else {
 			actor = gPhysics->createRigidStatic(transform);
 		}
-
+		
 		PxFilterData filterNull{};
 		shape->setSimulationFilterData(filterNull);
 		actor->attachShape(*shape);
