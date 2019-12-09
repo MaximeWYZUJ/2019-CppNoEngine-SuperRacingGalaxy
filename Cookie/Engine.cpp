@@ -84,8 +84,8 @@ namespace Cookie
 		float planRapproche = 2.0;
 		float planEloigne = 1000.0;
 
-		m_MatView = Matrix4x4<>::FromLookAt({ 0.0f, 5.0f, -5.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
-		m_MatProj = Matrix4x4<>::FromPerspective(champDeVision, ratioDAspect, planRapproche, planEloigne);
+		m_MatView = Matrix4x4<>::FromLookAtLH({ 0.0f, 5.0f, -5.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
+		m_MatProj = Matrix4x4<>::FromPerspectiveLH(champDeVision, ratioDAspect, planRapproche, planEloigne);
 
 		m_MatViewProj = m_MatProj * m_MatView;
 
