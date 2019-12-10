@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraLogic.cpp" />
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
@@ -190,6 +191,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraLogic.h" />
     <ClInclude Include="DemoScenario.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />

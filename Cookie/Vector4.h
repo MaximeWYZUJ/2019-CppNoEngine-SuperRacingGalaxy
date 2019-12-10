@@ -18,6 +18,7 @@ namespace Cookie
 		Vector4<T>(Vector3<T> const& v);
 
 		void Normalize();
+		void Normalize4d();
 
 		T x;
 		T y;
@@ -60,6 +61,16 @@ namespace Cookie
 		x /= len;
 		y /= len;
 		z /= len;
+	}
+
+	template<class T>
+	void Vector4<T>::Normalize4d()
+	{
+		float len = static_cast<float>(sqrt(x * x + y * y + z * z + w * w));
+		x /= len;
+		y /= len;
+		z /= len;
+		w /= len;
 	}
 
 	template<class T>

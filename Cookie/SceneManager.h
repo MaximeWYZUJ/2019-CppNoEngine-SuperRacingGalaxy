@@ -48,6 +48,7 @@ namespace Cookie
 		void AddComponent(T* component, SceneNodePtr parent);
 
 		void SetMainCamera(Camera* camera);
+		Camera* GetMainCamera() const;
 
 		void UpdateMatrices();
 		void DrawAll(Engine const& engine);

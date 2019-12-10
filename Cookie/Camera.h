@@ -16,6 +16,7 @@ namespace Cookie
 		void SetAspectRatio(float aspectRatio);
 		void SetNearPlane(float nearPlane);
 		void SetFarPlane(float farPlane);
+		void SetUpVector(Vector3<> const& up);
 
 		void UpdateMatrices();
 	private:
@@ -23,6 +24,7 @@ namespace Cookie
 		float aspectRatio;
 		float nearPlane;
 		float farPlane;
+		Vector3<> up;
 
 		bool isProjectionDirty;
 		

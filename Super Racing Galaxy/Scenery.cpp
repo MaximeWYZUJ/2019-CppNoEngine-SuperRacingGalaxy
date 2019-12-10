@@ -5,8 +5,8 @@ using namespace Cookie;
 
 Scenery::Scenery(Transform<> transform, string meshPath, wstring texturePath)
 {
-	transform_ = transform;
-	type_ = SCENERY;
+	initialTransform = transform;
+	type_ = Type::SCENERY;
 	meshPath_ = meshPath;
 	texturePath_ = texturePath;
 	mesh = nullptr;

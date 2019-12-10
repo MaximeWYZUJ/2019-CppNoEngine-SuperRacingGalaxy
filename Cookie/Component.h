@@ -8,7 +8,7 @@ namespace Cookie
 	class COOKIE_API Component
 	{
 	public:
-		SceneNode* parent;
+		SceneNode* sceneNode;
 		Matrix4x4<>* matrix;
 	};
 }

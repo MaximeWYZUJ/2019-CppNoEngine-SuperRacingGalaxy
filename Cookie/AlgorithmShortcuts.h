@@ -4,7 +4,7 @@
 
 namespace Cookie
 {
-	namespace Alg
+	namespace Algo
 	{
 		template<class TContainer, class TVal>
 		typename TContainer::iterator Find(TContainer const& container, TVal const& val)

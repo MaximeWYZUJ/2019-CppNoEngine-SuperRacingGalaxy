@@ -307,7 +307,7 @@ namespace Cookie
 		toBeModified->transform.SetPosition(Vector3<PhysicsComponent::PhysicsComponent_t>(pos.x, pos.y, pos.z));
 		PxQuat rot = actor->getGlobalPose().q;
 		toBeModified->transform.SetRotation(Quaternion<PhysicsComponent::PhysicsComponent_t>(rot.x, rot.y, rot.z, rot.w));
-		toBeModified->transform.SetScale(toBeModified->parent->localTransform.GetScale());
+		toBeModified->transform.SetScale(toBeModified->sceneNode->localTransform.GetScale());
 
 		if (toBeModified->type == PhysicsComponent::DYNAMIC) {
 			PxVec3 velo = static_cast<PxRigidDynamic*>(actor)->getLinearVelocity();

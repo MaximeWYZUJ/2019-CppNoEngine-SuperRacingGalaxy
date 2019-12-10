@@ -1,13 +1,12 @@
 #pragma once
-
-#include <set>
-#include <vector>
-
+#include "ExportMacro.h"
 #include "Transform.h"
 #include "PhysicMaterial.h"
 #include "PhysicsCollisionCallback.h"
-#include "ExportMacro.h"
 #include "Component.h"
+#include "PhysicsCollisionFiltering.h"
+#include <set>
+#include <vector>
 
 namespace physx
 {

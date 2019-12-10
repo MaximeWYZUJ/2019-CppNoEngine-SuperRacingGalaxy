@@ -23,10 +23,18 @@ namespace Cookie
 		bool IsDirty();
 		void ResetDirty();
 		void SetDirty();
+		Vector3<T> GetGlobalPosition() const;
+		Vector3<T> GetGlobalScale() const;
+		Quaternion<T> GetGlobalRotation() const;
 	private:
 		Vector3<T> position;
 		Vector3<T> scale;
 		Quaternion<T> rotation;
+
+		Vector3<T> globalPosition;
+		Vector3<T> globalScale;
+		Quaternion<T> globalRotation;
+
 		bool isDirty;
 	};
 
@@ -103,5 +111,23 @@ namespace Cookie
 	void Transform<T>::SetDirty()
 	{
 		isDirty = true;
+	}
+
+	template<class T>
+	Vector3<T> Transform<T>::GetGlobalPosition() const
+	{
+		throw;
+	}
+
+	template<class T>
+	Vector3<T> Transform<T>::GetGlobalScale() const
+	{
+		throw;
+	}
+
+	template<class T>
+	Quaternion<T> Transform<T>::GetGlobalRotation() const
+	{
+		throw;
 	}
 }

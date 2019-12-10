@@ -13,13 +13,13 @@ namespace Cookie {
 class Prefab
 {
 public:
-	enum Type {
+	enum class Type {
 		PLANET, SCENERY, VEHICLE, NOTHING
 	};
 
 	Type type_;
 
-	Cookie::Transform<> transform_;
+	Cookie::Transform<> initialTransform;
 
 	Cookie::SceneNode *root;
 

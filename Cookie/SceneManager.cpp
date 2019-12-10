@@ -44,7 +44,7 @@ namespace Cookie
 		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
 		
 		parent->components.push_back(renderer);
-		renderer->parent = parent;
+		renderer->sceneNode = parent;
 		renderer->matrix = &parent->matrix;
 
 		return renderer;
@@ -62,7 +62,7 @@ namespace Cookie
 			parent->localTransform.GetScale().z);
 		
 		parent->components.push_back(component);
-		component->parent = parent;
+		component->sceneNode = parent;
 		component->matrix = &parent->matrix;
 
 		addedPhysicsComponents.push_back(component);
@@ -79,7 +79,7 @@ namespace Cookie
 			parent->localTransform.GetScale().x);
 
 		parent->components.push_back(component);
-		component->parent = parent;
+		component->sceneNode = parent;
 		component->matrix = &parent->matrix;
 
 		addedPhysicsComponents.push_back(component);
@@ -97,7 +97,7 @@ namespace Cookie
 			parent->localTransform.GetScale());
 
 		parent->components.push_back(component);
-		component->parent = parent;
+		component->sceneNode = parent;
 		component->matrix = &parent->matrix;
 
 		addedPhysicsComponents.push_back(component);
@@ -108,7 +108,7 @@ namespace Cookie
 	{
 		Camera* cam = cameras.emplace_back(new Camera(XM_PI / 2.2, static_cast<float>(device->GetWidth()) / static_cast<float>(device->GetHeight()), 1.0f, 100'000.0f));
 		parent->components.push_back(cam);
-		cam->parent = parent;
+		cam->sceneNode = parent;
 		cam->matrix = &parent->matrix;
 		return cam;
 	}
@@ -142,9 +142,14 @@ namespace Cookie
 	
 	void SceneManager::SetMainCamera(Camera* camera)
 	{
-		assert(Alg::Exists(cameras, camera));
+		assert(Algo::Exists(cameras, camera));
 		
 		mainCamera = camera;
+	}
+
+	Camera* SceneManager::GetMainCamera() const
+	{
+		return mainCamera;
 	}
 
 	void SceneManager::UpdateMatrices()
@@ -188,11 +193,10 @@ namespace Cookie
 
 	void SceneManager::DrawAll(Engine const& engine)
 	{
-		Vector3<> camPos(5.0f, 5.0f, 5.0f);
 		if (mainCamera)
 		{
 			// Todo: should have access to globalTransform here (there is only localTransform)
-			camPos = Vector3<>(mainCamera->parent->matrix._14, mainCamera->parent->matrix._24, mainCamera->parent->matrix._34);
+			Vector3<> camPos = Vector3<>(mainCamera->sceneNode->matrix._14, mainCamera->sceneNode->matrix._24, mainCamera->sceneNode->matrix._34);
 			
 			for (auto& renderer : meshRenderers)
 			{

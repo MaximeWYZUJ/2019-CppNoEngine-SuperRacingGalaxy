@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "CookieMath.h"
 
 namespace Cookie
 {
@@ -15,6 +16,8 @@ namespace Cookie
 		static Vector3<T> Normalize(Vector3<T> const& v);
 		static T DotProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
 		static Vector3<T> CrossProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
+		static T Distance(Vector3<T> const& lhs, Vector3<T> const& rhs);
+		static Vector3<T> Lerp(Vector3<T> const& lhs, Vector3<T> const& rhs, T time);
 		
 		Vector3<T>() : x(0), y(0), z(0) {}
 		Vector3<T>(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
@@ -26,7 +29,7 @@ namespace Cookie
 
 		float operator%(const Vector3<T>& v) const;				// produit scalaire
 		Vector3<T> operator^(const Vector3<T>& v) const;		// produit vectoriel
-		void normalize();
+		void Normalize();
 
 		Vector3<T> operator+ (const Vector3<T>& v) const;
 		Vector3<T> operator+ (T d) const;
@@ -65,7 +68,11 @@ namespace Cookie
 			return os << v.x << ", " << v.y << ", " << v.z;
 		}
 
-		float length() const;
+		[[nodiscard]]
+		T Length() const;
+
+		[[nodiscard]]
+		bool IsApproximatelyZero() const;
 
 		T x, y, z;
 	};
@@ -99,6 +106,18 @@ namespace Cookie
 	}
 
 	template<typename T>
+	T Vector3<T>::Distance(Vector3<T> const& lhs, Vector3<T> const& rhs)
+	{
+		return (lhs - rhs).Length();
+	}
+
+	template<typename T>
+	Vector3<T> Vector3<T>::Lerp(Vector3<T> const& lhs, Vector3<T> const& rhs, T ratio)
+	{
+		return Vector3<T>(std::lerp(lhs.x, rhs.x, ratio), std::lerp(lhs.y, rhs.y, ratio), std::lerp(lhs.z, rhs.z, ratio));
+	}
+
+	template<typename T>
 	Vector3<T>::Vector3(const Vector4<T>& v)
 		: x(v.x), y(v.y), z(v.z)
 	{
@@ -118,7 +137,7 @@ namespace Cookie
 
 
 	template<typename T>
-	void Vector3<T>::normalize()
+	void Vector3<T>::Normalize()
 	{
 		float len = static_cast<float>(sqrt(x * x + y * y + z * z));
 
@@ -310,9 +329,15 @@ namespace Cookie
 
 
 	template<typename T>
-	float Vector3<T>::length() const
+	T Vector3<T>::Length() const
 	{
-		return static_cast<float>(sqrt(x * x + y * y + z * z));
+		return static_cast<T>(sqrt(x * x + y * y + z * z));
+	}
+
+	template<typename T>
+	bool Vector3<T>::IsApproximatelyZero() const
+	{
+		return Math::Approximately(Length(), 0.0f);
 	}
 
 
