@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 
 		SceneManager* smgr = engine->GetSceneManager();
+		PhysicsEngine* physics = engine->GetPhysicsEngine();
 		InputManager *inputManager = engine->GetInputManager();
 
 		CameraLogic cameraLogic(*smgr);
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
 		int skip = 0;
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, &cameraLogic, &lastClosestPlanet, &lastForward, scenario]() {
+		while (engine->Run([&skip, inputManager, physics, &cameraLogic, &lastClosestPlanet, &lastForward, scenario]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
@@ -70,6 +71,8 @@ int main(int argc, char* argv[])
 				vehicle->gravityApplied *= closestPlanet->gravityValue;
 
 				vehicle->root->physics->addForce(vehicle->gravityApplied);
+
+				physics->Raycast(vehiclePos, -up, 10.0f);
 			}
 			skip++;
 
@@ -112,7 +115,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(-Math::Pi / 180.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			}
 
@@ -123,7 +126,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(Math::Pi / 180.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
 			}
 

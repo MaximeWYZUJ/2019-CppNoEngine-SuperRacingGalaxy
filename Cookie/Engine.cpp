@@ -47,6 +47,11 @@ namespace Cookie
 		return actionManager.get();
 	}
 
+	PhysicsEngine* Engine::GetPhysicsEngine() const
+	{
+		return physics.get();
+	}
+
 	SceneManager* Engine::GetSceneManager() const
 	{
 		return sceneManager.get();

@@ -41,6 +41,8 @@ namespace Cookie
 		void step();
 		void clean();
 
+		void Raycast(Vector3<> origin, Vector3<> unitDir, float distance);
+
 		// Acces au singleton
 		static PhysicsEngine& getInstance()
 		{

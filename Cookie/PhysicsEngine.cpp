@@ -2,8 +2,8 @@
 #include "PhysicsEngine.h"
 #include "PhysicsContactCallback.h"
 #include "PxPhysicsAPI.h"
-#include <algorithm>
 #include <vector>
+#include "RaycastCallback.h"
 
 using namespace physx;
 
@@ -106,6 +106,22 @@ namespace Cookie
 			PX_RELEASE(transport);
 		}
 		PX_RELEASE(gFoundation);
+	}
+
+	void PhysicsEngine::Raycast(Vector3<> origin, Vector3<> unitDir, float distance)
+	{
+		const PxU32 bufferSize = 256;
+		PxRaycastHit hitBuffer[bufferSize];
+		PxRaycastBuffer buf(hitBuffer, bufferSize);
+
+		RaycastCallback callback;
+		
+		auto r = gScene->raycast(
+			PxVec3(origin.x, origin.y, origin.z),
+			PxVec3(unitDir.x, unitDir.y, unitDir.z),
+			distance, buf,
+			PxHitFlags(PxHitFlag::eDEFAULT | PxHitFlag::eMESH_MULTIPLE), PxQueryFilterData(), &callback);
+
 	}
 	
 	void PhysicsEngine::RemoveActor(ActorPtr actor)
