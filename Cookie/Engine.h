@@ -37,6 +37,7 @@ namespace Cookie
 		Device* GetDevice() const;
 		InputManager* GetInputManager() const;
 		ActionManager* GetActionManager() const;
+		PhysicsEngine* GetPhysicsEngine() const;
 		SceneManager* GetSceneManager() const;
 		TextureManager* GetTextureManager() const noexcept;
 		MaterialManager* GetMaterialManager() const noexcept;
