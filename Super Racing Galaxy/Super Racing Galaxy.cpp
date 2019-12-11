@@ -17,6 +17,31 @@ using namespace Cookie;
 
 float camDistance = 45.0f;
 
+// Projection of a onto b
+std::pair<float, Vector3<>> Projection(Vector3<> a, Vector3<> b)
+{
+	auto bLength = b.Length();
+	auto dot = Vector3<>::DotProduct(b, a);
+	return { dot, dot / Vector3<>::DotProduct(b, a) / (bLength * bLength) * b };
+}
+
+Vector3<> ComputeRepulsion(Vector3<> raycast, float hitDistance, float maxHitDistance, float planetGravity, Vector3<> curVelocity)
+{
+	Vector3<> force = Vector3<>::Normalize(-raycast);
+	float heightInv = 1.0f - hitDistance / maxHitDistance;
+	float forceFactor = heightInv * heightInv * heightInv * heightInv; // x^4
+	float maxPulsion = planetGravity * -2.0f; // 2 times the gravity
+	Vector3<> repulsion = force * forceFactor * maxPulsion;
+	auto projection = Projection(curVelocity, repulsion);
+
+	if (projection.first > 0.0f)
+	{
+		repulsion *= 0.5f;
+	}
+	
+	return repulsion;
+}
+
 int main(int argc, char* argv[])
 {
 	try
@@ -72,7 +97,45 @@ int main(int argc, char* argv[])
 
 				vehicle->root->physics->addForce(vehicle->gravityApplied);
 
-				physics->Raycast(vehiclePos, -up, 10.0f);
+				// Raycasts
+				Vector3<> vehicleScale = vehicle->root->localTransform.GetScale();
+				Quaternion<> vehicleRot = vehicle->root->localTransform.GetRotation();
+				float rayY = -vehicleScale.y / 2.0f - 0.1f;
+				Vector3<> frontLeft = vehicleRot * Vector3<>(-vehicleScale.x / 2.0f, rayY, vehicleScale.z / 2.0f) + vehiclePos;
+				Vector3<> frontRight = vehicleRot * Vector3<>(vehicleScale.x / 2.0f, rayY, vehicleScale.z / 2.0f) + vehiclePos;
+				Vector3<> backLeft = vehicleRot * Vector3<>(-vehicleScale.x / 2.0f, rayY, -vehicleScale.z / 2.0f) + vehiclePos;
+				Vector3<> backRight = vehicleRot * Vector3<>(vehicleScale.x / 2.0f, rayY, -vehicleScale.z / 2.0f) + vehiclePos;
+
+				Vector3<> frontLeftRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
+				Vector3<> frontRightRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
+				Vector3<> backLeftRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
+				Vector3<> backRightRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
+				
+				auto a = physics->PlanetRaycast(frontLeft, frontLeftRay, 2.0f);
+				auto b = physics->PlanetRaycast(frontRight, frontRightRay, 2.0f);
+				auto c = physics->PlanetRaycast(backLeft, backLeftRay, 2.0f);
+				auto d = physics->PlanetRaycast(backRight, backRightRay, 2.0f);
+
+				Vector3<> curVelocity = vehicle->root->physics->velocity;
+				if (a.first)
+				{
+					vehicle->root->physics->addForce(ComputeRepulsion(frontLeftRay, a.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+				}
+				
+				if (b.first)
+				{
+					vehicle->root->physics->addForce(ComputeRepulsion(frontRightRay, b.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+				}
+
+				if (c.first)
+				{
+					vehicle->root->physics->addForce(ComputeRepulsion(backLeftRay, c.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+				}
+
+				if (d.first)
+				{
+					vehicle->root->physics->addForce(ComputeRepulsion(backRightRay, d.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+				}
 			}
 			skip++;
 
@@ -115,7 +178,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				auto rot = Quaternion<>::FromDirection(-Math::Pi / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			}
 
@@ -126,7 +189,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				auto rot = Quaternion<>::FromDirection(Math::Pi / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
 			}
 

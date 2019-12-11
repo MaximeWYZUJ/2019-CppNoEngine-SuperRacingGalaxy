@@ -108,20 +108,24 @@ namespace Cookie
 		PX_RELEASE(gFoundation);
 	}
 
-	void PhysicsEngine::Raycast(Vector3<> origin, Vector3<> unitDir, float distance)
+	std::pair<bool, float> PhysicsEngine::PlanetRaycast(Vector3<> origin, Vector3<> unitDir, float distance)
 	{
-		const PxU32 bufferSize = 256;
-		PxRaycastHit hitBuffer[bufferSize];
-		PxRaycastBuffer buf(hitBuffer, bufferSize);
-
+		PxRaycastBuffer buf;
 		RaycastCallback callback;
 		
 		auto r = gScene->raycast(
 			PxVec3(origin.x, origin.y, origin.z),
 			PxVec3(unitDir.x, unitDir.y, unitDir.z),
 			distance, buf,
-			PxHitFlags(PxHitFlag::eDEFAULT | PxHitFlag::eMESH_MULTIPLE), PxQueryFilterData(), &callback);
+			PxHitFlags(PxHitFlag::eDEFAULT), PxQueryFilterData(), &callback);
 
+		if (!r)
+		{
+			return { false, -1.0f };
+		}
+
+		PxVec3 p = buf.block.position;
+		return { r, Vector3<>(p.x - origin.x, p.y - origin.y, p.z - origin.z).Length() };
 	}
 	
 	void PhysicsEngine::RemoveActor(ActorPtr actor)
