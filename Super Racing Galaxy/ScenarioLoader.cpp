@@ -14,6 +14,12 @@
 using namespace std;
 using namespace Cookie;
 
+struct CollisionCallbackShip : public PhysicsCollisionCallback {
+	void operator()(PhysicsComponent* otherComponent) override {
+		cout << "collision personnalisée" << endl;
+	}
+};
+
 void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 {
 	SceneManager* smgr = engine->GetSceneManager();
@@ -103,7 +109,9 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::Mater
 	obj->root->physics->addFilterGroup(FilterGroup::VEHICULE);
 
 	// Mask
-	//obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
+	obj->root->physics->addFilterMask(FilterGroup::PLANET);
+
+	obj->root->physics->changeCollisionCallback<CollisionCallbackShip>();
 }
 
 void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj)

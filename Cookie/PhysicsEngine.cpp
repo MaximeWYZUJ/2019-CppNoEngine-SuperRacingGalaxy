@@ -21,15 +21,14 @@ PxFilterFlags filterShader(
 
 	// Non triggers
 	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	if ((filterData0.word0 & filterData1.word1) || (filterData1.word0 & filterData0.word1))
 	{
 		pairFlags = PxPairFlag::eSOLVE_CONTACT;
 		pairFlags |= PxPairFlag::eDETECT_DISCRETE_CONTACT;
 		pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
-		/*pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= PxPairFlag::eMODIFY_CONTACTS;
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;*/
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
 	}
 
 	return PxFilterFlag::eDEFAULT;

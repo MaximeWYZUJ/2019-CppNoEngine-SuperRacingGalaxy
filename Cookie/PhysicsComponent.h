@@ -38,8 +38,8 @@ namespace Cookie
 
 		physx::PxRigidActor* actor = nullptr;
 
-		PhysicsCollisionCallback onCollisionCallback;
-		PhysicsCollisionCallback onTriggerCallback;
+		PhysicsCollisionCallback* onCollisionCallback = nullptr;
+		PhysicsCollisionCallback* onTriggerCallback = nullptr;
 
 		bool isDirty = false;
 
@@ -54,52 +54,22 @@ namespace Cookie
 		void addFilterMask(FilterGroup f);
 		void removeFilterMask(FilterGroup f);
 		void addForce(Vector3<PhysicsComponent_t> force);
+
+		template <class T>
+		void changeCollisionCallback();
+		template <class T>
+		void changeTriggerCallback();
 	};
-
-	/*class COOKIE_API PhysicsComponent
+	template<class T>
+	inline void PhysicsComponent::changeCollisionCallback()
 	{
-	public:
-		enum bodyType {
-			STATIC, DYNAMIC
-		};
-
-		using PhysicsComponent_t = float;
-
-	protected:
-		Vector3<PhysicsComponent_t> massCenter{};
-		bodyType type;
-		bool trigger = false;
-		PhysicMaterial material;
-
-		std::vector<FilterGroup> selfGroup;
-		std::vector<FilterGroup> mask;
-
-		physx::PxRigidActor* actor = nullptr;
-
-	public:
-		~PhysicsComponent() = default;
-
-		void addForce(Vector3<PhysicsComponent_t> force);
-		PhysicsCollisionCallback onCollisionCallBack;
-		PhysicsCollisionCallback onTriggerCallBack;
-
-		void addFilterGroup(FilterGroup f);
-		void removeFilterGroup(FilterGroup f);
-		void addFilterMask(FilterGroup f);
-		void removeFilterMask(FilterGroup f);
-
-	private:
-		void updateFilters();
-
-	public:
-		virtual Transform<PhysicsComponent_t> getTransform() const noexcept;
-		virtual PhysicsComponent_t getMass() const;
-		virtual Vector3<PhysicsComponent_t> getVelocity() const;
-		virtual PhysicMaterial getMaterial() const noexcept;
-		virtual bool isTrigger() const noexcept;
-
-		virtual void setMass(PhysicsComponent_t mass);
-		virtual void setMaterial(PhysicMaterial material_);
-		virtual void setTrigger(bool isTrigger_);
-	};*/
+		delete onCollisionCallback;
+		onCollisionCallback = new T{};
+	}
+	template<class T>
+	inline void PhysicsComponent::changeTriggerCallback()
+	{
+		delete onCollisionCallback;
+		onCollisionCallback = new T{};
+	}
 }
