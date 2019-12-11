@@ -114,7 +114,7 @@ namespace Cookie
 	template<typename T>
 	Vector3<T> Vector3<T>::Lerp(Vector3<T> const& lhs, Vector3<T> const& rhs, T ratio)
 	{
-		return Vector3<T>(std::lerp(lhs.x, rhs.x, ratio), std::lerp(lhs.y, rhs.y, ratio), std::lerp(lhs.z, rhs.z, ratio));
+		return Vector3<T>(Math::Lerp(lhs.x, rhs.x, ratio), Math::Lerp(lhs.y, rhs.y, ratio), Math::Lerp(lhs.z, rhs.z, ratio));
 	}
 
 	template<typename T>

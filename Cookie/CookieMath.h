@@ -24,5 +24,11 @@ namespace Cookie
             // We multiply this epsilon by the biggest magnitude of a and b.
             return abs(b - a) < std::max(0.000001f * std::max(abs(a), abs(b)), 1e-38f * 8);
         }
+
+    	template<class T, class U>
+    	static auto Lerp(T a, T b, U f)
+        {
+            return a + static_cast<float>(f) * (b - a);
+        }
     }
 }
