@@ -16,21 +16,20 @@ PxFilterFlags filterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	// Triggers
+	// TODO : cf devoir 3
 
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	// Non triggers
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	if ((filterData0.word0 & filterData1.word1) || (filterData1.word0 & filterData0.word1))
 	{
 		pairFlags = PxPairFlag::eSOLVE_CONTACT;
 		pairFlags |= PxPairFlag::eDETECT_DISCRETE_CONTACT;
 		pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
-		/*pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= PxPairFlag::eMODIFY_CONTACTS;
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;*/
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
 	}
-
-	/*if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
-		return PxFilterFlag::eKILL;
-	}*/
 
 	return PxFilterFlag::eDEFAULT;
 }
@@ -142,6 +141,7 @@ namespace Cookie
 		PxMaterial* material = gPhysics->createMaterial(compo->material.staticFriction, compo->material.dynamicFriction, compo->material.bounce);
 		//Vector3<> scaling = box->transform.GetScale();
 
+		// Shape
 		PxShape* shape = nullptr;
 		switch (compo->getShapeType()) {
 		case PhysicsComponent::ShapeType::BOX:
@@ -159,8 +159,18 @@ namespace Cookie
 		default:
 			break;
 		}
-		shape->setSimulationFilterData(PxFilterData(DEFAULT, DEFAULT, 0, 0));
 
+		// Simulation filter data
+		PxFilterData filter{};
+		std::for_each(compo->selfGroup.begin(), compo->selfGroup.end(), [&filter](FilterGroup f) {
+			filter.word0 |= f;
+		});
+		std::for_each(compo->mask.begin(), compo->mask.end(), [&filter](FilterGroup f) {
+			filter.word1 |= f;
+		});
+		shape->setSimulationFilterData(filter);
+
+		// Body
 		PxRigidActor* actor = nullptr;
 		if (compo->type == PhysicsComponent::DYNAMIC) {
 			PxRigidBody *x = gPhysics->createRigidDynamic(transform);
@@ -171,12 +181,13 @@ namespace Cookie
 			actor = gPhysics->createRigidStatic(transform);
 		}
 		
-		PxFilterData filterNull{};
-		shape->setSimulationFilterData(filterNull);
+
 		actor->attachShape(*shape);
 
 		actor->userData = compo;
 		gScene->addActor(*actor);
+
+		shape->release();
 
 		return actor;
 	}
@@ -224,8 +235,8 @@ namespace Cookie
 	void PhysicsEngine::UpdateActor(PhysicsComponent* modifs, ActorPtr actor)
 	{
 		// ON NE PEUT PAS CHANGER LE BODY TYPE POUR LE MOMENT
-
-		/*switch (modifs->getShapeType()) {
+		/*
+		switch (modifs->getShapeType()) {
 		case PhysicsComponent::ShapeType::BOX:
 			UpdateBoxActor(static_cast<PhysicsBoxComponent*>(modifs), actor);
 			break;
@@ -240,42 +251,43 @@ namespace Cookie
 
 		default:
 			break;
-		}*/
+		}
+		*/
 
 		Vector3<PhysicsComponent::PhysicsComponent_t> modP = modifs->transform.GetPosition();
 		Quaternion<PhysicsComponent::PhysicsComponent_t> modR = modifs->transform.GetRotation();
 		actor->setGlobalPose(PxTransform(PxVec3(modP.x, modP.y, modP.z), PxQuat(modR.x, modR.y, modR.z, modR.w)));
 
-		//if (modifs->type == PhysicsComponent::BodyType::DYNAMIC) {
-		//	static_cast<PxRigidDynamic*>(actor)->setMass(modifs->mass);
-		//	static_cast<PxRigidDynamic*>(actor)->setCMassLocalPose(PxTransform(PxVec3(-modifs->massCenter.x, modifs->massCenter.y, modifs->massCenter.z)));
-		//	static_cast<PxRigidDynamic*>(actor)->setLinearVelocity(PxVec3(modifs->velocity.x, modifs->velocity.y, modifs->velocity.z));
-		//}
+		if (modifs->type == PhysicsComponent::BodyType::DYNAMIC) {
+			static_cast<PxRigidDynamic*>(actor)->setMass(modifs->mass);
+			static_cast<PxRigidDynamic*>(actor)->setCMassLocalPose(PxTransform(PxVec3(-modifs->massCenter.x, modifs->massCenter.y, modifs->massCenter.z)));
+			static_cast<PxRigidDynamic*>(actor)->setLinearVelocity(PxVec3(modifs->velocity.x, modifs->velocity.y, modifs->velocity.z));
+		}
 
-		//// On calcule les nouveaux word0 et word1
-		//PxFilterData filter{};
-		//std::for_each(modifs->selfGroup.begin(), modifs->selfGroup.end(), [&filter](FilterGroup f) {
-		//	filter.word0 |= f;
-		//});
-		//std::for_each(modifs->mask.begin(), modifs->mask.end(), [&filter](FilterGroup f) {
-		//	filter.word1 |= f;
-		//});
+		// On calcule les nouveaux word0 et word1
+		/*PxFilterData filter{};
+		std::for_each(modifs->selfGroup.begin(), modifs->selfGroup.end(), [&filter](FilterGroup f) {
+			filter.word0 |= f;
+		});
+		std::for_each(modifs->mask.begin(), modifs->mask.end(), [&filter](FilterGroup f) {
+			filter.word1 |= f;
+		});
 
-		//// Calcul du nouveau material
-		//PxMaterial* mat = PhysicsEngine::getInstance().gPhysics->createMaterial(modifs->material.staticFriction, modifs->material.dynamicFriction, modifs->material.bounce);
+		// Calcul du nouveau material
+		PxMaterial* mat = PhysicsEngine::getInstance().gPhysics->createMaterial(modifs->material.staticFriction, modifs->material.dynamicFriction, modifs->material.bounce);
 
-		//// Parcourt de toutes les shapes
-		//int nbShapes = actor->getNbShapes();
-		//PxShape** shapes = new PxShape * [nbShapes];
-		//actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		// Parcourt de toutes les shapes
+		int nbShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape * [nbShapes];
+		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
 
-		//for (int i = 0; i < nbShapes; i++) {
-		//	shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, modifs->trigger);
-		//	shapes[i]->setMaterials(&mat, 1);
-		//	shapes[i]->setSimulationFilterData(filter);
-		//}
+		for (int i = 0; i < nbShapes; i++) {
+			shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, modifs->trigger);
+			shapes[i]->setMaterials(&mat, 1);
+			shapes[i]->setSimulationFilterData(filter);
+		}*/
 
-		//// On met les data dans le userData de l'actor, utile pour les callbacks
+		// On met les data dans le userData de l'actor, utile pour les callbacks
 		actor->userData = modifs;
 	}
 

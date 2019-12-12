@@ -16,6 +16,14 @@ namespace Cookie {
 		material = mat;
 
 		type = type_;
+
+		onCollisionCallback = new PhysicsCollisionCallback();
+		onTriggerCallback = new PhysicsCollisionCallback();
+	}
+	PhysicsBoxComponent::~PhysicsBoxComponent()
+	{
+		delete onCollisionCallback;
+		delete onTriggerCallback;
 	}
 	PhysicsComponent::ShapeType PhysicsBoxComponent::getShapeType()
 	{
