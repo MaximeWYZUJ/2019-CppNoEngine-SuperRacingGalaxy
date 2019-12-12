@@ -170,6 +170,7 @@
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Super Racing Galaxy.cpp" />
     <ClCompile Include="Vehicle.cpp" />
+    <ClCompile Include="VehicleHovering.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cookie\Cookie.vcxproj">
@@ -200,6 +201,7 @@
     <ClInclude Include="ScenarioLoader.h" />
     <ClInclude Include="Scenery.h" />
     <ClInclude Include="Vehicle.h" />
+    <ClInclude Include="VehicleHovering.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

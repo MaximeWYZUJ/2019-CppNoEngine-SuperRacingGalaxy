@@ -19,8 +19,9 @@ namespace Cookie
 	class NoVelocity_StaticObject_Exception {};
 	class NoShapeException {};
 
-	struct COOKIE_API PhysicsComponent : Component
+	class COOKIE_API PhysicsComponent : public Component
 	{
+	public:
 		enum BodyType { STATIC, DYNAMIC };
 		enum ShapeType { BOX, SPHERE, MESH };
 		using PhysicsComponent_t = float;
@@ -54,6 +55,7 @@ namespace Cookie
 		void addFilterMask(FilterGroup f);
 		void removeFilterMask(FilterGroup f);
 		void addForce(Vector3<PhysicsComponent_t> force);
+		void SetAngularVelocity(Vector3<PhysicsComponent_t> velocity);
 	};
 
 	/*class COOKIE_API PhysicsComponent
