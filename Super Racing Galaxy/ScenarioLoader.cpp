@@ -89,7 +89,7 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::Mater
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.0f), PhysicsComponent::DYNAMIC, obj->root);
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(1.0f, 0.5f, 0.0f), PhysicsComponent::DYNAMIC, obj->root);
 }
 
 void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj)
