@@ -239,6 +239,7 @@
     <ClInclude Include="PhysicsMeshComponent.h" />
     <ClInclude Include="PhysicsSphereComponent.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="RaycastCallback.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
@@ -306,6 +307,7 @@
     <ClCompile Include="PhysicsMeshComponent.cpp" />
     <ClCompile Include="PhysicsSphereComponent.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="RaycastCallback.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shaders.cpp" />

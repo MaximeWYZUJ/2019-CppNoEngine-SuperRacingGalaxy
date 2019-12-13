@@ -13,6 +13,9 @@ namespace Cookie
 	{
 	public:
 		static constexpr Vector3<T> Zero();
+		static constexpr Vector3<T> Forward();
+		static constexpr Vector3<T> Up();
+		static constexpr Vector3<T> Right();
 		static Vector3<T> Normalize(Vector3<T> const& v);
 		static T DotProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
 		static Vector3<T> CrossProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
@@ -84,6 +87,24 @@ namespace Cookie
 	}
 
 	template<class T>
+	constexpr Vector3<T> Vector3<T>::Forward()
+	{
+		return Vector3<T>(0.0f, 0.0f, 1.0f);
+	}
+
+	template<class T>
+	constexpr Vector3<T> Vector3<T>::Up()
+	{
+		return Vector3<T>(0.0f, 1.0f, 0.0f);
+	}
+
+	template<class T>
+	constexpr Vector3<T> Vector3<T>::Right()
+	{
+		return Vector3<T>(1.0f, 0.0f, 0.0f);
+	}
+
+	template<class T>
 	Vector3<T> Vector3<T>::Normalize(Vector3<T> const& v)
 	{
 		float len = static_cast<float>(sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
@@ -114,7 +135,7 @@ namespace Cookie
 	template<typename T>
 	Vector3<T> Vector3<T>::Lerp(Vector3<T> const& lhs, Vector3<T> const& rhs, T ratio)
 	{
-		return Vector3<T>(std::lerp(lhs.x, rhs.x, ratio), std::lerp(lhs.y, rhs.y, ratio), std::lerp(lhs.z, rhs.z, ratio));
+		return Vector3<T>(Math::Lerp(lhs.x, rhs.x, ratio), Math::Lerp(lhs.y, rhs.y, ratio), Math::Lerp(lhs.z, rhs.z, ratio));
 	}
 
 	template<typename T>

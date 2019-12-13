@@ -14,6 +14,12 @@
 using namespace std;
 using namespace Cookie;
 
+struct CollisionCallbackShip : public PhysicsCollisionCallback {
+	void operator()(PhysicsComponent* otherComponent) override {
+		cout << "collision personnalisée" << endl;
+	}
+};
+
 void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 {
 	SceneManager* smgr = engine->GetSceneManager();
@@ -75,7 +81,14 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::Materi
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+	obj->root->physics->addFilterGroup(FilterGroup::PLANET);
+
+	// Mask
+	//obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }
 
 void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Vehicle* obj)
@@ -85,11 +98,20 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::Mater
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f });
+		 { 1.0f, 1.0f, 1.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
 	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, obj->root);
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+	obj->root->physics->addFilterGroup(FilterGroup::VEHICULE);
+
+	// Mask
+	obj->root->physics->addFilterMask(FilterGroup::PLANET);
+
+	obj->root->physics->changeCollisionCallback<CollisionCallbackShip>();
 }
 
 void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj)
@@ -103,5 +125,11 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+
+	// Mask
+	obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }

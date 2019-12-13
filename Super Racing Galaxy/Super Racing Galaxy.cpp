@@ -9,13 +9,22 @@
 #include "Vehicle.h"
 #include "Planet.h"
 #include "CameraLogic.h"
+#include "VehicleHovering.h"
 
 #undef max
 
 using namespace std;
 using namespace Cookie;
+using namespace Srg;
 
 float camDistance = 45.0f;
+
+std::pair<float, Vector3<>> Projection(Vector3<> a, Vector3<> b)
+{
+	auto bLength = b.Length();
+	auto dot = Vector3<>::DotProduct(b, a);
+	return { dot, dot / (bLength * bLength) * b };
+}
 
 int main(int argc, char* argv[])
 {
@@ -37,6 +46,7 @@ int main(int argc, char* argv[])
 		//guiManager->newSprite("tree02S.dds", 0, 200);
 		
 		CameraLogic cameraLogic(*smgr);
+		VehicleHovering hovering(engine->GetPhysicsEngine());
 		
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
@@ -48,7 +58,7 @@ int main(int argc, char* argv[])
 		wstring fill2;
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
+		while (engine->Run([&skip, inputManager, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
@@ -99,8 +109,9 @@ int main(int argc, char* argv[])
 				vehicle->gravityApplied.Normalize();
 				up = vehicle->gravityApplied;
 				vehicle->gravityApplied *= closestPlanet->gravityValue;
-
 				vehicle->root->physics->addForce(vehicle->gravityApplied);
+
+				hovering.Update(vehicle, closestPlanet->gravityValue, up);
 			}
 			skip++;
 
@@ -138,12 +149,19 @@ int main(int argc, char* argv[])
 			
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+				Vector3<> velocity = scenario.vehicle->root->physics->velocity;
+
+				auto [_, projVelocity] = Projection(velocity, vehicleForward);
+
+				if (projVelocity.Length() < 100.0f)
+				{
+					scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+				}
 			}
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			}
 
@@ -154,7 +172,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
 			}
 

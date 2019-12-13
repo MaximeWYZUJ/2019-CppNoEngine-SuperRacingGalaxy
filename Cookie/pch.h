@@ -15,8 +15,6 @@
 #define _XM_NO_INTRINSICS_
 #include <d3d11.h>
 
-#define _USE_MATH_DEFINES
-
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include "PhysicsCollisionFiltering.h"

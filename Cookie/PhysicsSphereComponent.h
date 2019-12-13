@@ -9,6 +9,7 @@ namespace Cookie {
 		float radius = 1;
 
 		PhysicsSphereComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type, float radius_);
+		~PhysicsSphereComponent();
 
 		ShapeType getShapeType();
 	};
