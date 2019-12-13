@@ -31,6 +31,9 @@ namespace Cookie
 		ID3D11Device* GetD3DDevice() const;
 		IDXGISwapChain* GetSwapChain() const;
 
+		void EnableAlphaBlend();
+		void DisableAlphaBlend();
+		
 		HMODULE GetModule() const;
 		HWND GetWindow() const;
 
@@ -46,6 +49,7 @@ namespace Cookie
 
 	private:
 		void InitDepthBuffer();
+		void InitBlendStates();
 
 	private:
 		ID3D11Device * device;
@@ -54,6 +58,10 @@ namespace Cookie
 		ID3D11RenderTargetView* pRenderTargetView;
 		ID3D11Texture2D* pDepthTexture;
 		ID3D11DepthStencilView* pDepthStencilView;
+
+		//Alpha blend
+		ID3D11BlendState* alphaBlendEnable;
+		ID3D11BlendState* alphaBlendDisable;
 
 	private:
 		// Window section

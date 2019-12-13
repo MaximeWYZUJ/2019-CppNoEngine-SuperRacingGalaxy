@@ -11,6 +11,8 @@
 #include "AlgorithmShortcuts.h"
 #include "PhysicsBoxComponent.h"
 
+#undef max
+
 using namespace DirectX;
 
 namespace Cookie

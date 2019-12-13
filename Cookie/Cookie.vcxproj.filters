@@ -222,6 +222,18 @@
     <ClInclude Include="CookieMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GuiManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -375,6 +387,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsMeshComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CookieMath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

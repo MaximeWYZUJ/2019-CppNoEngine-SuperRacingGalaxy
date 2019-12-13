@@ -6,6 +6,8 @@
 #include "resource.h"
 #include "DeviceD3D11.h"
 
+#undef max
+
 namespace Cookie
 {
 	using namespace std;

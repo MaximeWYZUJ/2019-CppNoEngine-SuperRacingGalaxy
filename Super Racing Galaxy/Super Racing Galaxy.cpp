@@ -26,15 +26,29 @@ int main(int argc, char* argv[])
 		SceneManager* smgr = engine->GetSceneManager();
 		InputManager *inputManager = engine->GetInputManager();
 
+		GuiManager* guiManager = engine->GetGuiManager();
+		
+		
+		//guiManager->newSprite("tree02S.dds", -607, 0);
+		
+		Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
+		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
+		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
+		//guiManager->newSprite("tree02S.dds", 0, 200);
+		
 		CameraLogic cameraLogic(*smgr);
 		
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-
+		int speed = 0;
 		int skip = 0;
+		int min = 0;
+		int sec = 0;
+		wstring fill;
+		wstring fill2;
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, &cameraLogic, &lastClosestPlanet, &lastForward, scenario]() {
+		while (engine->Run([&skip, inputManager, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
@@ -43,8 +57,25 @@ int main(int argc, char* argv[])
 			if (skip > 1)
 			{
 				Vehicle *vehicle = scenario.vehicle;
+				Vector3<> velocity = vehicle->root->physics->velocity;
 				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 
+				speed = round(velocity.Length() * 3.6);
+				speed < 100 ? (speed < 10 ? fill = L"00" : fill = L"0") : fill = L"";
+				
+				guiManager->Write(fill + to_wstring(speed) + L" km/h", text1);
+
+				if (skip % 60 == 0)
+					++sec;
+				if (sec == 60)
+				{
+					++min;
+					sec = 0;
+				}
+				min < 10 ? fill = L"0" : fill = L"";
+				sec < 10 ? fill2 = L"0" : fill2 = L"";
+				guiManager->Write(fill + to_wstring(min) + L" : " + fill2 + to_wstring(sec), text2);
+				
 				float distanceMin = numeric_limits<float>::max();
 				for (auto &planet : scenario.gravityGenerators)
 				{
