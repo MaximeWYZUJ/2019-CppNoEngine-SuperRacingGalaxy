@@ -36,6 +36,11 @@ namespace Cookie
 		farPlane = farPlane_;
 		isProjectionDirty = true;
 	}
+
+	void Camera::SetUpVector(Vector3<> const& up)
+	{
+		this->up = up;
+	}
 	
 	void Camera::UpdateMatrices()
 	{
@@ -45,12 +50,11 @@ namespace Cookie
 			isProjectionDirty = false;
 		}
 
-		Vector3<> eyePosition = Vector3<>(parent->matrix._14, parent->matrix._24, parent->matrix._34);
-		Vector4<> forwardNoRot(0.0f, 0.0f, 1.0f, 1.0f);
-		Quaternion curRotation = parent->localTransform.GetRotation();
-		Vector4<> dir = Matrix4x4<>::FromRotation(curRotation) * forwardNoRot;
-		Vector3<> focusPosition = eyePosition + dir;
-		view = Matrix4x4<>::FromLookAtLH(eyePosition, focusPosition, Vector3<>(0.0f, 1.0f, 0.0f));
+		Vector3<> eyePosition = Vector3<>(sceneNode->matrix._14, sceneNode->matrix._24, sceneNode->matrix._34);
+		Quaternion rot = sceneNode->localTransform.GetRotation();
+		Vector4<> forward = rot * Vector3<>(0.0f, 0.0f, 1.0f);
+		Vector3<> focusPosition = eyePosition + forward;
+		view = Matrix4x4<>::FromLookAtLH(eyePosition, focusPosition, up);
 		
 		projView = projection * view;
 	}

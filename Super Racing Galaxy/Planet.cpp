@@ -4,13 +4,12 @@
 using namespace std;
 using namespace Cookie;
 
-Planet::Planet(Transform<> transform, float gravityValue,
-			   Vector3<> rotDir, float rotSpeed,
+Planet::Planet(Transform<> transform, float gravityValue, bool isUpVectorDynamic,
 	           string meshPath, wstring texturePath)
-	  : gravityCenter(transform.GetPosition()), gravityValue(gravityValue), rotDir(rotDir), rotSpeed(rotSpeed)
+	  : gravityCenter(transform.GetPosition()), gravityValue(gravityValue), isUpVectorDynamic(isUpVectorDynamic)
 {
-	transform_ = transform;
-	type_ = PLANET;
+	initialTransform = transform;
+	type_ = Type::PLANET;
 	meshPath_ = meshPath;
 	texturePath_ = texturePath;
 	mesh = nullptr;

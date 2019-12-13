@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Cookie.rc
+// fichier Include Microsoft Visual C++.
+// Utilisé par Cookie.rc
 //
 #define IDC_MYICON                      2
 #define IDD_Cookie_DIALOG               102
@@ -29,6 +29,7 @@
 #define DIRECTINPUT_CREATION_ERROR      119
 #define KEYBOARD_CREATION_ERROR         120
 #define KEYBOARD_FORMAT_CREATION_ERROR  121
+#define DXE_ERREURCREATION_BLENDSTATE   122
 #define IDR_MAINFRAME                   128
 #define IDC_STATIC                      -1
 

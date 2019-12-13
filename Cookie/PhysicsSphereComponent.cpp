@@ -12,6 +12,15 @@ namespace Cookie {
 		type = type_;
 
 		radius = radius_;
+
+		onCollisionCallback = new PhysicsCollisionCallback();
+		onTriggerCallback = new PhysicsCollisionCallback();
+	}
+
+	PhysicsSphereComponent::~PhysicsSphereComponent()
+	{
+		delete onCollisionCallback;
+		delete onTriggerCallback;
 	}
 
 	PhysicsComponent::ShapeType Cookie::PhysicsSphereComponent::getShapeType()

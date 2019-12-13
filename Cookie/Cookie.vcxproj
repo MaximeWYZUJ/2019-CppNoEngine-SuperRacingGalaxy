@@ -191,6 +191,7 @@
     <ClInclude Include="ActionManager.h" />
     <ClInclude Include="ActionRunner.h" />
     <ClInclude Include="AlgorithmShortcuts.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapReader.h" />
     <ClInclude Include="BitmapToMeshAdapter.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EntryPoint.h" />
     <ClInclude Include="ExportMacro.h" />
+    <ClInclude Include="GuiManager.h" />
     <ClInclude Include="Horloge.h" />
     <ClInclude Include="incopiable.h" />
     <ClInclude Include="IndexedTriangle.h" />
@@ -214,6 +216,7 @@
     <ClInclude Include="magic_enum.hpp" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MaterialManager.h" />
+    <ClInclude Include="CookieMath.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
@@ -236,6 +239,7 @@
     <ClInclude Include="PhysicsMeshComponent.h" />
     <ClInclude Include="PhysicsSphereComponent.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="RaycastCallback.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
@@ -243,7 +247,9 @@
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Size.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Synchronizer.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Transform.h" />
@@ -263,6 +269,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CookieMath.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DeviceD3D11.cpp" />
@@ -270,6 +277,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="GuiManager.cpp" />
     <ClCompile Include="Horloge.cpp" />
     <ClCompile Include="IndexedTriangle.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -299,6 +307,7 @@
     <ClCompile Include="PhysicsMeshComponent.cpp" />
     <ClCompile Include="PhysicsSphereComponent.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="RaycastCallback.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shaders.cpp" />

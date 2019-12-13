@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraLogic.cpp" />
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Super Racing Galaxy.cpp" />
     <ClCompile Include="Vehicle.cpp" />
+    <ClCompile Include="VehicleHovering.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cookie\Cookie.vcxproj">
@@ -188,8 +190,23 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="SpriteVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraLogic.h" />
     <ClInclude Include="DemoScenario.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
@@ -198,6 +215,7 @@
     <ClInclude Include="ScenarioLoader.h" />
     <ClInclude Include="Scenery.h" />
     <ClInclude Include="Vehicle.h" />
+    <ClInclude Include="VehicleHovering.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

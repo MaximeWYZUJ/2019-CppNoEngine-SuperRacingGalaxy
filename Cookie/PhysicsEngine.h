@@ -41,6 +41,11 @@ namespace Cookie
 		void step();
 		void clean();
 
+		/// <summary>
+		///		Method to get the distance between a point and a planet. Should be a general method to get raycast results; currently specialized for our needs.
+		/// </summary>
+		std::pair<bool, float> PlanetRaycast(Vector3<> origin, Vector3<> unitDir, float distance);
+
 		// Acces au singleton
 		static PhysicsEngine& getInstance()
 		{

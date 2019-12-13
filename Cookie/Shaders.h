@@ -3,11 +3,17 @@
 #include "ExportMacro.h"
 #include "Matrix4x4.h"
 
+struct ID3D11VertexShader;
+struct ID3D11PixelShader;
+struct ID3D11InputLayout;
+struct ID3D11InputLayout;
+struct ID3D11SamplerState;
+struct ID3D11Buffer;
+
 namespace Cookie
 {
 	class Material;
 	class Device;
-	struct ShadersParams;
 
 	class COOKIE_API Shaders
 	{

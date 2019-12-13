@@ -10,6 +10,7 @@
 #include "MaterialManager.h"
 #include "ActionManager.h"
 #include "Synchronizer.h"
+#include "GuiManager.h"
 
 namespace Cookie
 {
@@ -28,6 +29,7 @@ namespace Cookie
 			std::unique_ptr<PhysicsEngine>&& physicsEngine,
 			std::unique_ptr<SceneManager>&& smgr,
 			std::unique_ptr<TextureManager>&& textureManager,
+			std::unique_ptr<GuiManager>&& guiManager,
 			std::unique_ptr<MaterialManager>&& materialManager,
 			std::unique_ptr<Synchronizer>&& synchronizer);
 
@@ -37,7 +39,9 @@ namespace Cookie
 		Device* GetDevice() const;
 		InputManager* GetInputManager() const;
 		ActionManager* GetActionManager() const;
+		PhysicsEngine* GetPhysicsEngine() const;
 		SceneManager* GetSceneManager() const;
+		GuiManager* GetGuiManager() const;
 		TextureManager* GetTextureManager() const noexcept;
 		MaterialManager* GetMaterialManager() const noexcept;
 
@@ -57,6 +61,7 @@ namespace Cookie
 		std::unique_ptr<PhysicsEngine> physics;
 		std::unique_ptr<SceneManager> sceneManager;
 		std::unique_ptr<TextureManager> textureManager;
+		std::unique_ptr<GuiManager> guiManager;
 		std::unique_ptr<MaterialManager> materialManager;
 		std::unique_ptr<Synchronizer> synchronizer;
 
@@ -92,7 +97,7 @@ namespace Cookie
 		UpdateScene();
 
 		// GUI Rendering
-		// Todo: 
+		guiManager->DrawAll();
 
 		// Post Updates
 		inputManager->PostUpdate();

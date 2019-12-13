@@ -16,6 +16,7 @@ namespace Cookie
 		unique_ptr<PhysicsEngine>&& physicsEngine,
 		unique_ptr<SceneManager>&& smgr,
 		unique_ptr<TextureManager>&& textureManager,
+		unique_ptr<GuiManager>&& guiManager,
 		unique_ptr<MaterialManager>&& materialManager,
 		unique_ptr<Synchronizer>&& synchronizer)
 		:
@@ -25,6 +26,7 @@ namespace Cookie
 		physics{ move(physicsEngine) },
 		sceneManager{ move(smgr) },
 		textureManager{ move(textureManager) },
+		guiManager{ move(guiManager) },
 		materialManager { move(materialManager) },
 		synchronizer { move(synchronizer) }
 	{
@@ -47,11 +49,21 @@ namespace Cookie
 		return actionManager.get();
 	}
 
+	PhysicsEngine* Engine::GetPhysicsEngine() const
+	{
+		return physics.get();
+	}
+
 	SceneManager* Engine::GetSceneManager() const
 	{
 		return sceneManager.get();
 	}
 
+	GuiManager* Engine::GetGuiManager() const
+	{
+		return guiManager.get();
+	}
+	
 	TextureManager* Engine::GetTextureManager() const noexcept
 	{
 		return textureManager.get();

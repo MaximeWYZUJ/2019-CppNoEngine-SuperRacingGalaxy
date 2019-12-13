@@ -11,7 +11,7 @@ void Cookie::Synchronizer::SyncUp()
 	for_each(mapPhysics.begin(), mapPhysics.end(), [&engine](pair<PhysicsComponent *, PhysicsEngine::ActorPtr> p) {
 		engine.UpdateComponent(p.second, p.first);
 
-		p.first->parent->localTransform = p.first->transform;
+		p.first->sceneNode->localTransform = p.first->transform;
 	});
 }
 
@@ -29,7 +29,7 @@ void Cookie::Synchronizer::SyncDown(std::unique_ptr<SceneManager> const & sceneM
 	}
 
 	for_each(mapPhysics.begin(), mapPhysics.end(), [&engine](pair<PhysicsComponent*, PhysicsEngine::ActorPtr> p) {
-		p.first->transform = p.first->parent->localTransform;
+		p.first->transform = p.first->sceneNode->localTransform;
 		engine.UpdateActor(p.first, p.second);
 	});
 

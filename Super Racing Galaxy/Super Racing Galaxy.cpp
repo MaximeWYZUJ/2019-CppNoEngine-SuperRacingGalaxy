@@ -1,25 +1,30 @@
 #include "pch.h"
 
-#define _USE_MATH_DEFINES
-
 #include "EntryPoint.h"
-#include "BitmapToMeshAdapter.h"
 #include "SceneManager.h"
-#include "MaterialManager.h"
 #include <DeviceD3D11.h>
-#include "Material.h"
 #include "Vector4.h"
 #include "ScenarioLoader.h"
 #include "DemoScenario.h"
 #include "Vehicle.h"
 #include "Planet.h"
+#include "CameraLogic.h"
+#include "VehicleHovering.h"
+
+#undef max
 
 using namespace std;
 using namespace Cookie;
+using namespace Srg;
 
-float camRadY = M_PI;
-float camRadZX = 0.0f;
 float camDistance = 45.0f;
+
+std::pair<float, Vector3<>> Projection(Vector3<> a, Vector3<> b)
+{
+	auto bLength = b.Length();
+	auto dot = Vector3<>::DotProduct(b, a);
+	return { dot, dot / (bLength * bLength) * b };
+}
 
 int main(int argc, char* argv[])
 {
@@ -27,98 +32,136 @@ int main(int argc, char* argv[])
 	{
 		unique_ptr<Engine> engine = EntryPoint::CreateStandaloneEngine();
 
-		Device* device = engine->GetDevice();
 		SceneManager* smgr = engine->GetSceneManager();
-		SceneNode *root = smgr->GetRoot();
 		InputManager *inputManager = engine->GetInputManager();
 
-		TextureManager* tm = engine->GetTextureManager();
-		MaterialManager* mm = engine->GetMaterialManager();
+		GuiManager* guiManager = engine->GetGuiManager();
 		
-		// Create Scenario
+		
+		//guiManager->newSprite("tree02S.dds", -607, 0);
+		
+		Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
+		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
+		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
+		//guiManager->newSprite("tree02S.dds", 0, 200);
+		
+		CameraLogic cameraLogic(*smgr);
+		VehicleHovering hovering(engine->GetPhysicsEngine());
+		
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-		
-		// Creation de la camera
-		SceneNode* camNode = smgr->AddSceneNode(root);
-		Camera* cam = smgr->AddCamera(camNode);
-		smgr->SetMainCamera(cam);
-		camNode->localTransform.SetPosition(Vector3<>(0.0f, 5.0f, -10.0f));
-
+		int speed = 0;
 		int skip = 0;
-		while (engine->Run([&skip, camNode, inputManager, scenario]() {
-			if (skip > 1) {
-				Vehicle *vehicle = static_cast<Vehicle *>(scenario.vehicle);
-				vehicle->transform_ = vehicle->root->localTransform;
-				Planet *closestPlanet = nullptr;
-				long double distanceMin = (numeric_limits<long double>::max)();
-				for (auto &planet : scenario.planets) {
-					planet->transform_ = planet->root->localTransform;
-					if (long double newDistanceMin = planet->transform_.GetPosition().distance(vehicle->transform_.GetPosition()) - (planet->transform_.GetScale().x / 2); newDistanceMin < distanceMin) {
-						distanceMin = newDistanceMin;
-						closestPlanet = static_cast<Planet*>(planet);
+		int min = 0;
+		int sec = 0;
+		wstring fill;
+		wstring fill2;
+		Planet* lastClosestPlanet = nullptr;
+		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
+		while (engine->Run([&skip, inputManager, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
+
+			Vector3<> up(0.0f, 1.0f, 0.0f);
+
+			Planet* closestPlanet = nullptr;
+
+			if (skip > 1)
+			{
+				Vehicle *vehicle = scenario.vehicle;
+				Vector3<> velocity = vehicle->root->physics->velocity;
+				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
+
+				speed = round(velocity.Length() * 3.6);
+				speed < 100 ? (speed < 10 ? fill = L"00" : fill = L"0") : fill = L"";
+				
+				guiManager->Write(fill + to_wstring(speed) + L" km/h", text1);
+
+				if (skip % 60 == 0)
+					++sec;
+				if (sec == 60)
+				{
+					++min;
+					sec = 0;
+				}
+				min < 10 ? fill = L"0" : fill = L"";
+				sec < 10 ? fill2 = L"0" : fill2 = L"";
+				guiManager->Write(fill + to_wstring(min) + L" : " + fill2 + to_wstring(sec), text2);
+				
+				float distanceMin = numeric_limits<float>::max();
+				for (auto &planet : scenario.gravityGenerators)
+				{
+					auto planetPos = planet->root->localTransform.GetPosition();
+					auto planetRadius = planet->root->localTransform.GetScale().x / 2;
+					auto distance = Vector3<>::Distance(vehiclePos, planetPos) - planetRadius;
+
+					if (distance < distanceMin)
+					{
+						distanceMin = distance;
+						closestPlanet = planet;
 					}
 				}
 
-				for (auto &scenery : scenario.sceneries) {
-					scenery->transform_ = scenery->root->localTransform;
+				vehicle->gravityApplied = Vector3<>(0.0f, 1.0f, 0.0f);
+				if (closestPlanet->isUpVectorDynamic)
+				{
+					vehicle->gravityApplied = vehiclePos - closestPlanet->gravityCenter;
 				}
 
-				vehicle->gravityApplied = (vehicle->transform_.GetPosition() - closestPlanet->gravityCenter);
-				vehicle->gravityApplied.normalize();
-				vehicle->gravityApplied = vehicle->gravityApplied * closestPlanet->gravityValue;
-
+				vehicle->gravityApplied.Normalize();
+				up = vehicle->gravityApplied;
+				vehicle->gravityApplied *= closestPlanet->gravityValue;
 				vehicle->root->physics->addForce(vehicle->gravityApplied);
+
+				hovering.Update(vehicle, closestPlanet->gravityValue, up);
 			}
 			skip++;
+
+			if (lastClosestPlanet != closestPlanet)
+			{
+				Quaternion<> rot = scenario.vehicle->root->localTransform.GetRotation();
+				Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
+				Vector3<> refRight = Vector3<>::CrossProduct(up, vehicleForward);
+				lastForward = Vector3<>::CrossProduct(refRight, up);
+			}
+			else
+			{
+				Vector3<> planeRight = Vector3<>::CrossProduct(up, lastForward);
+				lastForward = Vector3<>::CrossProduct(planeRight, up);
+			}
+
+			lastForward.Normalize();
 
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
 			{
-				camRadY += mouseDelta.x * 0.005f;
-				camRadZX += mouseDelta.y * 0.005f;
+				auto rotations = cameraLogic.ThirdGetRotations();
+				rotations.first += mouseDelta.x * 0.005f;
+				rotations.second += mouseDelta.y * 0.005f;
+				cameraLogic.ThirdSetRotations(rotations.first, rotations.second);
 			}
+			cameraLogic.ThirdSetDistance(camDistance);
+			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform.GetPosition(), 0.2f);
 
-			Transform<>& cam = camNode->localTransform;
-			Vector4<> initialPosNoRot(0.0f, 0.0f, camDistance, 1.0f);
-
-			// Find Camera position
-			Quaternion<> yCamRot = Quaternion<>::FromDirection(camRadY, { 0.0f, 1.0f, 0.0f });
-			Vector4<> zxDir = Matrix4x4<>::FromRotation(yCamRot) * initialPosNoRot;
-			Vector4<> zxRotAxis = Vector4<>::CrossProduct(zxDir, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
-			zxRotAxis.Normalize();
-			Quaternion zxCamRot = Quaternion<>::FromDirection(camRadZX, zxRotAxis);
-			Vector3<> curPos = Matrix4x4<>::FromRotation(zxCamRot * yCamRot) * initialPosNoRot;
-			Vector3<> vehicleOffset = scenario.vehicle->transform_.GetPosition();
-			curPos += vehicleOffset;
-			cam.SetPosition(curPos);
-
-			// Find camera rotation
-			Quaternion<> rCamRotY = Quaternion<>::FromDirection(camRadY - M_PI, { 0.0f, 1.0f, 0.0f });
-			Vector4<> forward = vehicleOffset - curPos;
-			Vector4<> left = Vector4<>::CrossProduct(forward, Vector4<>(0.0f, 1.0f, 0.0f, 1.0f));
-			left.Normalize();
-			Quaternion<> rCamRotZX = Quaternion<>::FromDirection(-camRadZX, left);
-			cam.SetRotation(rCamRotZX * rCamRotY);
-
-			Vector4<> forwardForceDir = Vector4<>::Normalize(-zxDir);
-			Vector4<> leftForceDir = Vector4<>::Normalize(Vector4<>::CrossProduct(forwardForceDir, { 0.0f, 1.0f, 0.0f, 1.0f }));
-
-			auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->transform_.GetRotation());
+			auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());
 			Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
-			Vector3<> rightSource = rot * Vector3<>{ 1.0f, 0.0f, 1.0f };
-			Vector4<> vehicleRight = rightSource - vehicleForward;
+			Vector3<> vehicleRight= rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
 			Vector4<> vehicleUp = Vector4<>::CrossProduct(vehicleForward, vehicleRight);
 			vehicleUp.Normalize();
 			
 			if (inputManager->IsKeyPressed(Key::W))
 			{
-				scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+				Vector3<> velocity = scenario.vehicle->root->physics->velocity;
+
+				auto [_, projVelocity] = Projection(velocity, vehicleForward);
+
+				if (projVelocity.Length() < 100.0f)
+				{
+					scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+				}
 			}
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
-				auto rot = Quaternion<>::FromDirection(-M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			}
 
@@ -129,9 +172,11 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
-				auto rot = Quaternion<>::FromDirection(M_PI / 180.0f, vehicleUp);
+				auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
 			}
+
+			lastClosestPlanet = closestPlanet;
 		}));
 
 		return (int)1;

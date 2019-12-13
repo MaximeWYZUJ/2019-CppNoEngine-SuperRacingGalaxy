@@ -14,6 +14,12 @@
 using namespace std;
 using namespace Cookie;
 
+struct CollisionCallbackShip : public PhysicsCollisionCallback {
+	void operator()(PhysicsComponent* otherComponent) override {
+		cout << "collision personnalisée" << endl;
+	}
+};
+
 void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 {
 	SceneManager* smgr = engine->GetSceneManager();
@@ -22,7 +28,7 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	Device* device = engine->GetDevice();
 	SceneNode* root = smgr->GetRoot();
 
-	for (auto& elem : scenario.planets)
+	for (auto& elem : scenario.gravityGenerators)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}
@@ -40,7 +46,7 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 	obj->mesh = smgr->GetMesh(obj->meshPath_);
 	obj->texture = textureManager->GetNewTexture(obj->texturePath_, device);
 	obj->root = smgr->AddSceneNode(root);
-	obj->root->localTransform = obj->transform_;
+	obj->root->localTransform = obj->initialTransform;
 
 	switch (obj->type_) {
 	case Prefab::Type::PLANET:
@@ -67,7 +73,7 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::Materi
 	uniform_real_distribution<float> dist(0.5f, 1.0f);
 
 	auto mat = materialManager->GetNewMaterial(
-		"basic " + to_string(obj->transform_.GetPosition().x) + to_string(obj->transform_.GetPosition().y) + to_string(obj->transform_.GetPosition().z),
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ dist(rng), dist(rng), dist(rng), 1.0f },
 		{ dist(rng), dist(rng), dist(rng), 1.0f },
@@ -75,27 +81,43 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::Materi
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+	obj->root->physics->addFilterGroup(FilterGroup::PLANET);
+
+	// Mask
+	//obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }
 
 void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Vehicle* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
-		"basic " + to_string(obj->transform_.GetPosition().x) + to_string(obj->transform_.GetPosition().y) + to_string(obj->transform_.GetPosition().z),
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f });
+		 { 1.0f, 1.0f, 1.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(1.0f, 0.5f, 0.0f), PhysicsComponent::DYNAMIC, obj->root);
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, obj->root);
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+	obj->root->physics->addFilterGroup(FilterGroup::VEHICULE);
+
+	// Mask
+	obj->root->physics->addFilterMask(FilterGroup::PLANET);
+
+	obj->root->physics->changeCollisionCallback<CollisionCallbackShip>();
 }
 
 void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
-		"basic " + to_string(obj->transform_.GetPosition().x) + to_string(obj->transform_.GetPosition().y) + to_string(obj->transform_.GetPosition().z),
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
@@ -103,5 +125,11 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	smgr->AddPhysicsMeshComponent(PhysicMaterial(0.5f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+
+	// Mask
+	obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }

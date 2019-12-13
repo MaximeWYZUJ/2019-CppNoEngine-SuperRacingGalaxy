@@ -3,11 +3,14 @@
 #include <vector>
 
 class Prefab;
+class Planet;
+class Scenery;
+class Vehicle;
 
 class Scenario
 {
 public:
-	std::vector<Prefab*> planets;
-	std::vector<Prefab*> sceneries;
-	Prefab* vehicle;
+	std::vector<Planet*> gravityGenerators;
+	std::vector<Scenery*> sceneries;
+	Vehicle* vehicle;
 };

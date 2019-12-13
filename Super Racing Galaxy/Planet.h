@@ -10,12 +10,10 @@ class Planet : public Prefab {
 public:
 	Cookie::Vector3<> gravityCenter;
 	float gravityValue;
-	Cookie::Vector3<> rotDir;
-	float rotSpeed;
+	bool isUpVectorDynamic;
 	std::vector<Scenery*> setElements;
 
-	Planet(Cookie::Transform<> transform, float gravityValue,
-		   Cookie::Vector3<> rotDir, float rotSpeed,
+	Planet(Cookie::Transform<> transform, float gravityValue, bool isUpVectorDynamic,
 		   std::string meshPath, std::wstring texturePath);
 
 	void addElement(Scenery* scenery);

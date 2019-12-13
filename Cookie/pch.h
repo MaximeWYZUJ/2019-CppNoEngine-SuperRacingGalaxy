@@ -1,6 +1,6 @@
 #pragma once
 
-#define NOMINMAX
+
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
@@ -14,6 +14,7 @@
 
 #define _XM_NO_INTRINSICS_
 #include <d3d11.h>
+
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 #include "PhysicsCollisionFiltering.h"
