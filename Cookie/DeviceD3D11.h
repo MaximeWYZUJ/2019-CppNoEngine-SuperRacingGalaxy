@@ -26,6 +26,7 @@ namespace Cookie
 		void Draw(int32_t nbIndices) override;
 		
 		void Clear(Color const& clearColor) override;
+		void ResetDepthBuffer();
 		void Present() override;
 
 		ID3D11Device* GetD3DDevice() const;

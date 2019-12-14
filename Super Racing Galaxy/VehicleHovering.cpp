@@ -9,14 +9,6 @@ namespace Srg
 {
 	using namespace std;
 	using namespace Cookie;
-	
-	// Projection of a onto b
-	std::pair<float, Vector3<>> Projection(Vector3<> a, Vector3<> b)
-	{
-		auto bLength = b.Length();
-		auto dot = Vector3<>::DotProduct(b, a);
-		return { dot, dot / (bLength * bLength) * b };
-	}
 
 	Vector3<> ComputeRepulsion(Vector3<> raycast, float hitDistance, float maxHitDistance, float planetGravity, Vector3<> curVelocity)
 	{
@@ -27,7 +19,7 @@ namespace Srg
 		float forceFactor = heightInv * heightInv * heightInv * heightInv * heightInv; // x^5
 		float maxPulsion = planetGravity * -20.0f; // 10 times the gravity
 		Vector3<> repulsion = force * forceFactor * maxPulsion;
-		auto projection = Projection(curVelocity, repulsion);
+		auto projection = Vector3<>::Projection(curVelocity, repulsion);
 
 		if (projection.first > 0.0f)
 		{

@@ -10,6 +10,7 @@
 #include "Planet.h"
 #include "CameraLogic.h"
 #include "VehicleHovering.h"
+#include "Vector3.h"
 
 #undef max
 
@@ -17,31 +18,7 @@ using namespace std;
 using namespace Cookie;
 using namespace Srg;
 
-float camDistance = 45.0f;
-
-std::pair<float, Vector3<>> Projection(Vector3<> a, Vector3<> b)
-{
-	auto bLength = b.Length();
-	auto dot = Vector3<>::DotProduct(b, a);
-	return { dot, dot / Vector3<>::DotProduct(b, a) / (bLength * bLength) * b };
-}
-
-Vector3<> ComputeRepulsion(Vector3<> raycast, float hitDistance, float maxHitDistance, float planetGravity, Vector3<> curVelocity)
-{
-	Vector3<> force = Vector3<>::Normalize(-raycast);
-	float heightInv = 1.0f - hitDistance / maxHitDistance;
-	float forceFactor = heightInv * heightInv * heightInv * heightInv; // x^4
-	float maxPulsion = planetGravity * -2.0f; // 2 times the gravity
-	Vector3<> repulsion = force * forceFactor * maxPulsion;
-	auto projection = Projection(curVelocity, repulsion);
-
-	if (projection.first > 0.0f)
-	{
-		repulsion *= 0.5f;
-	}
-
-	return repulsion;
-}
+float camDistance = 8.0f;
 
 int main(int argc, char* argv[])
 {
@@ -54,7 +31,6 @@ int main(int argc, char* argv[])
 		PhysicsEngine* physics = engine->GetPhysicsEngine();
 
 		GuiManager* guiManager = engine->GetGuiManager();
-		
 		
 		//guiManager->newSprite("tree02S.dds", -607, 0);
 		
@@ -129,50 +105,6 @@ int main(int argc, char* argv[])
 				vehicle->gravityApplied *= closestPlanet->gravityValue;
 				vehicle->root->physics->addForce(vehicle->gravityApplied);
 
-				// Raycasts
-				Vector3<> vehicleScale = vehicle->root->localTransform.GetScale();
-				Quaternion<> vehicleRot = vehicle->root->localTransform.GetRotation();
-				float rayY = -vehicleScale.y / 2.0f - 0.1f;
-				Vector3<> frontLeft = vehicleRot * Vector3<>(-vehicleScale.x / 2.0f, rayY, vehicleScale.z / 2.0f) + vehiclePos;
-				Vector3<> frontRight = vehicleRot * Vector3<>(vehicleScale.x / 2.0f, rayY, vehicleScale.z / 2.0f) + vehiclePos;
-				Vector3<> backLeft = vehicleRot * Vector3<>(-vehicleScale.x / 2.0f, rayY, -vehicleScale.z / 2.0f) + vehiclePos;
-				Vector3<> backRight = vehicleRot * Vector3<>(vehicleScale.x / 2.0f, rayY, -vehicleScale.z / 2.0f) + vehiclePos;
-
-				Vector3<> frontLeftRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
-				Vector3<> frontRightRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
-				Vector3<> backLeftRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
-				Vector3<> backRightRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
-
-				auto a = physics->PlanetRaycast(frontLeft, frontLeftRay, 2.0f);
-				auto b = physics->PlanetRaycast(frontRight, frontRightRay, 2.0f);
-				auto c = physics->PlanetRaycast(backLeft, backLeftRay, 2.0f);
-				auto d = physics->PlanetRaycast(backRight, backRightRay, 2.0f);
-
-				Vector3<> curVelocity = vehicle->root->physics->velocity;
-				if (a.first)
-				{
-					vehicle->root->physics->addForce(ComputeRepulsion(frontLeftRay, a.second, 2.0f, closestPlanet->gravityValue, curVelocity));
-					vehicle->root->physics->isDirty = true;
-				}
-
-				if (b.first)
-				{
-					vehicle->root->physics->addForce(ComputeRepulsion(frontRightRay, b.second, 2.0f, closestPlanet->gravityValue, curVelocity));
-					vehicle->root->physics->isDirty = true;
-				}
-
-				if (c.first)
-				{
-					vehicle->root->physics->addForce(ComputeRepulsion(backLeftRay, c.second, 2.0f, closestPlanet->gravityValue, curVelocity));
-					vehicle->root->physics->isDirty = true;
-				}
-
-				if (d.first)
-				{
-					vehicle->root->physics->addForce(ComputeRepulsion(backRightRay, d.second, 2.0f, closestPlanet->gravityValue, curVelocity));
-					vehicle->root->physics->isDirty = true;
-				}
-
 				hovering.Update(vehicle, closestPlanet->gravityValue, up);
 			}
 			skip++;
@@ -213,7 +145,7 @@ int main(int argc, char* argv[])
 			{
 				Vector3<> velocity = scenario.vehicle->root->physics->velocity;
 
-				auto [_, projVelocity] = Projection(velocity, vehicleForward);
+				auto [_, projVelocity] = Vector3<>::Projection(velocity, vehicleForward);
 
 				if (projVelocity.Length() < 100.0f)
 				{

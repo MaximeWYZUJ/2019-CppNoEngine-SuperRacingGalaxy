@@ -321,10 +321,11 @@ namespace Cookie
 			text->pCharBitmap->UnlockBits(&bmData);
 		}		
 	}
-
 	
 	void GuiManager::DrawAll()
 	{
+		dynamic_cast<DeviceD3D11*>(device)->ResetDepthBuffer();
+
 		for(auto sprite : sprites)
 		{
 			//Obtenir le contexte

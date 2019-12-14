@@ -21,6 +21,7 @@ namespace Cookie
 		static Vector3<T> CrossProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
 		static T Distance(Vector3<T> const& lhs, Vector3<T> const& rhs);
 		static Vector3<T> Lerp(Vector3<T> const& lhs, Vector3<T> const& rhs, T time);
+		static std::pair<float, Vector3<>> Projection(Vector3<> const& a, Vector3<> const& b);
 		
 		Vector3<T>() : x(0), y(0), z(0) {}
 		Vector3<T>(T X, T Y, T Z) : x(X), y(Y), z(Z) {}
@@ -136,6 +137,15 @@ namespace Cookie
 	Vector3<T> Vector3<T>::Lerp(Vector3<T> const& lhs, Vector3<T> const& rhs, T ratio)
 	{
 		return Vector3<T>(Math::Lerp(lhs.x, rhs.x, ratio), Math::Lerp(lhs.y, rhs.y, ratio), Math::Lerp(lhs.z, rhs.z, ratio));
+	}
+
+	template<class T>
+	std::pair<float, Vector3<>> Vector3<T>::Projection(Vector3<> const& a, Vector3<> const& b)
+	{
+		// Projection of a onto b
+		auto bLength = b.Length();
+		auto dot = Vector3<>::DotProduct(b, a);
+		return { dot, dot / (bLength * bLength) * b };
 	}
 
 	template<typename T>

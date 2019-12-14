@@ -225,6 +225,11 @@ namespace Cookie
 	void DeviceD3D11::Clear(Color const& clearColor)
 	{
 		pImmediateContext->ClearRenderTargetView(pRenderTargetView, reinterpret_cast<FLOAT const*>(&clearColor));
+		ResetDepthBuffer();
+	}
+
+	void DeviceD3D11::ResetDepthBuffer()
+	{
 		pImmediateContext->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
