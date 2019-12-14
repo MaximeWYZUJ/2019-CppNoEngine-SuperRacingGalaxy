@@ -1,5 +1,6 @@
 #include "Planet.h"
 #include "Scenery.h"
+#include "Teleport.h"
 
 using namespace std;
 using namespace Cookie;
@@ -20,6 +21,12 @@ void Planet::addElement(Scenery* scenery)
 {
 	if (!scenery) return;
 	setElements.push_back(scenery);
+}
+
+void Planet::addTeleport(Teleport *teleport)
+{
+	if (!teleport) return;
+	teleportElements.push_back(teleport);
 }
 
 void Planet::anime()

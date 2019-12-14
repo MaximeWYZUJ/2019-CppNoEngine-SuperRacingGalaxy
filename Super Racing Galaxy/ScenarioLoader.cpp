@@ -52,16 +52,14 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 		for (auto &scenery : elem->setElements) {
-			CreateObject(smgr, materialManager, textureManager, device, root, scenery);
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, scenery);
+		}
+		for (auto &teleport : elem->teleportElements) {
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, teleport);
 		}
 	}
 
 	for (auto &elem : scenario.sceneries)
-	{
-		CreateObject(smgr, materialManager, textureManager, device, root, elem);
-	}
-
-	for (auto& elem : scenario.teleports)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}

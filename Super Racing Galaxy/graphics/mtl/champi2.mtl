@@ -1,68 +1,13 @@
 # Blender MTL File: 'champi2.blend'
-# Material Count: 6
+# Material Count: 1
 
-newmtl Material.001
-Ns 60.062496
+newmtl Material
+Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
-Ks 0.108333 0.108333 0.108333
+Ks 0.000000 0.000000 0.000000
 Ke 0.0 0.0 0.0
-Ni 0.000000
+Ni 1.450000
 d 1.000000
-illum 2
-map_Kd champi2Texture.png
-
-newmtl Material.004
-Ns 60.062496
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.108333 0.108333 0.108333
-Ke 0.0 0.0 0.0
-Ni 0.000000
-d 1.000000
-illum 2
-map_Kd champi2Texture.png
-
-newmtl Material.005
-Ns 60.062496
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.108333 0.108333 0.108333
-Ke 0.0 0.0 0.0
-Ni 0.000000
-d 1.000000
-illum 2
-map_Kd champi2Texture.png
-
-newmtl Material.006
-Ns 60.062496
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.108333 0.108333 0.108333
-Ke 0.0 0.0 0.0
-Ni 0.000000
-d 1.000000
-illum 2
-map_Kd champi2Texture.png
-
-newmtl Material.007
-Ns 60.062496
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.108333 0.108333 0.108333
-Ke 0.0 0.0 0.0
-Ni 0.000000
-d 1.000000
-illum 2
-map_Kd champi2Texture.png
-
-newmtl Material.008
-Ns 60.062496
-Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
-Ks 0.108333 0.108333 0.108333
-Ke 0.0 0.0 0.0
-Ni 0.000000
-d 1.000000
-illum 2
-map_Kd champi2Texture.png
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\champi2Texture.png

@@ -1,7 +1,7 @@
 # Blender MTL File: 'rocher1.blend'
 # Material Count: 1
 
-newmtl Material.001
+newmtl Material.002
 Ns 900.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,4 +10,4 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd 23324207-zwarte-kalkstenen-rots-textuur.jpg
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\rocher1Texture.png
