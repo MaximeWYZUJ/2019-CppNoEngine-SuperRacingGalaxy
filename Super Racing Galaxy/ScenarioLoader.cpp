@@ -31,6 +31,9 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	for (auto& elem : scenario.gravityGenerators)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
+		for (auto &scenery : elem->setElements) {
+			CreateObject(smgr, materialManager, textureManager, device, root, scenery);
+		}
 	}
 
 	for (auto &elem : scenario.sceneries)
@@ -125,7 +128,8 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, obj->root);
+	//obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 
 	// Filter group
 	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);

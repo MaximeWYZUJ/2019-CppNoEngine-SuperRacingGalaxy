@@ -1,0 +1,68 @@
+# Blender MTL File: 'champi2.blend'
+# Material Count: 6
+
+newmtl Material.001
+Ns 60.062496
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.108333 0.108333 0.108333
+Ke 0.0 0.0 0.0
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd champi2Texture.png
+
+newmtl Material.004
+Ns 60.062496
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.108333 0.108333 0.108333
+Ke 0.0 0.0 0.0
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd champi2Texture.png
+
+newmtl Material.005
+Ns 60.062496
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.108333 0.108333 0.108333
+Ke 0.0 0.0 0.0
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd champi2Texture.png
+
+newmtl Material.006
+Ns 60.062496
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.108333 0.108333 0.108333
+Ke 0.0 0.0 0.0
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd champi2Texture.png
+
+newmtl Material.007
+Ns 60.062496
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.108333 0.108333 0.108333
+Ke 0.0 0.0 0.0
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd champi2Texture.png
+
+newmtl Material.008
+Ns 60.062496
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.108333 0.108333 0.108333
+Ke 0.0 0.0 0.0
+Ni 0.000000
+d 1.000000
+illum 2
+map_Kd champi2Texture.png

@@ -345,3 +345,4 @@ healthchecksdb
 !vehicle.obj
 !cargo.obj
 !Super Racing Galaxy/*.obj
+!Super Racing Galaxy/graphics/meshs/*.obj
