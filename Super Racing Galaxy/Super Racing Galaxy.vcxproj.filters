@@ -42,7 +42,7 @@
     <ClCompile Include="CameraLogic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Teleport.cpp">
+    <ClCompile Include="VehicleHovering.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,6 +51,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="MiniPhongVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SpriteVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -82,7 +88,7 @@
     <ClInclude Include="CameraLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Teleport.h">
+    <ClInclude Include="VehicleHovering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

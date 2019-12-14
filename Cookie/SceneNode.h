@@ -10,8 +10,9 @@ namespace Cookie
 	class Component;
 	class PhysicsComponent;
 	
-	struct COOKIE_API SceneNode
+	class COOKIE_API SceneNode
 	{
+	public:
 		using SceneNodePtr = SceneNode*;
 		SceneNodePtr parent;
 		Transform<> localTransform;

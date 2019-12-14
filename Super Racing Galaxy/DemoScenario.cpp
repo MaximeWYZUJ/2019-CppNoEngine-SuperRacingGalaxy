@@ -12,7 +12,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Scenario scenario;
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 0.0f, 200.0f }, { 1000.0f, 1000.0f, 1000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }),
-										  -9.81f * 4.0f, true, "newPlanet.obj", L"textureNewPlanet.dds"));
+										  -9.81f * 10.0f, true, "newPlanet.obj", L"textureNewPlanet.dds"));
 
 	/*scenario.gravityGenerators.push_back(new Planet(Transform<>({ 3000.0f, 0.0f, 3000.0f }, { 1000.0f, 1000.0f, 1000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }),
 										  -15.0f, true, "newPlanet.obj", L"textureNewPlanet.dds"));

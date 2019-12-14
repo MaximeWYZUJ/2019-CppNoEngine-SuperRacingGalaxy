@@ -155,8 +155,13 @@ namespace Cookie
 		DXEssayer(pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer), DXE_ERREUROBTENTIONBUFFER);
 		DXEssayer(device->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView), DXE_ERREURCREATIONRENDERTARGET);
 		pBackBuffer->Release();
+		
 		InitDepthBuffer();
+
+		InitBlendStates();
+		
 		pImmediateContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView);
+		
 		D3D11_VIEWPORT vp;
 		vp.Width = (FLOAT)largeur;
 		vp.Height = (FLOAT)hauteur;
@@ -238,6 +243,16 @@ namespace Cookie
 		return pSwapChain;
 	}
 
+	void DeviceD3D11::EnableAlphaBlend()
+	{
+		pImmediateContext->OMSetBlendState(alphaBlendEnable, nullptr, 0xffffffff);
+	}
+
+	void DeviceD3D11::DisableAlphaBlend()
+	{
+		pImmediateContext->OMSetBlendState(alphaBlendDisable, nullptr, 0xffffffff);
+	}
+	
 	HMODULE DeviceD3D11::GetModule() const
 	{
 		return moduleHandle;
@@ -349,6 +364,34 @@ namespace Cookie
 			&pDepthStencilView),
 			DXE_ERREURCREATIONDEPTHSTENCILTARGET);
 	}
+
+	void DeviceD3D11::InitBlendStates()
+	{
+		D3D11_BLEND_DESC blendDesc;
+
+		// Effacer la description
+		ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
+
+		// On initialise la description pour un mélange alpha classique
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		
+		// On créé l'état alphaBlendEnable
+		DXEssayer(device->CreateBlendState(&blendDesc, &alphaBlendEnable), DXE_ERREURCREATION_BLENDSTATE);
+
+		// Seul le booleen BlendEnable nécéssite d'être modifié
+		blendDesc.RenderTarget[0].BlendEnable = FALSE;
+
+		// On créé l'état alphaBlendDisable
+		DXEssayer(device->CreateBlendState(&blendDesc, &alphaBlendDisable), DXE_ERREURCREATION_BLENDSTATE);
+	}
+
 
 	LRESULT CALLBACK DeviceD3D11::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{

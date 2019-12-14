@@ -9,13 +9,22 @@ namespace Cookie
 	class Quaternion : public Vector4<T>
 	{
 	public:
+		static constexpr Quaternion<T> Identity();
 		static Quaternion<T> FromDirection(T radAngle, Vector3<T> unitDir);
 		static Quaternion<T> FromVectorToVector(Vector3<T> const& unitV1, Vector3<T> const& unitV2);
 		static Quaternion<T> FromYawPitchRoll(T yaw, T pitch, T roll);
+		static Quaternion<T> Slerp(Quaternion<T> const& lhs, Quaternion<T> const& rhs, float t);
+		static T DotProduct(Quaternion<T> const& lhs, Quaternion<T> const& rhs);
 
 		Quaternion();
 		Quaternion(T x, T y, T z, T w);
 	};
+
+	template <class T>
+	constexpr Quaternion<T> Quaternion<T>::Identity()
+	{
+		return Quaternion<T>(0.0f, 0.0f, 0.0f, 1.0f);
+	}
 
 	template <class T>
 	Quaternion<T> Quaternion<T>::FromDirection(T radAngle, Vector3<T> unitDir)
@@ -40,7 +49,7 @@ namespace Cookie
 
 		if (d >= 1.0f)
 		{
-			return Quaternion<T>();
+			return Quaternion<T>::Identity();
 		}
 
 		if (d < 1e-6f - 1.0f)
@@ -88,6 +97,12 @@ namespace Cookie
 	}
 
 	template<class T>
+	T Quaternion<T>::DotProduct(Quaternion<T> const& lhs, Quaternion<T> const& rhs)
+	{
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
+	}
+
+	template<class T>
 	Quaternion<T>::Quaternion()
 	{
 	}
@@ -112,6 +127,12 @@ namespace Cookie
 	}
 
 	template<class T>
+	Quaternion<T> operator*(float lhs, Quaternion<T> const& rhs)
+	{
+		return Quaternion<T>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z, lhs * rhs.w);
+	}
+
+	template<class T>
 	Vector4<T> operator*(Quaternion<T> const& lhs, Vector4<T> const& rhs)
 	{
 		return (lhs * Quaternion<T>(rhs.x, rhs.y, rhs.z, rhs.w)) * Quaternion<T>(-lhs.x, -lhs.y, -lhs.z, lhs.w);
@@ -121,5 +142,70 @@ namespace Cookie
 	Vector3<T> operator*(Quaternion<T> const& lhs, Vector3<T> const& rhs)
 	{
 		return (lhs * Quaternion<T>(rhs.x, rhs.y, rhs.z, 1.0f)) * Quaternion<T>(-lhs.x, -lhs.y, -lhs.z, lhs.w);
+	}
+
+	template<class T>
+	Quaternion<T> operator-(Quaternion<T> const& lhs)
+	{
+		return Quaternion<T>(-lhs.x, -lhs.y, -lhs.z, -lhs.w);
+	}
+
+	template<class T>
+	Quaternion<T> operator-(Quaternion<T> const& lhs, Quaternion<T> const& rhs)
+	{
+		return Quaternion<T>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z, lhs.w - rhs.w);
+	}
+
+	template<class T>
+	Quaternion<T> operator+(Quaternion<T> const& lhs, Quaternion<T> const& rhs)
+	{
+		return Quaternion<T>(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z, lhs.w + rhs.w);
+	}
+
+	template <class T>
+	Quaternion<T> Quaternion<T>::Slerp(Quaternion<T> const& lhs, Quaternion<T> const& rhs, float t)
+	{
+		// From Wikipedia
+
+		Quaternion<T> v0 = lhs;
+		Quaternion<T> v1 = rhs;
+
+		// Only unit quaternions are valid rotations.
+		// Normalize to avoid undefined behavior.
+		v0.Normalize4d();
+		v1.Normalize4d();
+
+		// Compute the cosine of the angle between the two vectors.
+		double dot = Quaternion<>::DotProduct(v0, v1);
+
+		// If the dot product is negative, slerp won't take
+		// the shorter path. Note that v1 and -v1 are equivalent when
+		// the negation is applied to all four components. Fix by 
+		// reversing one quaternion.
+		if (dot < 0.0f) {
+			v1 = -v1;
+			dot = -dot;
+		}
+
+		const double DOT_THRESHOLD = 0.9995;
+		if (dot > DOT_THRESHOLD) {
+			// If the inputs are too close for comfort, linearly interpolate
+			// and normalize the result.
+
+			Quaternion<> result = v0 + t * (v1 - v0);
+			result.Normalize4d();
+			return result;
+		}
+
+		// Since dot is in range [0, DOT_THRESHOLD], acos is safe
+		double theta_0 = acos(dot);        // theta_0 = angle between input vectors
+		double theta = theta_0 * t;          // theta = angle between v0 and result
+		double sin_theta = sin(theta);     // compute this value only once
+		double sin_theta_0 = sin(theta_0); // compute this value only once
+
+		float s0 = cos(theta) - dot * sin_theta / sin_theta_0;  // == sin(theta_0 - theta) / sin(theta_0)
+		float s1 = sin_theta / sin_theta_0;
+
+		return (s0 * v0) + (s1 * v1);
 	}
 }

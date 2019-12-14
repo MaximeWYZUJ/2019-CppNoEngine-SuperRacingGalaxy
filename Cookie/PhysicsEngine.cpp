@@ -4,6 +4,7 @@
 #include "PxPhysicsAPI.h"
 #include <vector>
 #include "RaycastCallback.h"
+#include <algorithm>
 
 using namespace physx;
 

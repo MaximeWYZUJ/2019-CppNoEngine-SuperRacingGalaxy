@@ -4,8 +4,6 @@
 
 #include "PhysicsComponent.h"
 #include "PxPhysicsAPI.h"
-#include "PhysicsEngine.h"
-#include "PxFiltering.h"
 
 using namespace physx;
 
@@ -18,6 +16,14 @@ namespace Cookie
 		
 		addedForces.push_back(force);
 		actor->is<PxRigidDynamic>()->addForce(PxVec3(force.x, force.y, force.z));
+	}
+
+	void PhysicsComponent::SetAngularVelocity(Vector3<PhysicsComponent_t> velocity)
+	{
+		if (type == STATIC)
+			return;
+
+		actor->is<PxRigidDynamic>()->setAngularVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
 	}
 	
 	void PhysicsComponent::addFilterGroup(FilterGroup f)
