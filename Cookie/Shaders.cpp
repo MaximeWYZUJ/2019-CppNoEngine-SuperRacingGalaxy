@@ -4,8 +4,6 @@
 #include "util.h"
 #include "resource.h"
 #include "ShaderParams.h"
-#include "Layout.h"
-#include "Material.h"
 #include "Texture.h"
 
 namespace Cookie
@@ -13,14 +11,29 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Shaders::Shaders(Device* device)
+	Shaders::Shaders(Device* device, const wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nbElements)
 		: device{ device }
 	{
+		char* entrypointVS = new char[shaderName.size() + 1];
+		char* entrypointPS = new char[shaderName.size() + 1];
+		for(int i = 0; i < shaderName.length(); ++i)
+		{
+			entrypointVS[i] = shaderName[i];
+			entrypointPS[i] = shaderName[i];
+			
+		}
+		entrypointVS[shaderName.size()] = 'V';
+		entrypointVS[shaderName.size() + 1] = 'S';
+		entrypointVS[shaderName.size() + 2] = '\0';
+		entrypointPS[shaderName.size()] = 'P';
+		entrypointPS[shaderName.size() + 1] = 'S';
+		entrypointPS[shaderName.size() + 2] = '\0';
+		
 		ID3D11Device* pD3DDevice = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
 		ID3DBlob* pVSBlob = nullptr;
-		DXEssayer(D3DCompileFromFile(L"MiniPhongVS.hlsl",
+		DXEssayer(D3DCompileFromFile((shaderName + L"VS.hlsl").c_str(),
 			nullptr, nullptr,
-			"MiniPhongVS",
+			entrypointVS,
 			"vs_5_0",
 			D3DCOMPILE_ENABLE_STRICTNESS,
 			0,
@@ -34,8 +47,8 @@ namespace Cookie
 
 		pVertexLayout = nullptr;
 		ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		DXEssayer(d->CreateInputLayout(VertexData::layout,
-			VertexData::nbElements,
+		DXEssayer(d->CreateInputLayout(layout,
+			nbElements,
 			pVSBlob->GetBufferPointer(),
 			pVSBlob->GetBufferSize(),
 			&pVertexLayout),
@@ -45,15 +58,15 @@ namespace Cookie
 		D3D11_BUFFER_DESC bd;
 		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(ShadersParams);
+		bd.ByteWidth = paramSize;
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bd.CPUAccessFlags = 0;
 		pD3DDevice->CreateBuffer(&bd, nullptr, &pConstantBuffer);
 
 		ID3DBlob* pPSBlob = nullptr;
-		DXEssayer(D3DCompileFromFile(L"MiniPhongPS.hlsl",
+		DXEssayer(D3DCompileFromFile((shaderName + L"PS.hlsl").c_str(),
 			nullptr, nullptr,
-			"MiniPhongPS",
+			entrypointPS,
 			"ps_5_0",
 			D3DCOMPILE_ENABLE_STRICTNESS,
 			0,
@@ -85,52 +98,21 @@ namespace Cookie
 		pD3DDevice->CreateSamplerState(&samplerDesc, &pSamplerState);
 	}
 
-	void Shaders::Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, Vector3<> const& camPos, const Material* mat) const
+	void Shaders::Activate(ShadersParams* sp, ID3D11ShaderResourceView* texture) const
 	{
-		static float x = 0.0f;
-		static float z = 0.0f;
-		static float sign = 1.0f;
-		static bool isGrowing = true;
-
-		if (!isGrowing && x < -10.0f)
-		{
-			sign = 1.0f;
-			isGrowing = true;
-		}
-		if (isGrowing && x > 10.0f)
-		{
-			sign = -1.0f;
-			isGrowing = false;
-		}
-
-		x += 0.05f * sign;
-		z += 0.01f;
-
-		
-		ShadersParams sp;
-
-		sp.matProjViewWorld = matViewProj * matWorld;
-		sp.matWorld = matWorld;
-		sp.vLumiere = XMVectorSet(x, 25.0f, z, 0.0f);
-		sp.vCamera = XMVectorSet(camPos.x, camPos.y, camPos.z, 1.0f);
-		sp.vAEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
-		sp.vAMat = XMVectorSet(mat->ambient.x, mat->ambient.y, mat->ambient.z, mat->ambient.w);
-		sp.vDEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
-		sp.vDMat = XMVectorSet(mat->diffuse.x, mat->diffuse.y, mat->diffuse.z, mat->diffuse.w);
-		
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
 
 		pImmediateContext->IASetInputLayout(pVertexLayout);
 		pImmediateContext->VSSetShader(pVertexShader, nullptr, 0);
-		pImmediateContext->UpdateSubresource(pConstantBuffer, 0, nullptr, &sp, 0, 0);
+		pImmediateContext->UpdateSubresource(pConstantBuffer, 0, nullptr, sp, 0, 0);
 		pImmediateContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 		pImmediateContext->GSSetShader(nullptr, nullptr, 0);
 		pImmediateContext->PSSetShader(pPixelShader, nullptr, 0);
 		pImmediateContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
 
 		pImmediateContext->PSSetSamplers(0, 1, &pSamplerState);
-		auto* texture = mat->texture->GetD3DTexture();
+		
 		pImmediateContext->PSSetShaderResources(0, 1, &texture);
 	}
 }

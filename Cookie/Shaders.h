@@ -9,17 +9,20 @@ struct ID3D11InputLayout;
 struct ID3D11InputLayout;
 struct ID3D11SamplerState;
 struct ID3D11Buffer;
+struct ID3D11ShaderResourceView;
+struct D3D11_INPUT_ELEMENT_DESC;
 
 namespace Cookie
 {
+	struct ShadersParams;
 	class Material;
 	class Device;
 
 	class COOKIE_API Shaders
 	{
 	public:
-		Shaders(Device* device);
-		void Activate(const Matrix4x4<>& matWorld, const Matrix4x4<>& matViewProj, Vector3<> const& camPos, const Material* mat) const;
+		Shaders(Device* device, const std::wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nmElements);
+		void Activate(ShadersParams* sp, ID3D11ShaderResourceView* texture) const;
 
 	private:
 		Device* device;
