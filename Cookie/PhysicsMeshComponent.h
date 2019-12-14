@@ -9,7 +9,7 @@ namespace Cookie {
 	{
 		Mesh& mesh;
 
-		PhysicsMeshComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type, Mesh& mesh, Vector3<> size);
+		PhysicsMeshComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type, Mesh& mesh, Vector3<> size, bool trigger = false);
 		~PhysicsMeshComponent();
 
 		ShapeType getShapeType();

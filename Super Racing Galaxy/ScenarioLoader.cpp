@@ -10,13 +10,33 @@
 #include "Planet.h"
 #include "Scenery.h"
 #include "Vehicle.h"
+#include "Teleport.h"
 
 using namespace std;
 using namespace Cookie;
 
 struct CollisionCallbackShip : public PhysicsCollisionCallback {
-	void operator()(PhysicsComponent* otherComponent) override {
-		cout << "collision personnalisée" << endl;
+	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
+		//cout << "collision personnalisée" << endl;
+	}
+};
+
+struct TriggerTeleport : public PhysicsCollisionCallback {
+	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
+		Teleport* teleport = reinterpret_cast<Teleport*>(selfComponent->userData);
+		if (teleport) {
+			if (teleport->mayUse() && teleport->linkedTeleport->mayUse()) {
+				otherComponent->sceneNode->localTransform.SetPosition(teleport->linkedTeleport->initialTransform.GetPosition());
+				otherComponent->transform.SetPosition(teleport->linkedTeleport->initialTransform.GetPosition());
+				otherComponent->isDirty = true;
+
+				teleport->useNow();
+				teleport->linkedTeleport->useNow();
+			}
+		}
+		else {
+			cout << "trigger : nullptr mdr" << endl;
+		}
 	}
 };
 
@@ -34,6 +54,11 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	}
 
 	for (auto &elem : scenario.sceneries)
+	{
+		CreateObject(smgr, materialManager, textureManager, device, root, elem);
+	}
+
+	for (auto& elem : scenario.teleports)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}
@@ -61,6 +86,10 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 		InitSceneryObject(smgr, materialManager, static_cast<Scenery*>(obj));
 		break;
 
+	case Prefab::Type::TELEPORT:
+		InitTeleportObject(smgr, materialManager, static_cast<Teleport*>(obj));
+		break;
+
 	case Prefab::Type::NOTHING:
 		break;
 	}
@@ -82,6 +111,7 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::Materi
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
 	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics->userData = obj;
 
 	// Filter group
 	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
@@ -103,6 +133,7 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::Mater
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
 	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::DYNAMIC, obj->root);
+	obj->root->physics->userData = obj;
 
 	// Filter group
 	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
@@ -126,10 +157,34 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
 	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics->userData = obj;
 
 	// Filter group
 	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
 
 	// Mask
 	obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
+}
+
+void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Teleport* obj)
+{
+	auto mat = materialManager->GetNewMaterial(
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
+		obj->texture,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
+	
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+	obj->root->physics->userData = obj;
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+
+	// Mask
+	obj->root->physics->addFilterMask(FilterGroup::VEHICULE);
+
+	obj->root->physics->changeTriggerCallback<TriggerTeleport>();
 }

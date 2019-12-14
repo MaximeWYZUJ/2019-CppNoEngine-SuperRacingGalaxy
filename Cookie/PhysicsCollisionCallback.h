@@ -10,7 +10,6 @@ namespace Cookie {
 	public:
 		PhysicsCollisionCallback() = default;
 		~PhysicsCollisionCallback() = default;
-		virtual void operator()(PhysicsComponent* otherComponent) {};
+		virtual void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) { std::cout << "no specific callback" << std::endl; };
 	};
-
 }

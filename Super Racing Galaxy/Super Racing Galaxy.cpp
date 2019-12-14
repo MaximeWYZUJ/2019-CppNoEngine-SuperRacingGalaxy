@@ -120,21 +120,25 @@ int main(int argc, char* argv[])
 				if (a.first)
 				{
 					vehicle->root->physics->addForce(ComputeRepulsion(frontLeftRay, a.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+					vehicle->root->physics->isDirty = true;
 				}
 				
 				if (b.first)
 				{
 					vehicle->root->physics->addForce(ComputeRepulsion(frontRightRay, b.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+					vehicle->root->physics->isDirty = true;
 				}
 
 				if (c.first)
 				{
 					vehicle->root->physics->addForce(ComputeRepulsion(backLeftRay, c.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+					vehicle->root->physics->isDirty = true;
 				}
 
 				if (d.first)
 				{
 					vehicle->root->physics->addForce(ComputeRepulsion(backRightRay, d.second, 2.0f, closestPlanet->gravityValue, curVelocity));
+					vehicle->root->physics->isDirty = true;
 				}
 			}
 			skip++;
@@ -174,23 +178,27 @@ int main(int argc, char* argv[])
 			if (inputManager->IsKeyPressed(Key::W))
 			{
 				scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+				scenario.vehicle->root->physics->isDirty = true;
 			}
 
 			if (inputManager->IsKeyPressed(Key::A))
 			{
 				auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
+				scenario.vehicle->root->physics->isDirty = true;
 			}
 
 			if (inputManager->IsKeyPressed(Key::S))
 			{
 				scenario.vehicle->root->physics->addForce(-vehicleForward * 100.0f);
+				scenario.vehicle->root->physics->isDirty = true;
 			}
 
 			if (inputManager->IsKeyPressed(Key::D))
 			{
 				auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
+				scenario.vehicle->root->physics->isDirty = true;
 			}
 
 			lastClosestPlanet = closestPlanet;

@@ -2,6 +2,7 @@
 #include "PhysicsContactCallback.h"
 #include "PxRigidActor.h"
 #include "PhysicsComponent.h"
+#include "PhysicsEngine.h"
 
 using namespace physx;
 
@@ -13,13 +14,17 @@ namespace Cookie {
 			if (pairs[i].shape[0]->getSimulationFilterData().word1 & pairs[i].shape[1]->getSimulationFilterData().word0) {
 				PhysicsComponent* self = static_cast<PhysicsComponent*>(pairs[i].actor[0]->userData);
 				PhysicsComponent* other = static_cast<PhysicsComponent*>(pairs[i].actor[1]->userData);
-				(*self->onCollisionCallback)(other);
+
+				PhysicsEngine& physics = PhysicsEngine::getInstance();
+				physics.AddTask(self, other, self->onCollisionCallback);
 			}
 
 			if (pairs[i].shape[1]->getSimulationFilterData().word1 & pairs[i].shape[0]->getSimulationFilterData().word0) {
 				PhysicsComponent* self = static_cast<PhysicsComponent*>(pairs[i].actor[1]->userData);
 				PhysicsComponent* other = static_cast<PhysicsComponent*>(pairs[i].actor[0]->userData);
-				(*self->onCollisionCallback)(other);
+
+				PhysicsEngine& physics = PhysicsEngine::getInstance();
+				physics.AddTask(self, other, self->onCollisionCallback);
 			}
 		}
 	}
@@ -30,7 +35,9 @@ namespace Cookie {
 			if (pairs[i].triggerShape->getSimulationFilterData().word1 & pairs[i].otherShape->getSimulationFilterData().word0) {
 				PhysicsComponent* self = static_cast<PhysicsComponent*>(pairs[i].triggerActor->userData);
 				PhysicsComponent* other = static_cast<PhysicsComponent*>(pairs[i].otherActor->userData);
-				(*self->onCollisionCallback)(other);
+
+				PhysicsEngine& physics = PhysicsEngine::getInstance();
+				physics.AddTask(self, other, self->onTriggerCallback);
 			}
 		}
 	}

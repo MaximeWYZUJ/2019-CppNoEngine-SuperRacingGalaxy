@@ -2,6 +2,7 @@
 #include "DemoScenario.h"
 #include "Planet.h"
 #include "Vehicle.h"
+#include "Teleport.h"
 #include "Vector3.h"
 
 using namespace Cookie;
@@ -30,6 +31,11 @@ Scenario ScenarioCreator::CreateDemoScenario()
 
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 560.0f, 0.0f }, { 20.f, 8.f, 20.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "ultimateShip.obj", L"textureUltimateShip.dds");
 	
-
+	scenario.teleports.push_back(new Teleport(Transform<>({ 25.0f, 550.0f, 0.0f }, { 10.0f, 10.0f, 10.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "ultimateShip.obj", L"textureUltimateShip.dds"));
+	scenario.teleports.push_back(new Teleport(Transform<>({ -25.0f, 550.0f, 0.0f }, { 10.0f, 10.0f, 10.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "ultimateShip.obj", L"textureUltimateShip.dds"));
+	
+	scenario.teleports[0]->linkedTeleport = scenario.teleports[1];
+	scenario.teleports[1]->linkedTeleport = scenario.teleports[0];
+	
 	return scenario;
 }

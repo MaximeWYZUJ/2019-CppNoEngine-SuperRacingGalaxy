@@ -169,6 +169,7 @@
     <ClCompile Include="ScenarioLoader.cpp" />
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Super Racing Galaxy.cpp" />
+    <ClCompile Include="Teleport.cpp" />
     <ClCompile Include="Vehicle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +200,7 @@
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioLoader.h" />
     <ClInclude Include="Scenery.h" />
+    <ClInclude Include="Teleport.h" />
     <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -50,7 +50,7 @@ namespace Cookie
 		return renderer;
 	}
 
-	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent)
+	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent, bool trigger)
 	{
 		PhysicsBoxComponent* component = new PhysicsBoxComponent(
 			parent->localTransform.GetPosition(),
@@ -59,7 +59,8 @@ namespace Cookie
 			type,
 			parent->localTransform.GetScale().x,
 			parent->localTransform.GetScale().y,
-			parent->localTransform.GetScale().z);
+			parent->localTransform.GetScale().z,
+			trigger);
 		
 		parent->components.push_back(component);
 		component->sceneNode = parent;
@@ -69,14 +70,15 @@ namespace Cookie
 		return component;
 	}
 
-	PhysicsComponent* SceneManager::AddPhysicsSphereComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent)
+	PhysicsComponent* SceneManager::AddPhysicsSphereComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent, bool trigger)
 	{
 		PhysicsSphereComponent* component = new PhysicsSphereComponent(
 			parent->localTransform.GetPosition(),
 			parent->localTransform.GetRotation(),
 			mat,
 			type,
-			parent->localTransform.GetScale().x);
+			parent->localTransform.GetScale().x,
+			trigger);
 
 		parent->components.push_back(component);
 		component->sceneNode = parent;
@@ -86,7 +88,7 @@ namespace Cookie
 		return component;
 	}
 
-	PhysicsComponent* SceneManager::AddPhysicsMeshComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, Mesh& mesh, SceneNode* parent)
+	PhysicsComponent* SceneManager::AddPhysicsMeshComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, Mesh& mesh, SceneNode* parent, bool trigger)
 	{
 		PhysicsMeshComponent* component = new PhysicsMeshComponent(
 			parent->localTransform.GetPosition(),
@@ -94,7 +96,8 @@ namespace Cookie
 			mat,
 			type,
 			mesh,
-			parent->localTransform.GetScale());
+			parent->localTransform.GetScale(),
+			trigger);
 
 		parent->components.push_back(component);
 		component->sceneNode = parent;

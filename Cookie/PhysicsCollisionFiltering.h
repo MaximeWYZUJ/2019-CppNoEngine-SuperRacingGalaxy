@@ -10,6 +10,7 @@ namespace Cookie {
 	enum FilterGroup {
 		DEFAULT = (1 << 0),
 		VEHICULE = (1 << 1),
-		PLANET = (1 << 2)
+		PLANET = (1 << 2),
+		TELEPORT = (1 << 3)
 	};
 }
