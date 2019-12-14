@@ -1,5 +1,7 @@
 #pragma once
 
+#include <queue>
+#include <atomic>
 #include "incopiable.h"
 #include "ExportMacro.h"
 #include "PhysicsBoxComponent.h"
@@ -7,6 +9,8 @@
 #include "PhysicsMeshComponent.h"
 #include "PhysicsComponent.h"
 #include "Mesh.h"
+#include "PhysicsTask.h"
+#include "PhysicCollisionCallback.h"
 
 namespace physx {
 	class PxDefaultAllocator;
@@ -77,6 +81,20 @@ namespace Cookie
 		void UpdateSphereComponent(ActorPtr actor, PhysicsSphereComponent* toBeModified);
 		void UpdateMeshComponent(ActorPtr actor, PhysicsMeshComponent* toBeModified);
 
+		// Manipulation de la file de taches
+	private:
+		std::queue<PhysicsTask> tasks; // pas encore thread safe
+	public:
+		void AddTask(PhysicsComponent* taskOrigin, PhysicsComponent* taskDestination, PhysicsCollisionCallback* callback) {
+			tasks.push(PhysicsTask{ taskOrigin, taskDestination, callback });
+		}
+		void ExecuteTasks() {
+			while (!tasks.empty()) {
+				auto t = tasks.front();
+				t.job();
+				tasks.pop();
+			}
+		}
 	private:
 		PhysicsEngine();
 		physx::PxDefaultCpuDispatcher* gDispatcher = nullptr;

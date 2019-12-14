@@ -6,11 +6,13 @@ class Prefab;
 class Planet;
 class Scenery;
 class Vehicle;
+class Teleport;
 
 class Scenario
 {
 public:
 	std::vector<Planet*> gravityGenerators;
 	std::vector<Scenery*> sceneries;
+	std::vector<Teleport*> teleports;
 	Vehicle* vehicle;
 };

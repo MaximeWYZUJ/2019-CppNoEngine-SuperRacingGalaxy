@@ -29,16 +29,19 @@ namespace Cookie
 		PhysicsComponent* AddPhysicsBoxComponent(
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
-			SceneNode* parent);
+			SceneNode* parent,
+			bool trigger = false);
 		PhysicsComponent* AddPhysicsSphereComponent(
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
-			SceneNode* parent);
+			SceneNode* parent,
+			bool trigger = false);
 		PhysicsComponent* AddPhysicsMeshComponent(
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
 			Mesh& mesh,
-			SceneNode* parent);
+			SceneNode* parent,
+			bool trigger = false);
 		Camera* AddCamera(SceneNode* parent);
 		
 		SceneNodePtr GetRoot();

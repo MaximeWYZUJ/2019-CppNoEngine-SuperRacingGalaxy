@@ -44,6 +44,8 @@ namespace Cookie
 
 		bool isDirty = false;
 
+		void* userData = nullptr; // meh... (pointeur sur le prefab en pratique)
+
 	protected:
 		std::vector<Vector3<PhysicsComponent_t>> addedForces;
 
@@ -71,7 +73,7 @@ namespace Cookie
 	template<class T>
 	inline void PhysicsComponent::changeTriggerCallback()
 	{
-		delete onCollisionCallback;
-		onCollisionCallback = new T{};
+		delete onTriggerCallback;
+		onTriggerCallback = new T{};
 	}
 }

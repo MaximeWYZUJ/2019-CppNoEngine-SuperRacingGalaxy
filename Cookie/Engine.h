@@ -84,6 +84,9 @@ namespace Cookie
 		physics->step();
 		synchronizer->SyncUp();
 
+		// Physic tasks (client code)
+		physics->ExecuteTasks();
+
 		// Input Events
 		inputManager->Update();
 		actionManager->Update();

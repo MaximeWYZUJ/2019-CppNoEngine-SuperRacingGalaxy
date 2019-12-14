@@ -18,7 +18,13 @@ PxFilterFlags filterShader(
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
 	// Triggers
-	// TODO : cf devoir 3
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+	{
+		if ((filterData0.word0 & filterData1.word1) || (filterData1.word0 & filterData0.word1)) {
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlag::eDEFAULT;
+		}
+	}
 
 	// Non triggers
 	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
@@ -159,6 +165,10 @@ namespace Cookie
 
 		default:
 			break;
+		}
+		if (compo->trigger) {
+			shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
 		}
 
 		// Simulation filter data

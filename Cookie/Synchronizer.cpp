@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Synchronizer.h"
+#include "PhysicsCollisionCallback.h"
 
 using namespace std;
 
@@ -29,8 +30,11 @@ void Cookie::Synchronizer::SyncDown(std::unique_ptr<SceneManager> const & sceneM
 	}
 
 	for_each(mapPhysics.begin(), mapPhysics.end(), [&engine](pair<PhysicsComponent*, PhysicsEngine::ActorPtr> p) {
-		p.first->transform = p.first->sceneNode->localTransform;
-		engine.UpdateActor(p.first, p.second);
+		if (p.first->isDirty) {
+			p.first->transform = p.first->sceneNode->localTransform;
+			engine.UpdateActor(p.first, p.second);
+			p.first->isDirty = false;
+		}
 	});
 
 	sceneManager->addedPhysicsComponents.clear();

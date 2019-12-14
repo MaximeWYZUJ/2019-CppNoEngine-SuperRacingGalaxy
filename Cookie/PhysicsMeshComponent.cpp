@@ -2,7 +2,7 @@
 #include "PhysicsMeshComponent.h"
 
 namespace Cookie {
-	PhysicsMeshComponent::PhysicsMeshComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type_, Mesh& mesh_, Vector3<> size)
+	PhysicsMeshComponent::PhysicsMeshComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type_, Mesh& mesh_, Vector3<> size, bool trigger_)
 		: mesh(mesh_)
 	{
 		transform = Transform<PhysicsComponent_t>();
@@ -13,6 +13,7 @@ namespace Cookie {
 		material = mat;
 
 		type = type_;
+		trigger = trigger_;
 
 		onCollisionCallback = new PhysicsCollisionCallback();
 		onTriggerCallback = new PhysicsCollisionCallback();

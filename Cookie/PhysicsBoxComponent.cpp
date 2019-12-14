@@ -6,7 +6,7 @@
 using namespace physx;
 
 namespace Cookie {
-	PhysicsBoxComponent::PhysicsBoxComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type_, float _dx, float _dy, float _dz)
+	PhysicsBoxComponent::PhysicsBoxComponent(Vector3<PhysicsComponent_t> pos, Quaternion<PhysicsComponent_t> rot, PhysicMaterial mat, BodyType type_, float _dx, float _dy, float _dz, bool trigger_)
 					  : dx(_dx), dy(_dy), dz(_dz)
 	{
 		transform = Transform<PhysicsComponent_t>();
@@ -16,6 +16,7 @@ namespace Cookie {
 		material = mat;
 
 		type = type_;
+		trigger = trigger_;
 
 		onCollisionCallback = new PhysicsCollisionCallback();
 		onTriggerCallback = new PhysicsCollisionCallback();
