@@ -5,7 +5,9 @@
 #include "Util.h"
 #include "DeviceD3D11.h"
 #include "Text.h"
+#include "Button.h"
 #include "SpriteParams.h"
+#include "InputManager.h"
 
 namespace Cookie
 {
@@ -29,8 +31,9 @@ namespace Cookie
 		SommetSprite(Vector3<>(1.0f, 0.0f, 0.0f), Vector2<>(1.0f, 1.0f))
 	};
 
-	GuiManager::GuiManager(TextureManager* textureManager, DeviceD3D11* device) :
+	GuiManager::GuiManager(TextureManager* textureManager, InputManager* inputManager, DeviceD3D11* device) :
 		textureManager{ textureManager },
+		inputManager{inputManager},
 		device{ device },
 		ScreenWidth{ device->GetWidth() },
 		ScreenHeight{ device->GetHeight() },
@@ -66,7 +69,7 @@ namespace Cookie
 		CloseText();
 	}
 
-	void GuiManager::SetPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_)
+	void GuiManager::SetPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_) const
 	{
 		// Obtenir la dimension de la texture
 		ID3D11Resource* pResource;
@@ -95,7 +98,7 @@ namespace Cookie
 		sprite->matPosDim = Matrix4x4<>::FromTranslation(Vector3{ posX, posY, 0.0f }) * Matrix4x4<>::FromScaling(Vector3{ facteurX, facteurY, 1.0f });
 	}
 
-	void GuiManager::setButtonPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_)
+	void GuiManager::setButtonPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_) const
 	{
 		// Dimensions en facteur
 		float facteurX = static_cast<float>(dx_) * 2.0f / device->GetWidth();
@@ -134,7 +137,6 @@ namespace Cookie
 
 			if (bouton) {
 				setButtonPosDim(sprite, xPos, yPos, xDim, yDim);
-				sprite->bouton = true;
 			} else SetPosDim(sprite, xPos, yPos, xDim, yDim);
 			
 			sprites.push_back(sprite);
@@ -222,30 +224,63 @@ namespace Cookie
 		return text;
 	}
 
-	Text* GuiManager::newButton(int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, int offsetTextBoutonX, int offsetTextBoutonY)
+	Button* GuiManager::newButton(const std::string& textureBackgroung, const std::string& textureOver, int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, std::function<void()> action, int offsetTextBoutonX, int offsetTextBoutonY)
 	{
-		newSprite("fondBouton.dds", xPos, yPos, width, height, true);
-		return newText(width, height, pFont, text_, xPos + offsetTextBoutonX, yPos + offsetTextBoutonY);
+		if (textureBackgroung != "" && textureOver != "")
+		{
+			std::wstring wsOver(textureOver.begin(), textureOver.end());
+			
+			Button* button = new Button;
+			button->background = newSprite(textureBackgroung, xPos, yPos, width, height, true);
+			button->pTextureOver = textureManager->GetNewTexture(wsOver, device)->GetD3DTexture();
+			button->xMin = xPos;
+			button->xMax = xPos + width;
+			button->yMin = yPos - height;
+			button->yMax = yPos;
+			button->text = newText(width, height, pFont, text_, xPos + offsetTextBoutonX, yPos + offsetTextBoutonY);
+			button->OnClick(action);
+			
+			buttons.push_back(button);
+
+			return button;
+		}
 	}
 
 	void GuiManager::deleteGuiElement(Sprite* sprite)
 	{
-		auto spriteIt = std::find(sprites.begin(), sprites.end(), sprite);
-		if (spriteIt != sprites.end())
+		auto buttonIt = std::find(buttons.begin(), buttons.end(), sprite);
+		if(buttonIt != buttons.end())
 		{
-			if (spriteIt != sprites.begin())
+			Button* button = static_cast<Button*>(sprite);
+			sprites.erase(std::find(sprites.begin(), sprites.end(), button->background));
+			sprites.erase(std::find(sprites.begin(), sprites.end(), button->text));
+			buttons.erase(buttonIt);
+		} else
+		{
+			auto spriteIt = std::find(sprites.begin(), sprites.end(), sprite);
+			if (spriteIt != sprites.end())
 			{
-				auto spritePrec = *(spriteIt - 1);
-				if (spritePrec->bouton) {
-					sprites.erase(spriteIt);
-					sprites.erase(std::find(sprites.begin(), sprites.end(), spritePrec));
-				} else sprites.erase(spriteIt);
+				sprites.erase(spriteIt);
 			}
-			else sprites.erase(spriteIt);
 		}
 	}
+
+	void GuiManager::changeSpriteTexture(const std::string& textureName, Sprite* sprite) const
+	{
+		if (textureName != "")
+		{
+			std::wstring ws(textureName.begin(), textureName.end());
+			
+			sprite->pTextureD3D = textureManager->GetNewTexture(ws, device)->GetD3DTexture();
+		}
+	}
+
+	void GuiManager::changeButtonBackground(const std::string& textureName, Button* button) const
+	{
+		changeSpriteTexture(textureName, button->background);
+	}
 	
-	void GuiManager::Write(const std::wstring& s, Text* text)
+	void GuiManager::Write(const std::wstring& s, Text* text) const
 	{
 		if(text != nullptr)
 		{
@@ -266,6 +301,11 @@ namespace Cookie
 
 			text->pCharBitmap->UnlockBits(&bmData);
 		}		
+	}
+
+	void GuiManager::Update()
+	{
+		auto events = inputManager->GetEvents();
 	}
 	
 	void GuiManager::DrawAll()

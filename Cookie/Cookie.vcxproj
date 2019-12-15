@@ -195,6 +195,7 @@
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapReader.h" />
     <ClInclude Include="BitmapToMeshAdapter.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CompilerFlags.h" />

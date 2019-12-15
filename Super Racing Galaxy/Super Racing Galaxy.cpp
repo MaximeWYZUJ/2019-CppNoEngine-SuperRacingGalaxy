@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
 		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
 
-		Text* bouton = guiManager->newButton(200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
+		Button* bouton = guiManager->newButton("fondBouton.dds", "fondBouton.dds", 200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
 		
 		
 		CameraLogic cameraLogic(*smgr);
@@ -78,6 +78,7 @@ int main(int argc, char* argv[])
 					++min;
 					sec = 0;
 				}
+
 				min < 10 ? fill = L"0" : fill = L"";
 				sec < 10 ? fill2 = L"0" : fill2 = L"";
 				guiManager->Write(fill + to_wstring(min) + L" : " + fill2 + to_wstring(sec), text2);
