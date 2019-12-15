@@ -1,17 +1,44 @@
 #include "pch.h"
 #include "CameraLogic.h"
 #include "SceneManager.h"
+#include "ActionDescriptor.h"
+#include "ActionManager.h"
 
 using namespace std;
 using namespace Cookie;
 
-CameraLogic::CameraLogic(SceneManager& sceneManager)
-	: sceneManager(sceneManager),
+CameraLogic::CameraLogic(SceneManager& sceneManager, ActionManager& actionManager)
+	: sceneManager(sceneManager), actionManager(actionManager),
 	firstCurRotY(0.0f), firstCurRotX(0.0f),
 	thirdCurRotY(0.0f), thirdCurRotX(0.0f), thirdTargetRotY(0.0f), thirdTargetRotX(0.0f), thirdTargetDistance(1.0f), thirdRotSmooth(0.8f),
+	freeCurPos(0.0f, 0.0f, 0.0f), freeCurRotY(0.0f), freeCurRotX(0.0f), freeCurSpeed(1.0f), freePressedKeys(0),
 	curUp(0.0f, 1.0f, 0.0f), curForward(0.0f, 0.0f, 1.0f)
 {
 	CreateCameras();
+	RegisterCameraActions();
+}
+
+void CameraLogic::SetActiveCamera(CameraType cameraType)
+{
+	switch (cameraType)
+	{
+	case CameraType::FirstPerson:
+		sceneManager.SetMainCamera(firstCam);
+		actionManager.EnableContext("CameraLogic_FirstPerson");
+		break;
+	case CameraType::ThirdPerson:
+		sceneManager.SetMainCamera(thirdCam);
+		actionManager.EnableContext("CameraLogic_ThirdPerson");
+		break;
+	case CameraType::FreeCam:
+		sceneManager.SetMainCamera(freeCam);
+		actionManager.EnableContext("CameraLogic_Free");
+		break;
+	default:
+		throw exception("Invalid enum value");
+	}
+
+	activeCameraType = cameraType;
 }
 
 std::pair<float, float> CameraLogic::ThirdGetRotations() const noexcept
@@ -37,6 +64,26 @@ void CameraLogic::ThirdSetRotations(float rotY, float rotX)
 void CameraLogic::ThirdSetDistance(float distance)
 {
 	thirdTargetDistance = distance;
+}
+
+void CameraLogic::FreeSetRotations(float rotY, float rotX)
+{
+	if (rotX >= Math::Pi / 2.01f)
+	{
+		rotX = Math::Pi / 2.01f;
+	}
+	if (rotX <= -Math::Pi / 2.01f)
+	{
+		rotX = -Math::Pi / 2.01f;
+	}
+	
+	freeCurRotY = rotY;
+	freeCurRotX = rotX;
+}
+
+std::pair<float, float> CameraLogic::FreeGetRotations()
+{
+	return { thirdTargetRotY, thirdTargetRotX };
 }
 
 void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Vector3<> const& center, float smooth)
@@ -71,34 +118,135 @@ void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Vector3<
 		Quaternion<> camRot = Quaternion<>::FromVectorToVector(front, Vector3<>::Normalize(center - targetPos));
 		thirdCam->sceneNode->localTransform.SetRotation(camRot);
 	}
+	else if (activeCameraType == CameraType::FreeCam)
+	{
+		freeCam->SetUpVector(curUp);
+
+		Quaternion<> rotY = Quaternion<>::FromDirection(freeCurRotY, Vector3<>::Up());
+		Quaternion<> rotX = Quaternion<>::FromDirection(freeCurRotX, rotY * Vector3<>::Forward());
+
+		freeCam->sceneNode->localTransform.SetPosition(freeCurPos);
+		Quaternion<> rotLerp = Quaternion<>::Slerp(freeCam->sceneNode->localTransform.GetRotation(), rotX * rotY, 0.2f);
+		freeCam->sceneNode->localTransform.SetRotation(rotLerp);
+	}
 }
 
 void CameraLogic::CreateCameras()
 {
 	SceneNode* root = sceneManager.GetRoot();
 
+	SceneNode* firstCamNode = sceneManager.AddSceneNode(root);
+	firstCam = sceneManager.AddCamera(firstCamNode);
+	
 	SceneNode* thirdCamNode = sceneManager.AddSceneNode(root);
 	thirdCam = sceneManager.AddCamera(thirdCamNode);
 
-	SceneNode* firstCamNode = sceneManager.AddSceneNode(root);
-	firstCam = sceneManager.AddCamera(firstCamNode);
+	SceneNode* freeCamNode = sceneManager.AddSceneNode(root);
+	freeCam = sceneManager.AddCamera(freeCamNode);
 
 	SetActiveCamera(CameraType::ThirdPerson);
 }
 
-void CameraLogic::SetActiveCamera(CameraType cameraType)
+void CameraLogic::RegisterCameraActions()
 {
-	switch (cameraType)
-	{
-	case CameraType::FirstPerson :
-		sceneManager.SetMainCamera(firstCam);
-		break;
-	case CameraType::ThirdPerson:
-		sceneManager.SetMainCamera(thirdCam);
-		break;
-	default:
-		throw exception("Invalid enum value");
-	}
-
-	activeCameraType = cameraType;
+	actionManager.CreateContext("CameraLogic_Free", {
+		ActionDescriptor(Key::W, StateType::Pressed, chrono::milliseconds(0), chrono::milliseconds(0), ActionDescriptor::Callbacks(
+			[]() {},
+			[this]()
+			{
+				freePressedKeys |= 0x01;
+				freeCurPos += curForward * freeCurSpeed;
+				freeCurSpeed += 0.05f;
+			},
+			[this]()
+			{
+				freePressedKeys &= ~0x01;
+				if (freePressedKeys == 0)
+				{
+					freeCurSpeed = 1.0f;
+				}
+			})),
+		ActionDescriptor(Key::A, StateType::Pressed, chrono::milliseconds(0), chrono::milliseconds(0), ActionDescriptor::Callbacks(
+			[](){},
+			[this]()
+			{
+				freePressedKeys |= 0x02;
+				Vector3<> const right = Vector3<>::CrossProduct(curUp, curForward);
+				freeCurPos -= right  * freeCurSpeed;
+				freeCurSpeed += 0.05f;
+			},
+			[this]()
+			{
+				freePressedKeys &= ~0x02;
+				if (freePressedKeys == 0)
+				{
+					freeCurSpeed = 1.0f;
+				}
+			})),
+		ActionDescriptor(Key::S, StateType::Pressed, chrono::milliseconds(0), chrono::milliseconds(0), ActionDescriptor::Callbacks(
+			[]() {},
+			[this]()
+			{
+				freePressedKeys |= 0x04;
+				freeCurPos -= curForward * freeCurSpeed;
+				freeCurSpeed += 0.05f;
+			},
+			[this]()
+			{
+				freePressedKeys &= ~0x04;
+				if (freePressedKeys == 0)
+				{
+					freeCurSpeed = 1.0f;
+				}
+			})),
+		ActionDescriptor(Key::D, StateType::Pressed, chrono::milliseconds(0), chrono::milliseconds(0), ActionDescriptor::Callbacks(
+			[]() {},
+			[this]()
+			{
+				freePressedKeys |= 0x08;
+				Vector3<> const right = Vector3<>::CrossProduct(curUp, curForward);
+				freeCurPos += right * freeCurSpeed;
+				freeCurSpeed += 0.05f;
+			},
+			[this]()
+			{
+				freePressedKeys &= ~0x08;
+				if (freePressedKeys == 0)
+				{
+					freeCurSpeed = 1.0f;
+				}
+			})),
+		ActionDescriptor(Key::Q, StateType::Pressed, chrono::milliseconds(0), chrono::milliseconds(0), ActionDescriptor::Callbacks(
+			[]() {},
+			[this]()
+			{
+				freePressedKeys |= 0x10;
+				freeCurPos += curUp * freeCurSpeed;
+				freeCurSpeed += 0.05f;
+			},
+			[this]()
+			{
+				freePressedKeys &= ~0x10;
+				if (freePressedKeys == 0)
+				{
+					freeCurSpeed = 1.0f;
+				}
+			})),
+		ActionDescriptor(Key::E, StateType::Pressed, chrono::milliseconds(0), chrono::milliseconds(0), ActionDescriptor::Callbacks(
+			[]() {},
+			[this]()
+			{
+				freePressedKeys |= 0x20;
+				freeCurPos -= curUp * freeCurSpeed;
+				freeCurSpeed += 0.05f;
+			},
+			[this]()
+			{
+				freePressedKeys &= ~0x20;
+				if (freePressedKeys == 0)
+				{
+					freeCurSpeed = 1.0f;
+				}
+			})),
+	});
 }

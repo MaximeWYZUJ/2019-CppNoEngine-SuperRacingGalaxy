@@ -25,6 +25,8 @@ namespace Cookie
 		ActionDescriptor const* descriptor;
 		
 		bool isRunning;
+		bool isRepeating;
 		std::chrono::steady_clock::time_point runStart;
+		std::chrono::steady_clock::time_point lastSuccess;
 	};
 }

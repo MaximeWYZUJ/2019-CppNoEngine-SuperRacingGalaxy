@@ -498,6 +498,15 @@ namespace Cookie
 		case WM_LBUTTONUP:
 			c->events.push_back(DeviceEvent(DeviceEventType::MouseButton, MouseButtonData(MouseButtonEventType::LeftButtonUp, { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) })));
 			break;
+		case WM_RBUTTONDOWN:
+			c->events.push_back(DeviceEvent(DeviceEventType::MouseButton, MouseButtonData(MouseButtonEventType::RightButtonDown, { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) })));
+			break;
+		case WM_RBUTTONUP:
+			c->events.push_back(DeviceEvent(DeviceEventType::MouseButton, MouseButtonData(MouseButtonEventType::RightButtonUp, { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) })));
+			break;
+		case WM_MOUSEWHEEL:
+			c->events.push_back(DeviceEvent(DeviceEventType::MouseWheel, MouseWheelData(GET_WHEEL_DELTA_WPARAM(wParam) / static_cast<float>(WHEEL_DELTA))));
+			break;
 		case WM_COMMAND:
 			wmId = LOWORD(wParam);
 			wmEvent = HIWORD(wParam);

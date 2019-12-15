@@ -29,6 +29,9 @@ namespace Cookie
 		fill(begin(keyStates1), end(keyStates1), 0);
 		fill(begin(keyStates2), end(keyStates2), 0);
 
+		mouseWheelCurRotation = 0.0f;
+		mouseWheelDelta = 0.0f;
+
 		InitKeyMapping();
 		Init();
 	}
@@ -97,23 +100,61 @@ namespace Cookie
 			{
 				auto const ev = get<MouseMoveData>(e.data);
 				mouseCurrentPosition = ev.pos;
+				events.push_back(InputEvent{
+					.type = InputEventType::PositionChanged,
+					.data = PositionChanged{.device = PositionalDevice::Mouse, .pos = { ev.pos.x, ev.pos.y } }
+				});
 				break;
 			}
 			case DeviceEventType::MouseButton:
 			{
 				auto const ev = get<MouseButtonData>(e.data);
 
-				if (ev.data == MouseButtonEventType::LeftButtonDown)
+				switch(ev.data)
 				{
+				case MouseButtonEventType::LeftButtonDown:
 					mouseCurrentPosition = ev.pos;
-					mouseCurrentBuffer[static_cast<uint8_t>(MouseButton::LeftMouseButton)] = 0xFF;
-				}
-				else if (ev.data == MouseButtonEventType::LeftButtonUp)
-				{
+					mouseCurrentBuffer[static_cast<uint8_t>(Mouse::LeftButton)] = 0xFF;
+					events.push_back(InputEvent{
+						.type = InputEventType::MouseStateChanged,
+						.data = MouseStateChanged{.button = Mouse::LeftButton, .position = { 0xFF } }
+					});
+					break;
+				case MouseButtonEventType::LeftButtonUp:
 					mouseCurrentPosition = ev.pos;
-					mouseCurrentBuffer[static_cast<uint8_t>(MouseButton::LeftMouseButton)] = 0x00;
+					mouseCurrentBuffer[static_cast<uint8_t>(Mouse::LeftButton)] = 0x00;
+					events.push_back(InputEvent{
+						.type = InputEventType::MouseStateChanged,
+						.data = MouseStateChanged{.button = Mouse::LeftButton, .position = { 0x00 } }
+					});
+					break;
+				case MouseButtonEventType::RightButtonDown:
+					mouseCurrentPosition = ev.pos;
+					mouseCurrentBuffer[static_cast<uint8_t>(Mouse::RightButton)] = 0xFF;
+					events.push_back(InputEvent{
+						.type = InputEventType::MouseStateChanged,
+						.data = MouseStateChanged{.button = Mouse::RightButton, .position = { 0xFF } }
+					});
+					break;
+				case MouseButtonEventType::RightButtonUp:
+					mouseCurrentPosition = ev.pos;
+					mouseCurrentBuffer[static_cast<uint8_t>(Mouse::RightButton)] = 0x00;
+					events.push_back(InputEvent{
+						.type = InputEventType::MouseStateChanged,
+						.data = MouseStateChanged{.button = Mouse::RightButton, .position = { 0x00 } }
+					});
+					break;
+				default:
+					break;
 				}
 
+				break;
+			}
+			case DeviceEventType::MouseWheel:
+			{
+				auto const ev = get<MouseWheelData>(e.data);
+				mouseWheelCurRotation += ev.rotation;
+				mouseWheelDelta = ev.rotation;
 				break;
 			}
 			default:
@@ -152,6 +193,7 @@ namespace Cookie
 		swap(keyCurrentStates, keyPreviousStates);
 		copy(begin(mouseCurrentBuffer), end(mouseCurrentBuffer), begin(mousePreviousBuffer));
 		mousePreviousPosition = mouseCurrentPosition;
+		mouseWheelDelta = 0.0f;
 
 		events.clear();
 	}
@@ -161,7 +203,7 @@ namespace Cookie
 		return keyboardCurrentBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]] & 0x80;
 	}
 
-	bool InputManager::IsMouseButtonPressed(MouseButton button)
+	bool InputManager::IsMouseButtonPressed(Mouse button)
 	{
 		return mouseCurrentBuffer[static_cast<uint8_t>(button)] & 0xFF;
 	}
@@ -174,6 +216,16 @@ namespace Cookie
 	Vector2<int> InputManager::GetMouseDelta()
 	{
 		return mouseCurrentPosition - mousePreviousPosition;
+	}
+
+	float InputManager::GetMouseWheelRotation() const noexcept
+	{
+		return mouseWheelCurRotation;
+	}
+
+	float InputManager::GetMouseWheelDelta() const noexcept
+	{
+		return mouseWheelDelta;
 	}
 
 	std::vector<InputEvent> const& InputManager::GetEvents() const
@@ -209,5 +261,15 @@ namespace Cookie
 		keyToDirectXKey[static_cast<int>(Key::X)] = DIK_X;
 		keyToDirectXKey[static_cast<int>(Key::Y)] = DIK_Y;
 		keyToDirectXKey[static_cast<int>(Key::Z)] = DIK_Z;
+		keyToDirectXKey[static_cast<int>(Key::Alpha0)] = DIK_0;
+		keyToDirectXKey[static_cast<int>(Key::Alpha1)] = DIK_1;
+		keyToDirectXKey[static_cast<int>(Key::Alpha2)] = DIK_2;
+		keyToDirectXKey[static_cast<int>(Key::Alpha3)] = DIK_3;
+		keyToDirectXKey[static_cast<int>(Key::Alpha4)] = DIK_4;
+		keyToDirectXKey[static_cast<int>(Key::Alpha5)] = DIK_5;
+		keyToDirectXKey[static_cast<int>(Key::Alpha6)] = DIK_6;
+		keyToDirectXKey[static_cast<int>(Key::Alpha7)] = DIK_7;
+		keyToDirectXKey[static_cast<int>(Key::Alpha8)] = DIK_8;
+		keyToDirectXKey[static_cast<int>(Key::Alpha9)] = DIK_9;
 	}
 }

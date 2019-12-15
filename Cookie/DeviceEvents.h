@@ -10,13 +10,16 @@ namespace Cookie
 		Focus,
 		FocusLost,
 		MouseMove,
-		MouseButton
+		MouseButton,
+		MouseWheel
 	};
 
 	enum class MouseButtonEventType
 	{
 		LeftButtonUp,
-		LeftButtonDown
+		LeftButtonDown,
+		RightButtonUp,
+		RightButtonDown
 	};
 
 	struct MouseMoveData
@@ -36,9 +39,19 @@ namespace Cookie
 		Vector2<int> pos;
 	};
 
+	struct MouseWheelData
+	{
+		MouseWheelData(float rotation)
+			: rotation(rotation)
+		{
+		}
+
+		float rotation;
+	};
+
 	struct DeviceEvent
 	{
-		using DataType = std::variant<MouseMoveData, MouseButtonData>;
+		using DataType = std::variant<MouseMoveData, MouseButtonData, MouseWheelData>;
 
 		DeviceEvent(DeviceEventType type)
 			: DeviceEvent(type, MouseMoveData())

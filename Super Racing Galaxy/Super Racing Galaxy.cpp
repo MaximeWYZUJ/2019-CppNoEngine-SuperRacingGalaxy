@@ -29,9 +29,9 @@ int main(int argc, char* argv[])
 		SceneManager* smgr = engine->GetSceneManager();
 		InputManager *inputManager = engine->GetInputManager();
 		PhysicsEngine* physics = engine->GetPhysicsEngine();
-
 		GuiManager* guiManager = engine->GetGuiManager();
-		
+		ActionManager* actionManager = engine->GetActionManager();
+
 		guiManager->newSprite("tree02S.dds", 0, 200);
 		Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
 		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
@@ -39,8 +39,9 @@ int main(int argc, char* argv[])
 
 		//Text* bouton = guiManager->newButton(200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
 		
+		CameraLogic cameraLogic(*smgr, *actionManager);
+		cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
 		
-		CameraLogic cameraLogic(*smgr);
 		VehicleHovering hovering(engine->GetPhysicsEngine());
 		
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
@@ -125,13 +126,35 @@ int main(int argc, char* argv[])
 
 			lastForward.Normalize();
 
+			if (inputManager->IsKeyPressed(Key::Alpha1))
+			{
+				cameraLogic.SetActiveCamera(CameraType::FirstPerson);
+			}
+			else if (inputManager->IsKeyPressed(Key::Alpha2))
+			{
+				cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
+			}
+			else if (inputManager->IsKeyPressed(Key::Alpha3))
+			{
+				cameraLogic.SetActiveCamera(CameraType::FreeCam);
+			}
+
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
-			if (inputManager->IsMouseButtonPressed(MouseButton::LeftMouseButton))
+			if (inputManager->IsMouseButtonPressed(Mouse::LeftButton))
 			{
 				auto rotations = cameraLogic.ThirdGetRotations();
 				rotations.first += mouseDelta.x * 0.005f;
 				rotations.second += mouseDelta.y * 0.005f;
 				cameraLogic.ThirdSetRotations(rotations.first, rotations.second);
+			}
+			camDistance += -inputManager->GetMouseWheelDelta() * 4.0f;
+			if (camDistance < 8.0f)
+			{
+				camDistance = 8.0f;
+			}
+			if (camDistance > 100.0f)
+			{
+				camDistance = 100.0f;
 			}
 			cameraLogic.ThirdSetDistance(camDistance);
 			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform.GetPosition(), 0.2f);

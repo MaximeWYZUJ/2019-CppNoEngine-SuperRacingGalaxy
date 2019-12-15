@@ -1,9 +1,6 @@
 #include "pch.h"
-
 #include <stdexcept>
-
 #include "ActionManager.h"
-#include <iostream>
 #include "magic_enum.hpp"
 
 namespace Cookie
@@ -14,54 +11,69 @@ namespace Cookie
 		: inputManager(inputManager)
 	{
 		assert(inputManager);
-		
-		activeContext = end(contexts);
 	}
 
 	void ActionManager::CreateContext(std::string const& contextName, vector<ActionDescriptor>&& actions)
 	{
-		bool const insertionFailed = !contexts.insert({ contextName, ActionContext(move(actions)) }).second;
+		bool const insertionFailed = !contexts.insert({ contextName, Context(ActionContext(move(actions))) }).second;
 		if (insertionFailed)
 		{
 			throw runtime_error("There is already a context with name " + contextName + "!");
 		}
-
-		if (!activeContextName.empty())
-		{
-			SetActiveContext(contextName);
-		}
 	}
 
-	void ActionManager::SetActiveContext(std::string const& contextName)
+	void ActionManager::EnableContext(std::string const& contextName)
 	{
-		activeContextName = contextName;
-		activeContext = contexts.find(contextName);
-		
-		actionRunners.clear();
-		actionRunners.reserve(activeContext->second.actions.size());
-		for(auto& descriptor : activeContext->second.actions)
+		auto const contextIt = contexts.find(contextName);
+
+		if (contextIt != contexts.end() &&
+			!contextIt->second.isEnabled)
 		{
-			actionRunners.emplace_back(&descriptor);
+			auto& context = contextIt->second;
+
+			context.isEnabled = true;
+			context.actionRunners.clear();
+			for (auto& descriptor : context.actionContext.actions)
+			{
+				context.actionRunners.emplace_back(&descriptor);
+			}
 		}
 	}
 	
+	void ActionManager::DisableContext(std::string const& contextName)
+	{
+		auto const contextIt = contexts.find(contextName);
+
+		if (contextIt != end(contexts))
+		{
+			contextIt->second.isEnabled = false;
+		}
+	}
+
 	void ActionManager::Update()
 	{
-		for (auto& runner : actionRunners)
+		for (auto& [contextName, context] : contexts)
 		{
-			runner.Update();
-		}
-		
-		vector<InputEvent> const& events = inputManager->GetEvents();
-
-		// Todo: really slow if ActionContext are more complex
-		for (auto event : events)
-		{
-			if (event.type == InputEventType::KeyStateChanged)
+			if (context.isEnabled)
 			{
-				for (auto& runner : actionRunners)
+				for (auto& runner : context.actionRunners)
 				{
-					runner.Run(get<KeyStateChanged>(event.data));
+					runner.Update();
+				}
+
+				vector<InputEvent> const& events = inputManager->GetEvents();
+				cout << events.size() << endl;
+
+				// Todo: really slow if ActionContext are more complex
+				for (auto event : events)
+				{
+					if (event.type == InputEventType::KeyStateChanged)
+					{
+						for (auto& runner : context.actionRunners)
+						{
+							runner.Run(get<KeyStateChanged>(event.data));
+						}
+					}
 				}
 			}
 		}

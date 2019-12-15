@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <functional>
 
 #include "ExportMacro.h"
 #include "InputManager.h"
@@ -19,7 +20,7 @@ namespace Cookie
 	public:
 		struct COOKIE_API Callbacks
 		{
-			using Action = void(*)();
+			using Action = std::function<void()>;
 
 			Callbacks() = default;
 			Callbacks(Action onBegin, Action onSuccess, Action onCancel)
@@ -32,11 +33,12 @@ namespace Cookie
 			Action onCancel;
 		};
 		
-		ActionDescriptor(Key key, StateType state, std::chrono::milliseconds const& delay, Callbacks callbacks);
+		ActionDescriptor(Key key, StateType state, std::chrono::milliseconds const& delay, std::chrono::milliseconds const& repeatDelay, Callbacks callbacks);
 
 		Key key;
 		StateType state;
 		std::chrono::milliseconds delay;
+		std::chrono::milliseconds repeatDelay;
 		Callbacks callbacks;
 
 		friend struct std::hash<ActionDescriptor>;
