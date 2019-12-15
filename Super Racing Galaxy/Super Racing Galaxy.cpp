@@ -32,12 +32,13 @@ int main(int argc, char* argv[])
 
 		GuiManager* guiManager = engine->GetGuiManager();
 		
-		//guiManager->newSprite("tree02S.dds", -607, 0);
-		
+		guiManager->newSprite("tree02S.dds", 0, 200);
 		Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
 		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
 		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
-		//guiManager->newSprite("tree02S.dds", 0, 200);
+
+		//Text* bouton = guiManager->newButton(200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
+		
 		
 		CameraLogic cameraLogic(*smgr);
 		VehicleHovering hovering(engine->GetPhysicsEngine());

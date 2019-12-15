@@ -38,6 +38,9 @@ namespace Cookie
 		HMODULE GetModule() const;
 		HWND GetWindow() const;
 
+		void enableZBuffer();
+		void disableZBuffer();
+
 	protected:
 		ID3D11RasterizerState* mSolidCullBackRS;
 

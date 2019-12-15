@@ -222,6 +222,7 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="MeshRendererEffect.h" />
     <ClInclude Include="MeshToObjConverter.h" />
+    <ClInclude Include="MiniPhongParams.h" />
     <ClInclude Include="ObjData.h" />
     <ClInclude Include="ObjDataToMeshConverter.h" />
     <ClInclude Include="Object3D.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteParams.h" />
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
