@@ -33,12 +33,15 @@ int main(int argc, char* argv[])
 		GuiManager* guiManager = engine->GetGuiManager();
 		ActionManager* actionManager = engine->GetActionManager();
 
-		guiManager->newSprite("tree02S.dds", 0, 200);
+		//guiManager->newSprite("tree02S.dds", 0, 200);
 		Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
 		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
 		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
 
-		Button* bouton = guiManager->newButton("fondBouton.dds", "fondBouton.dds", 200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
+		int xPos = 0;
+		int yPos = 200;
+		
+		Button* bouton = guiManager->newButton("fondBouton.dds", "fondBoutonOver.dds", 200, 200, font, L"Ajouter \narbre", 400, 500, [&xPos, &yPos, &guiManager]() { xPos += 20; yPos += 20; guiManager->newSprite("tree02S.dds", xPos, yPos); });
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
 		cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
@@ -55,7 +58,7 @@ int main(int argc, char* argv[])
 		wstring fill2;
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2, &bouton]() {
+		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 

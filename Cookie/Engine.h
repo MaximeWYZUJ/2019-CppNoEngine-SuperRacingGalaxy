@@ -90,6 +90,7 @@ namespace Cookie
 		// Input Events
 		inputManager->Update();
 		actionManager->Update();
+		guiManager->Update();
 
 		// Game Logic
 		update();

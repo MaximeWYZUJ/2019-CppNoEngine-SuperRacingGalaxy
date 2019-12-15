@@ -12,7 +12,7 @@ namespace Cookie
 		int yMin;
 		int yMax;
 
-		bool mouseOver = false;
+		bool over = false;
 		
 		std::function<void()> clickAction;
 		Sprite* background;
@@ -27,7 +27,6 @@ namespace Cookie
 		void MouseOver()
 		{
 			std::swap(background->pTextureD3D, pTextureOver);
-			mouseOver = true;
 		}
 
 		void OnClick(std::function<void()> action)

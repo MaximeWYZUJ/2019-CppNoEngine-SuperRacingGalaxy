@@ -305,7 +305,33 @@ namespace Cookie
 
 	void GuiManager::Update()
 	{
-		auto events = inputManager->GetEvents();
+		std::for_each(buttons.begin(), buttons.end(), [&](Button* button)
+			{
+				Vector2<int> mousePos = inputManager->GetMousePosition();
+				bool mouseInside = mousePos.x > button->xMin&& mousePos.x < button->xMax && mousePos.y > button->yMin&& mousePos.y < button->yMax;
+
+				if (!button->over && mouseInside)
+				{
+					button->MouseOver();
+					button->over = true;
+				} else if (button->over && !mouseInside)
+				{
+					button->MouseOver();
+					button->over = false;
+				}
+				
+				auto events = inputManager->GetEvents();
+
+				auto it = std::find_if(events.begin(), events.end(), [](auto& e)
+					{
+						return e.type == InputEventType::MouseStateChanged && std::get<MouseStateChanged>(e.data).button == Mouse::LeftButton;
+					});
+
+				if (it != events.end() && mouseInside)
+				{
+					button->Click();
+				}			
+			});
 	}
 	
 	void GuiManager::DrawAll()
