@@ -9,6 +9,8 @@ namespace Cookie
 	class Transform
 	{
 	public:
+		static Transform<T> BlenderToCookie(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation);
+		
 		Transform();
 		Transform(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation);
 
@@ -37,6 +39,12 @@ namespace Cookie
 
 		bool isDirty;
 	};
+
+	template <class T>
+	Transform<T> Transform<T>::BlenderToCookie(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation)
+	{
+		return Transform<T>(Vector3<T>(pos.x, pos.z, pos.y), Vector3<T>(scale.x, scale.z, scale.y), Quaternion<T>(rotation.y, rotation.w, rotation.z, -rotation.x));
+	}
 
 	template<class T>
 	Transform<T>::Transform()

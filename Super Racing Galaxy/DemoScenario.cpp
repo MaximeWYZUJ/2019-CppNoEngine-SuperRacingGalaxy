@@ -12,11 +12,11 @@ Scenario ScenarioCreator::CreateDemoScenario()
 {
 	Scenario scenario;
 
-	Planet *planete1 = new Planet(Transform<>({ 0.f, 0.f, 0.f }, { 100.0f, 100.0f, 100.0f }, { 0.0f, 0.0f, 0.0f, 1.f }),
+	Planet *planete1 = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 500.0f, 500.0f, 500.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }),
 		-9.81f, true, "graphics\\meshs\\planete1test2.obj", L"graphics\\textureDDS\\planete1\\planete1Alpha.dds");
 
 	{
-		planete1->addElement(new Scenery(Transform<>({ 0.214581f, 0.536465f, 0.362967f }, { 0.362121f, 0.419094f, 0.439271f }, { 0.28219f, 0.472567f, -0.106708f, 0.828047f }),
+		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.0f, 0.0f, 1.0f }, { 1.0f, 0.1f, 1.0f }, { 0.5f, -0.5f, -0.5f, 0.5f }),
 			"graphics\\meshs\\champi2.obj", L"graphics\\textureDDS\\champi2Texture.dds"));
 	}
 
@@ -35,10 +35,10 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 2000.0f, 0.0f, 7000.0f }, { 5000.0f, 5000.0f, 5000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }),
 										  -30.0f, true, "newPlanet.obj", L"textureNewPlanet.dds"));*/
 
-	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 150.0f, 0.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
+	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 275.0f, 0.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   -9.81f, false, "graphics\\meshs\\cargo.obj", L"graphics\\textureDDS\\textureCargo.dds"));
 
-	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 152.0f, 0.0f }, { 4.f, 1.6f, 4.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics\\meshs\\ultimateShip.obj", L"graphics\\textureDDS\\textureUltimateShip.dds");
+	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 277.0f, 0.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics\\meshs\\ultimateShip.obj", L"graphics\\textureDDS\\textureUltimateShip.dds");
 	
 	{
 		Teleport* teleporteur1 = new Teleport(Transform<>({ 0.275252f, -0.315539f, 0.148886f }, { 0.246564f, 0.098625f, 0.246564f }, { 0.04615f, -0.108863f, -0.964831f, 0.234776f }), "graphics\\meshs\\teleporteur.obj", L"graphics\\textureDDS\\teleporteurTexture.dds");

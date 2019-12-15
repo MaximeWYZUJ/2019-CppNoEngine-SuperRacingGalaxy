@@ -8,19 +8,29 @@ namespace Cookie
 	using namespace std;
 	
 	ActionRunner::ActionRunner(ActionDescriptor const* descriptor)
-		: descriptor(descriptor), isRunning(false)
+		: descriptor(descriptor), isRunning(false), isRepeating(false)
 	{
 	}
 	
 	void ActionRunner::Update()
 	{
-		if (isRunning)
+		if (isRepeating)
+		{
+			auto currentTime = chrono::high_resolution_clock::now();
+			if (currentTime - lastSuccess >= descriptor->repeatDelay)
+			{
+				descriptor->callbacks.onSuccess();
+				lastSuccess = chrono::high_resolution_clock::now();
+			}
+		}
+		else if (isRunning)
 		{
 			auto currentTime = chrono::high_resolution_clock::now();
 			if (currentTime - runStart >= descriptor->delay)
 			{
-				isRunning = false;
+				isRepeating = true;
 				descriptor->callbacks.onSuccess();
+				lastSuccess = chrono::high_resolution_clock::now();
 			}
 		}
 	}
@@ -34,6 +44,7 @@ namespace Cookie
 				if (StateReversed(keyState))
 				{
 					isRunning = false;
+					isRepeating = false;
 					descriptor->callbacks.onCancel();
 					return;
 				}
@@ -41,7 +52,7 @@ namespace Cookie
 				auto currentTime = chrono::high_resolution_clock::now();
 				if (currentTime - runStart >= descriptor->delay)
 				{
-					isRunning = false;
+					isRepeating = true;
 					descriptor->callbacks.onSuccess();
 				}
 			}

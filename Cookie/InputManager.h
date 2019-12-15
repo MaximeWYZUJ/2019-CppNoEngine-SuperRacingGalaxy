@@ -39,18 +39,37 @@ namespace Cookie
 		W = 0x16,
 		X = 0x17,
 		Y = 0x18,
-		Z = 0x19
+		Z = 0x19,
+		Alpha0 = 0x1A,
+		Alpha1 = 0x1B,
+		Alpha2 = 0x1C,
+		Alpha3 = 0x1D,
+		Alpha4 = 0x1E,
+		Alpha5 = 0x1F,
+		Alpha6 = 0x20,
+		Alpha7 = 0x21,
+		Alpha8 = 0x22,
+		Alpha9 = 0x23,
+		Unknown = 0x24
 	};
 
-	enum class MouseButton
+	enum class Mouse
 	{
-		LeftMouseButton = 0x00,
-		RightMouseButton = 0x01
+		LeftButton = 0x00,
+		RightButton = 0x01
+	};
+
+	// Device with x/y coordinates
+	enum class PositionalDevice
+	{
+		Mouse
 	};
 
 	enum class InputEventType
 	{
-		KeyStateChanged
+		KeyStateChanged,
+		MouseStateChanged,
+		PositionChanged
 	};
 
 	struct KeyStateChanged
@@ -61,9 +80,24 @@ namespace Cookie
 		uint8_t position;
 	};
 
+	struct MouseStateChanged
+	{
+		Mouse button;
+
+		// 0 = initial state, 255 = fully pressed
+		uint8_t position;
+	};
+
+	struct PositionChanged
+	{
+		PositionalDevice device;
+
+		Vector2<int> pos;
+	};
+
 	struct InputEvent
 	{
-		using DataType = std::variant<KeyStateChanged>;
+		using DataType = std::variant<KeyStateChanged, MouseStateChanged, PositionChanged>;
 		
 		InputEventType type;
 		DataType data;
@@ -80,16 +114,18 @@ namespace Cookie
 		void PostUpdate();
 		
 		bool IsKeyPressed(Key key);
-		bool IsMouseButtonPressed(MouseButton button);
+		bool IsMouseButtonPressed(Mouse button);
 		Vector2<int> GetMousePosition();
 		Vector2<int> GetMouseDelta();
+		float GetMouseWheelRotation() const noexcept;
+		float GetMouseWheelDelta() const noexcept;
 
 		[[nodiscard]]
 		std::vector<InputEvent> const& GetEvents() const;
 	private:
 		void InitKeyMapping();
 		
-		static constexpr int nbKeys = 26;
+		static constexpr int nbKeys = static_cast<int>(Key::Unknown);
 
 		DeviceD3D11* device;
 		bool isInitialized;
@@ -114,6 +150,9 @@ namespace Cookie
 
 		Vector2<int> mouseCurrentPosition;
 		Vector2<int> mousePreviousPosition;
+
+		float mouseWheelCurRotation;
+		float mouseWheelDelta;
 
 		std::vector<InputEvent> events;
 	};

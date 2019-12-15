@@ -17,7 +17,7 @@ namespace Srg
 		Vector3<> force = Vector3<>::Normalize(-raycast);
 		float heightInv = 1.0f - hitDistance / maxHitDistance;
 		float forceFactor = heightInv * heightInv * heightInv * heightInv * heightInv; // x^5
-		float maxPulsion = planetGravity * -20.0f; // 10 times the gravity
+		float maxPulsion = planetGravity * -1.0f; // 1 times the gravity
 		Vector3<> repulsion = force * forceFactor * maxPulsion;
 		auto projection = Vector3<>::Projection(curVelocity, repulsion);
 
@@ -36,6 +36,9 @@ namespace Srg
 
 	void VehicleHovering::Update(Vehicle* vehicle, float gravityValue, Vector3<> planetUp)
 	{
+		static float rayDistance = 10.0f;
+		static float expectedHeight = 2.0f;
+		
 		Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 		Vector3<> vehicleScale = vehicle->root->localTransform.GetScale();
 		Quaternion<> vehicleRot = vehicle->root->localTransform.GetRotation();
@@ -51,20 +54,28 @@ namespace Srg
 		Vector3<> blRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
 		Vector3<> brRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
 
-		auto a = physics->PlanetRaycast(flPoint, flRay, 5.0f);
-		auto b = physics->PlanetRaycast(frPoint, frRay, 5.0f);
-		auto c = physics->PlanetRaycast(blPoint, blRay, 5.0f);
-		auto d = physics->PlanetRaycast(brPoint, brRay, 5.0f);
+		auto a = physics->PlanetRaycast(flPoint, flRay, rayDistance);
+		auto b = physics->PlanetRaycast(frPoint, frRay, rayDistance);
+		auto c = physics->PlanetRaycast(blPoint, blRay, rayDistance);
+		auto d = physics->PlanetRaycast(brPoint, brRay, rayDistance);
 
 		Vector3<> curVelocity = vehicle->root->physics->velocity;
 		
 		if (a.first && b.first && c.first && d.first)
 		{
-			vehicle->root->physics->addForce(ComputeRepulsion(flRay, a.second, 5.0f, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(frRay, b.second, 5.0f, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(blRay, c.second, 5.0f, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(brRay, d.second, 5.0f, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(flRay, a.second, rayDistance, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(frRay, b.second, rayDistance, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(blRay, c.second, rayDistance, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(brRay, d.second, rayDistance, gravityValue, curVelocity));
 
+			float avgDistance = (a.second + b.second + c.second + d.second) / 4.0f;
+			float slerpTime = 1.0f;
+
+			if (avgDistance > expectedHeight)
+			{
+				slerpTime = 1.0f - (avgDistance - expectedHeight) / (rayDistance - expectedHeight);
+			}
+			
 			Vector3<> forward = vehicleRot * Vector3<>::Forward();
 			Vector3<> right = vehicleRot * Vector3<>::Right();
 			
@@ -74,7 +85,7 @@ namespace Srg
 			float avgHeightDiff = (leftDiff + rightDiff) / 2.0f;
 			float radAngle = tan(avgHeightDiff / vehicleScale.z);
 			Quaternion<> addRot = Quaternion<>::FromDirection(radAngle, right);
-			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, addRot * vehicleRot, 0.5f));
+			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, addRot * vehicleRot, slerpTime));
 			vehicleRot = vehicle->root->localTransform.GetRotation();
 			
 			// Z+ angle change
@@ -83,14 +94,15 @@ namespace Srg
 			avgHeightDiff = (frontDiff + backDiff) / 2.0f;
 			radAngle = tan(avgHeightDiff / vehicleScale.x);
 			addRot = Quaternion<>::FromDirection(radAngle, forward);
-			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, addRot * vehicleRot, 0.5f));
+			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, addRot * vehicleRot, slerpTime));
 		}
 		else
 		{
 			// Align ship with planet up axis
+			float slerpTime = 0.1f;
 			Vector3<> up = vehicleRot * Vector3<>::Up();
 			Quaternion<> rot = Quaternion<>::FromVectorToVector(up, planetUp);
-			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, rot * vehicleRot, 0.5f));
+			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, rot * vehicleRot, slerpTime));
 		}
 
 		vehicle->root->physics->SetAngularVelocity(Vector3<>::Zero());

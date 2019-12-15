@@ -17,20 +17,30 @@ namespace Cookie
 		// Create an ActionContext.
 		void CreateContext(std::string const& contextName, std::vector<ActionDescriptor>&& actions);
 
-		// Set the ActionContext that will be used in subsequent frames.
-		void SetActiveContext(std::string const& contextName);
+		// Activate a context that will be used in subsequent frames.
+		void EnableContext(std::string const& contextName);
+
+		// Disable a context for subsequent frames.
+		void DisableContext(std::string const& contextName);
 
 		void Update();
 	private:
-		using Contexts = std::unordered_map<std::string, ActionContext>;
+		struct Context
+		{
+			Context(ActionContext&& actionContext)
+				: actionContext(std::move(actionContext))
+			{
+				actionRunners.reserve(actionContext.actions.size());
+			}
+			
+			bool isEnabled = false;
+			ActionContext actionContext;
+			std::vector<ActionRunner> actionRunners;
+		};
+		
+		using Contexts = std::unordered_map<std::string, Context>;
 		
 		InputManager* inputManager;
-		
-		Contexts::const_iterator activeContext;
-		std::string activeContextName;
-
-		std::vector<ActionRunner> actionRunners;
-		
 		Contexts contexts;
 	};
 }
