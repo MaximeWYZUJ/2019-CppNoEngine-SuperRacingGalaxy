@@ -51,19 +51,19 @@ namespace Srg
 		Vector3<> blRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
 		Vector3<> brRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
 
-		auto a = physics->PlanetRaycast(flPoint, flRay, 10.0f);
-		auto b = physics->PlanetRaycast(frPoint, frRay, 10.0f);
-		auto c = physics->PlanetRaycast(blPoint, blRay, 10.0f);
-		auto d = physics->PlanetRaycast(brPoint, brRay, 10.0f);
+		auto a = physics->PlanetRaycast(flPoint, flRay, 5.0f);
+		auto b = physics->PlanetRaycast(frPoint, frRay, 5.0f);
+		auto c = physics->PlanetRaycast(blPoint, blRay, 5.0f);
+		auto d = physics->PlanetRaycast(brPoint, brRay, 5.0f);
 
 		Vector3<> curVelocity = vehicle->root->physics->velocity;
 		
 		if (a.first && b.first && c.first && d.first)
 		{
-			vehicle->root->physics->addForce(ComputeRepulsion(flRay, a.second, 10.0f, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(frRay, b.second, 10.0f, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(blRay, c.second, 10.0f, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(brRay, d.second, 10.0f, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(flRay, a.second, 5.0f, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(frRay, b.second, 5.0f, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(blRay, c.second, 5.0f, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(brRay, d.second, 5.0f, gravityValue, curVelocity));
 
 			Vector3<> forward = vehicleRot * Vector3<>::Forward();
 			Vector3<> right = vehicleRot * Vector3<>::Right();
