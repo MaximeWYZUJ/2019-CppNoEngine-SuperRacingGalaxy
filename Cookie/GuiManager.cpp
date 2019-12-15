@@ -5,17 +5,12 @@
 #include "Util.h"
 #include "DeviceD3D11.h"
 #include "Text.h"
-
+#include "SpriteParams.h"
 
 namespace Cookie
 {
-
-	ULONG_PTR GuiManager::token = 0;
 	
-	struct ShadersParams
-	{
-		Matrix4x4<> matWVP; // la matrice totale
-	};
+	ULONG_PTR GuiManager::token = 0;
 
 	// Definir l’organisation de notre sommet
 	D3D11_INPUT_ELEMENT_DESC SommetSprite::layout[] =
@@ -40,11 +35,7 @@ namespace Cookie
 		ScreenWidth{ device->GetWidth() },
 		ScreenHeight{ device->GetHeight() },
 		pVertexBuffer{ nullptr },
-		pConstantBuffer{ nullptr },
-		pVertexLayout{ nullptr },
-		pSamplerState{ nullptr },
-		pVertexShader{ nullptr },
-		pPixelShader{ nullptr }
+		shader{device, L"Sprite", sizeof SpriteParams, SommetSprite::layout, SommetSprite::numElements}
 	{
 		// SPRITES
 		
@@ -64,8 +55,6 @@ namespace Cookie
 		InitData.pSysMem = sommets;
 
 		DXEssayer(pD3DDevice->CreateBuffer(&bd, &InitData, &pVertexBuffer), DXE_CREATIONVERTEXBUFFER);
-		// Initialisation de l’effet
-		InitShaders();
 
 		// Initialisation du texte
 		InitText();
@@ -73,20 +62,12 @@ namespace Cookie
 
 	GuiManager::~GuiManager()
 	{
-		DXRelacher(pConstantBuffer);
-		DXRelacher(pSamplerState);
-		DXRelacher(pVertexShader);
-		DXRelacher(pPixelShader);
-		DXRelacher(pVertexLayout);
 		DXRelacher(pVertexBuffer);
 		CloseText();
 	}
 
 	void GuiManager::SetPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_)
 	{
-		float x = static_cast<float>(x_);
-		float y = static_cast<float>(y_);
-
 		// Obtenir la dimension de la texture
 		ID3D11Resource* pResource;
 		ID3D11Texture2D* pTextureInterface = 0;
@@ -108,87 +89,24 @@ namespace Cookie
 
 		// Positions en coordonnées logiques
 		// 0,0 pixel = -1,1 (haut a gauche ecran)
-		float posX = x * 2.0f / device->GetWidth() -1.0f;
-		float posY = 1.0f - y * 2.0f / device->GetHeight();
+		float posX = static_cast<float>(x_) * 2.0f / device->GetWidth() -1.0f;
+		float posY = 1.0f - static_cast<float>(y_) * 2.0f / device->GetHeight();
 
 		sprite->matPosDim = Matrix4x4<>::FromTranslation(Vector3{ posX, posY, 0.0f }) * Matrix4x4<>::FromScaling(Vector3{ facteurX, facteurY, 1.0f });
 	}
 
-	void GuiManager::InitShaders()
+	void GuiManager::setButtonPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_)
 	{
-		ID3D11Device* pD3DDevice = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		ID3DBlob* pVSBlob = nullptr;
+		// Dimensions en facteur
+		float facteurX = static_cast<float>(dx_) * 2.0f / device->GetWidth();
+		float facteurY = static_cast<float>(dy_) * 2.0f / device->GetHeight();
 
-		DXEssayer(D3DCompileFromFile(L"SpriteVS.hlsl",
-			nullptr, nullptr,
-			"SpriteVS",
-			"vs_5_0",
-			D3DCOMPILE_ENABLE_STRICTNESS,
-			0,
-			&pVSBlob, nullptr), DXE_FICHIER_VS);
+		// Positions en coordonnées logiques
+		// 0,0 pixel = -1,1 (haut a gauche ecran)
+		float posX = static_cast<float>(x_) * 2.0f / device->GetWidth() - 1.0f;
+		float posY = 1.0f - static_cast<float>(y_) * 2.0f / device->GetHeight();
 
-		DXEssayer(pD3DDevice->CreateVertexShader(pVSBlob->GetBufferPointer(),
-			pVSBlob->GetBufferSize(),
-			nullptr,
-			&pVertexShader),
-			DXE_CREATION_VS);
-
-		pVertexLayout = nullptr;
-		ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-
-		DXEssayer(d->CreateInputLayout(SommetSprite::layout,
-			SommetSprite::numElements,
-			pVSBlob->GetBufferPointer(),
-			pVSBlob->GetBufferSize(),
-			&pVertexLayout),
-			DXE_CREATIONLAYOUT);
-		pVSBlob->Release();
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = sizeof(ShadersParams);
-		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bd.CPUAccessFlags = 0;
-
-		pD3DDevice->CreateBuffer(&bd, nullptr, &pConstantBuffer);
-
-		ID3DBlob* pPSBlob = nullptr;
-		DXEssayer(D3DCompileFromFile(L"SpritePS.hlsl",
-			nullptr, nullptr,
-			"SpritePS",
-			"ps_5_0",
-			D3DCOMPILE_ENABLE_STRICTNESS,
-			0,
-			&pPSBlob,
-			nullptr), DXE_FICHIER_PS);
-
-		DXEssayer(pD3DDevice->CreatePixelShader(pPSBlob->GetBufferPointer(),
-			pPSBlob->GetBufferSize(),
-			nullptr,
-			&pPixelShader),
-			DXE_CREATION_PS);
-
-		pPSBlob->Release();
-
-		// Initialisation des paramètres de sampling de la texture
-		D3D11_SAMPLER_DESC samplerDesc;
-		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		samplerDesc.MipLODBias = 0.0f;
-		samplerDesc.MaxAnisotropy = 1;
-		samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		samplerDesc.BorderColor[0] = 0;
-		samplerDesc.BorderColor[1] = 0;
-		samplerDesc.BorderColor[2] = 0;
-		samplerDesc.BorderColor[3] = 0;
-		samplerDesc.MinLOD = 0;
-		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		// Création de l’état de sampling
-		pD3DDevice->CreateSamplerState(&samplerDesc, &pSamplerState);
+		sprite->matPosDim = Matrix4x4<>::FromTranslation(Vector3{ posX, posY, 0.0f }) * Matrix4x4<>::FromScaling(Vector3{ facteurX, facteurY, 1.0f });
 	}
 
 	void GuiManager::InitText()
@@ -205,7 +123,7 @@ namespace Cookie
 	}
 
 
-	void GuiManager::newSprite(const std::string& textureName, int xPos, int yPos, int xDim, int yDim )
+	void GuiManager::newSprite(const std::string& textureName, int xPos, int yPos, int xDim, int yDim, bool bouton)
 	{
 		if (textureName != "")
 		{
@@ -214,13 +132,13 @@ namespace Cookie
 			Sprite* sprite = new Sprite();
 			sprite->pTextureD3D = textureManager->GetNewTexture(ws.c_str(), device)->GetD3DTexture();
 
-			SetPosDim(sprite, xPos, yPos, xDim, yDim);
+			bouton ? setButtonPosDim(sprite, xPos, yPos, xDim, yDim) : SetPosDim(sprite, xPos, yPos, xDim, yDim);
 
 			sprites.push_back(sprite);
 		}
 	}
 
-	Text* GuiManager::newText(int width, int height, Gdiplus::Font* font, const std::wstring& s, int xPos, int yPos)
+	Text* GuiManager::newText(int width, int height, Gdiplus::Font* font, const std::wstring& text_, int xPos, int yPos)
 	{
 		Text* text = new Text();
 		text->TextWidth = width;
@@ -255,7 +173,7 @@ namespace Cookie
 		// Accéder aux bits du bitmap
 		Gdiplus::BitmapData bmData;
 		text->pCharBitmap->LockBits(&Gdiplus::Rect(0, 0, text->TextWidth, text->TextHeight), Gdiplus ::ImageLockModeRead, PixelFormat32bppARGB, &bmData);
-
+		
 		// Création d’une texture de même dimension sur la carte graphique
 		D3D11_TEXTURE2D_DESC texDesc;
 		texDesc.Width = text->TextWidth;
@@ -290,7 +208,7 @@ namespace Cookie
 
 		text->pCharBitmap->UnlockBits(&bmData);
 
-		Write(s, text);
+		Write(text_, text);
 
 		SetPosDim(text, xPos, yPos, 1, 1);
 
@@ -298,6 +216,13 @@ namespace Cookie
 
 		return text;
 	}
+
+	Text* GuiManager::newButton(int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, int offsetTextBoutonX, int offsetTextBoutonY)
+	{
+		newSprite("fondBouton.dds", xPos, yPos, width, height, true);
+		return newText(width, height, pFont, text_, xPos + offsetTextBoutonX, yPos + offsetTextBoutonY);
+	}
+
 
 	void GuiManager::Write(const std::wstring& s, Text* text)
 	{
@@ -324,7 +249,7 @@ namespace Cookie
 	
 	void GuiManager::DrawAll()
 	{
-		dynamic_cast<DeviceD3D11*>(device)->ResetDepthBuffer();
+		device->disableZBuffer();
 
 		for(auto sprite : sprites)
 		{
@@ -340,30 +265,18 @@ namespace Cookie
 			const UINT offset = 0;
 			pImmediateContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
 
-			// input layout des sommets
-			pImmediateContext->IASetInputLayout(pVertexLayout);
-
-			// Initialiser et sélectionner les «constantes» de l’effet
-			ShadersParams sp;
-			sp.matWVP = sprite->matPosDim;
-			pImmediateContext->UpdateSubresource(pConstantBuffer, 0, nullptr, &sp, 0, 0);
-
-			// Set shaders et constant buffer
-			pImmediateContext->VSSetShader(pVertexShader, nullptr, 0);
-			pImmediateContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
-			pImmediateContext->GSSetShader(nullptr, nullptr, 0);
-			pImmediateContext->PSSetShader(pPixelShader, nullptr, 0);
-			pImmediateContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
-			pImmediateContext->PSSetSamplers(0, 1, &pSamplerState);
-
-			//Activation texture
-			pImmediateContext->PSSetShaderResources(0, 1, &sprite->pTextureD3D);
+			SpriteParams* sp = new SpriteParams;
+			sp->matWVP = sprite->matPosDim;
+			
+			shader.Activate(sp, sprite->pTextureD3D);
 
 			// **** Rendu de l’objet
 			device->EnableAlphaBlend();
 			pImmediateContext->Draw(6, 0);
 			device->DisableAlphaBlend();
 		}
+
+		device->enableZBuffer();
 	}
 
 	

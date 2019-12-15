@@ -10,6 +10,8 @@
 #include "Util.h"
 #include "AlgorithmShortcuts.h"
 #include "PhysicsBoxComponent.h"
+#include "MiniPhongParams.h"
+#include "Layout.h"
 
 #undef max
 
@@ -19,7 +21,7 @@ namespace Cookie
 {
 	using namespace std;
 
-	SceneManager::SceneManager(Device* device) : device { device }, shaders{ device }
+	SceneManager::SceneManager(Device* device) : device { device }, shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);
