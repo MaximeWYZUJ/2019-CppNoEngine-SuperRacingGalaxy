@@ -40,7 +40,6 @@ namespace Cookie
 		
 		std::vector<Sprite*> sprites;
 		
-		void InitShaders();
 		static void InitText();
 		static void CloseText();
 
@@ -54,9 +53,10 @@ namespace Cookie
 		GuiManager(TextureManager* textureManager, DeviceD3D11* device);
 		~GuiManager();
 		
-		void newSprite(const std::string& textureName, int xPos, int yPos, int xDim = 1, int yDim = 1, bool bouton = false);
+		Sprite* newSprite(const std::string& textureName, int xPos, int yPos, int xDim = 1, int yDim = 1, bool bouton = false);
 		Text* newText(int width, int height, Gdiplus::Font* font, const std::wstring& text_, int xPos, int yPos);
 		Text* newButton(int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, int offsetTextBoutonX = 0, int offsetTextBoutony = 0);
+		void deleteGuiElement(Sprite* sprite);
 		
 		void Write(const std::wstring& s, Text* text);
 

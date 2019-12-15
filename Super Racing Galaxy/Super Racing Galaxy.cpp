@@ -11,6 +11,7 @@
 #include "CameraLogic.h"
 #include "VehicleHovering.h"
 #include "Vector3.h"
+#include "Text.h"
 
 #undef max
 
@@ -37,7 +38,7 @@ int main(int argc, char* argv[])
 		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
 		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
 
-		//Text* bouton = guiManager->newButton(200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
+		Text* bouton = guiManager->newButton(200, 200, font, L"Test infini pour voir si c'est bien centré", 400, 300);
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
 		cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
@@ -54,7 +55,7 @@ int main(int argc, char* argv[])
 		wstring fill2;
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
+		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2, &bouton]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 

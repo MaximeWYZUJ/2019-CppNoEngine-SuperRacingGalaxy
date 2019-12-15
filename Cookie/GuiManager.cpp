@@ -123,7 +123,7 @@ namespace Cookie
 	}
 
 
-	void GuiManager::newSprite(const std::string& textureName, int xPos, int yPos, int xDim, int yDim, bool bouton)
+	Sprite* GuiManager::newSprite(const std::string& textureName, int xPos, int yPos, int xDim, int yDim, bool bouton)
 	{
 		if (textureName != "")
 		{
@@ -132,9 +132,14 @@ namespace Cookie
 			Sprite* sprite = new Sprite();
 			sprite->pTextureD3D = textureManager->GetNewTexture(ws.c_str(), device)->GetD3DTexture();
 
-			bouton ? setButtonPosDim(sprite, xPos, yPos, xDim, yDim) : SetPosDim(sprite, xPos, yPos, xDim, yDim);
-
+			if (bouton) {
+				setButtonPosDim(sprite, xPos, yPos, xDim, yDim);
+				sprite->bouton = true;
+			} else SetPosDim(sprite, xPos, yPos, xDim, yDim);
+			
 			sprites.push_back(sprite);
+
+			return sprite;
 		}
 	}
 
@@ -223,7 +228,23 @@ namespace Cookie
 		return newText(width, height, pFont, text_, xPos + offsetTextBoutonX, yPos + offsetTextBoutonY);
 	}
 
-
+	void GuiManager::deleteGuiElement(Sprite* sprite)
+	{
+		auto spriteIt = std::find(sprites.begin(), sprites.end(), sprite);
+		if (spriteIt != sprites.end())
+		{
+			if (spriteIt != sprites.begin())
+			{
+				auto spritePrec = *(spriteIt - 1);
+				if (spritePrec->bouton) {
+					sprites.erase(spriteIt);
+					sprites.erase(std::find(sprites.begin(), sprites.end(), spritePrec));
+				} else sprites.erase(spriteIt);
+			}
+			else sprites.erase(spriteIt);
+		}
+	}
+	
 	void GuiManager::Write(const std::wstring& s, Text* text)
 	{
 		if(text != nullptr)
