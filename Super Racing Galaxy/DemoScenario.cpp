@@ -13,7 +13,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Scenario scenario;
 
 	Planet *planete1 = new Planet(Transform<>({ 0.f, 0.f, 0.f }, { 100.0f, 100.0f, 100.0f }, { 0.0f, 0.0f, 0.0f, 1.f }),
-		-9.81f * 10, true, "graphics\\meshs\\planete1test2.obj", L"graphics\\textureDDS\\planete1\\planete1Alpha.dds");
+		-9.81f, true, "graphics\\meshs\\planete1test2.obj", L"graphics\\textureDDS\\planete1\\planete1Alpha.dds");
 
 	{
 		planete1->addElement(new Scenery(Transform<>({ 0.214581f, 0.536465f, 0.362967f }, { 0.362121f, 0.419094f, 0.439271f }, { 0.28219f, 0.472567f, -0.106708f, 0.828047f }),
@@ -36,7 +36,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 										  -30.0f, true, "newPlanet.obj", L"textureNewPlanet.dds"));*/
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 150.0f, 0.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
-										   -30.0f, false, "graphics\\meshs\\cargo.obj", L"graphics\\textureDDS\\textureCargo.dds"));
+										   -9.81f, false, "graphics\\meshs\\cargo.obj", L"graphics\\textureDDS\\textureCargo.dds"));
 
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 152.0f, 0.0f }, { 4.f, 1.6f, 4.f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics\\meshs\\ultimateShip.obj", L"graphics\\textureDDS\\textureUltimateShip.dds");
 	
