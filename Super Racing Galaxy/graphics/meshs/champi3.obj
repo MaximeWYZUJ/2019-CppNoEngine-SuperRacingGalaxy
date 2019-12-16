@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'champi3.blend'
 # www.blender.org
 mtllib champi3.mtl
-o Champignon.003_Plane.013
+o champi3
 v 0.011856 -0.429358 -0.233796
 v 0.060041 -0.443513 -0.213223
 v 0.027585 -0.443345 -0.209087

@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
 
 				if (projVelocity.Length() < 100.0f)
 				{
-					scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+					scenario.vehicle->root->physics->addForce(vehicleForward * 50.0f);
 					scenario.vehicle->root->physics->isDirty = true;
 				}
 			}
@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::S))
 			{
-				scenario.vehicle->root->physics->addForce(-vehicleForward * 100.0f);
+				scenario.vehicle->root->physics->addForce(-vehicleForward * 50.0f);
 				scenario.vehicle->root->physics->isDirty = true;
 			}
 

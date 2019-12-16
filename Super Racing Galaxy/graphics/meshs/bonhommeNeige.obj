@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'bonhommeNeige.blend'
 # www.blender.org
 mtllib bonhommeNeige.mtl
-o BonhommeNeige_Sphere.003
+o bonhommeNeige
 v -0.240540 0.218101 0.104897
 v -0.240293 0.210424 0.126170
 v -0.235652 0.197530 0.136966
