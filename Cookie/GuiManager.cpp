@@ -69,7 +69,7 @@ namespace Cookie
 		CloseText();
 	}
 
-	void GuiManager::SetPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_) const
+	void GuiManager::SetPosDim(Sprite* sprite, int x_, int y_, int scaleX, int scaleY, int xDimPix, int yDimPix) const
 	{
 		// Obtenir la dimension de la texture
 		ID3D11Resource* pResource;
@@ -83,30 +83,27 @@ namespace Cookie
 		DXRelacher(pResource);
 		DXRelacher(pTextureInterface);
 
-		float dimX = static_cast<float>(desc.Width);
-		float dimY = static_cast<float>(desc.Height);
+		float dimX;
+		float dimY;
+		
+		if (xDimPix == 0 && yDimPix == 0)
+		{
+			dimX = static_cast<float>(desc.Width);
+			dimY = static_cast<float>(desc.Height);
+		} else
+		{
+			dimX = static_cast<float>(xDimPix);
+			dimY = static_cast<float>(yDimPix);
+		}
+		
 		
 		// Dimensions en facteur
-		float facteurX = dimX * 2.0f / device->GetWidth() * static_cast<float>(dx_);
-		float facteurY = dimY * 2.0f / device->GetHeight() * static_cast<float>(dy_);
+		float facteurX = dimX * 2.0f / device->GetWidth() * static_cast<float>(scaleX);
+		float facteurY = dimY * 2.0f / device->GetHeight() * static_cast<float>(scaleY);
 
 		// Positions en coordonnées logiques
 		// 0,0 pixel = -1,1 (haut a gauche ecran)
 		float posX = static_cast<float>(x_) * 2.0f / device->GetWidth() -1.0f;
-		float posY = 1.0f - static_cast<float>(y_) * 2.0f / device->GetHeight();
-
-		sprite->matPosDim = Matrix4x4<>::FromTranslation(Vector3{ posX, posY, 0.0f }) * Matrix4x4<>::FromScaling(Vector3{ facteurX, facteurY, 1.0f });
-	}
-
-	void GuiManager::setButtonPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_) const
-	{
-		// Dimensions en facteur
-		float facteurX = static_cast<float>(dx_) * 2.0f / device->GetWidth();
-		float facteurY = static_cast<float>(dy_) * 2.0f / device->GetHeight();
-
-		// Positions en coordonnées logiques
-		// 0,0 pixel = -1,1 (haut a gauche ecran)
-		float posX = static_cast<float>(x_) * 2.0f / device->GetWidth() - 1.0f;
 		float posY = 1.0f - static_cast<float>(y_) * 2.0f / device->GetHeight();
 
 		sprite->matPosDim = Matrix4x4<>::FromTranslation(Vector3{ posX, posY, 0.0f }) * Matrix4x4<>::FromScaling(Vector3{ facteurX, facteurY, 1.0f });
@@ -126,7 +123,7 @@ namespace Cookie
 	}
 
 
-	Sprite* GuiManager::newSprite(const std::string& textureName, int xPos, int yPos, int xDim, int yDim, bool bouton)
+	Sprite* GuiManager::newSprite(const std::string& textureName, int xPos, int yPos, int xScale, int yScale, int xDimPix, int yDimPix)
 	{
 		if (textureName != "")
 		{
@@ -135,9 +132,7 @@ namespace Cookie
 			Sprite* sprite = new Sprite();
 			sprite->pTextureD3D = textureManager->GetNewTexture(ws.c_str(), device)->GetD3DTexture();
 
-			if (bouton) {
-				setButtonPosDim(sprite, xPos, yPos, xDim, yDim);
-			} else SetPosDim(sprite, xPos, yPos, xDim, yDim);
+			SetPosDim(sprite, xPos, yPos, xScale, yScale, xDimPix, yDimPix);
 			
 			sprites.push_back(sprite);
 
@@ -217,7 +212,7 @@ namespace Cookie
 
 		Write(text_, text);
 
-		SetPosDim(text, xPos, yPos, 1, 1);
+		SetPosDim(text, xPos, yPos, 1, 1, 0, 0);
 
 		sprites.push_back(text);
 
@@ -231,7 +226,7 @@ namespace Cookie
 			std::wstring wsOver(textureOver.begin(), textureOver.end());
 			
 			Button* button = new Button;
-			button->background = newSprite(textureBackgroung, xPos, yPos, width, height, true);
+			button->background = newSprite(textureBackgroung, xPos, yPos, 1, 1, width, height);
 			button->pTextureOver = textureManager->GetNewTexture(wsOver, device)->GetD3DTexture();
 			button->xMin = xPos;
 			button->xMax = xPos + width;

@@ -5,6 +5,7 @@
 #include "Teleport.h"
 #include "Scenery.h"
 #include "Vector3.h"
+#include "Skybox.h"
 
 using namespace Cookie;
 
@@ -19,6 +20,8 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.0f, 0.0f, 1.0f }, { 1.0f, 0.1f, 1.0f }, { 0.5f, -0.5f, -0.5f, 0.5f }),
 			"graphics\\meshs\\champi2.obj", L"graphics\\textureDDS\\champi2Texture.dds"));
 	}*/
+
+	scenario.skybox = new Skybox(Transform<>({ 0.0f, 0.0f, 0.00001f }, { 10000.0f, 10000.0f, 10000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/skybox.obj", L"graphics/textureDDS/skyboxTexture.dds");
 
 	Planet *planete2 = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, "graphics/meshs/planete2.obj", L"graphics/textureDDS/planete2/planete2Texture2.dds");
 

@@ -6,6 +6,7 @@ class Prefab;
 class Planet;
 class Scenery;
 class Vehicle;
+class Skybox;
 class Teleport;
 
 class Scenario
@@ -15,4 +16,5 @@ public:
 	std::vector<Scenery*> sceneries;
 	std::vector<Teleport*> teleports;
 	Vehicle* vehicle;
+	Skybox *skybox;
 };
