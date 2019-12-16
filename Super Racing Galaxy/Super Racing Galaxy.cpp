@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 		int xPos = 0;
 		int yPos = 200;
 		
-		Button* bouton = guiManager->newButton("fondBouton.dds", "fondBoutonOver.dds", 200, 200, font, L"Ajouter \narbre", 400, 500, [&xPos, &yPos, &guiManager]() { xPos += 20; yPos += 20; guiManager->newSprite("tree02S.dds", xPos, yPos); });
+		/*Button* bouton = guiManager->newButton("fondBouton.dds", "fondBoutonOver.dds", 200, 200, font, L"Ajouter \narbre", 400, 500, [&xPos, &yPos, &guiManager]() { xPos += 20; yPos += 20; guiManager->newSprite("tree02S.dds", xPos, yPos); });*/
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
 		cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 
 				if (projVelocity.Length() < 100.0f)
 				{
-					scenario.vehicle->root->physics->addForce(vehicleForward * 100.0f);
+					scenario.vehicle->root->physics->addForce(vehicleForward * 50.0f);
 					scenario.vehicle->root->physics->isDirty = true;
 				}
 			}
@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
 
 			if (inputManager->IsKeyPressed(Key::S))
 			{
-				scenario.vehicle->root->physics->addForce(-vehicleForward * 100.0f);
+				scenario.vehicle->root->physics->addForce(-vehicleForward * 50.0f);
 				scenario.vehicle->root->physics->isDirty = true;
 			}
 

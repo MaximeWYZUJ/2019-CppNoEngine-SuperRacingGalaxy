@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'planete2.blend'
 # www.blender.org
 mtllib planete2.mtl
-o PlaneteNeige_Sphere
+o planete2
 v -0.040158 0.475418 0.275591
 v -0.039298 0.467864 0.287809
 v -0.034403 0.423213 0.339593

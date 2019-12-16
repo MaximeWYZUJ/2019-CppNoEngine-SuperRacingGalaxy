@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'stalagmite.blend'
 # www.blender.org
 mtllib stalagmite.mtl
-o Stalagmite_Cylinder.010
+o stalagmite
 v 0.243982 -0.323713 -0.373988
 v 0.243970 -0.497245 -0.420409
 v 0.313295 -0.497086 -0.389369

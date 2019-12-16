@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'panneau.blend'
 # www.blender.org
 mtllib panneau.mtl
-o Fleche_Cube.001
+o panneau
 v 0.322089 0.023946 0.104690
 v 0.387880 0.497210 0.099992
 v 0.438218 0.261731 0.499440

@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'plante1.blend'
 # www.blender.org
 mtllib plante1.mtl
-o Sphere
+o plante1
 v -0.032397 0.089822 0.109839
 v -0.006605 0.096987 -0.061093
 v 0.004426 0.087361 -0.012814

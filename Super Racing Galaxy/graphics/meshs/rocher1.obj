@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'rocher1.blend'
 # www.blender.org
 mtllib rocher1.mtl
-o Icosphere
+o rocher1
 v 0.405021 -0.045027 -0.362993
 v 0.075649 -0.266359 0.473353
 v 0.031822 0.023745 0.538634

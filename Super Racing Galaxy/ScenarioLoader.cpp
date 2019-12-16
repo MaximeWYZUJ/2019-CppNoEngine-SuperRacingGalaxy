@@ -98,16 +98,16 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 
 void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Planet* obj)
 {
-	random_device dev;
+	/*random_device dev;
 	mt19937 rng(dev());
-	uniform_real_distribution<float> dist(0.5f, 1.0f);
+	uniform_real_distribution<float> dist(0.5f, 1.0f);*/
 
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
-		{ dist(rng), dist(rng), dist(rng), 1.0f },
-		{ dist(rng), dist(rng), dist(rng), 1.0f },
-		{ dist(rng), dist(rng), dist(rng), 1.0f });
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 

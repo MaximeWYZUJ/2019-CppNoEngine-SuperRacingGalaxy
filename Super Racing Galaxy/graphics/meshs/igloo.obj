@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'igloo.blend'
 # www.blender.org
 mtllib igloo.mtl
-o Igloo_Cylinder.002
+o igloo
 v -0.223544 0.196085 -0.036632
 v -0.223544 0.499926 -0.036632
 v -0.223544 0.196085 0.034831
