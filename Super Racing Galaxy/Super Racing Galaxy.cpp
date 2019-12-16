@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 		cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
 		
 		VehicleHovering hovering(engine->GetPhysicsEngine());
-		
+
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
 		int speed = 0;
