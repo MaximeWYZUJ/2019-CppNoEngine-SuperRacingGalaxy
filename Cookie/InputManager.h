@@ -112,8 +112,16 @@ namespace Cookie
 		bool Init();
 		void Update();
 		void PostUpdate();
-		
-		bool IsKeyPressed(Key key);
+
+		/// <summary>
+		///		Indicate if a key has been pressed during this frame.
+		///	</summary>
+		bool GetKeyDown(Key key) const noexcept;
+
+		/// <summary>
+		///		Indicate if a key is currently pressed. Return true as long as the key is pressed.
+		///	</summary>
+		bool IsKeyPressed(Key key) const noexcept;
 		bool IsMouseButtonPressed(Mouse button);
 		Vector2<int> GetMousePosition();
 		Vector2<int> GetMouseDelta();

@@ -198,7 +198,14 @@ namespace Cookie
 		events.clear();
 	}
 	
-	bool InputManager::IsKeyPressed(Key key)
+	bool InputManager::GetKeyDown(Key key) const noexcept
+	{
+		auto curVal = keyboardCurrentBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]];
+		auto prevVal = keyboardPreviousBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]];
+		return curVal & 0x80 && curVal != prevVal;
+	}
+
+	bool InputManager::IsKeyPressed(Key key) const noexcept
 	{
 		return keyboardCurrentBuffer[keyToDirectXKey[static_cast<uint8_t>(key)]] & 0x80;
 	}
