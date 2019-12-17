@@ -20,11 +20,20 @@ namespace Cookie
 
 		// Direct3D function wrappers
 		BufferPointer CreateBuffer(BufferDescription const& bufferDescription, void const* data) override;
+		Texture2D CreateTexture2D(Vector2<> size) override;
+		RenderTarget CreateRenderTarget(Texture2D texture) override;
+		ShaderResource CreateShaderResource(Texture2D texture) override;
 		void SetTopology() override;
 		void SetVertexBuffer(BufferPointer) override;
 		void SetIndexBuffer() override;
-		void Draw(int32_t nbIndices) override;
+		void SetRenderTargets(std::vector<RenderTarget> renderTargets) override;
+		void ClearRenderTargets(std::vector<RenderTarget> renderTargets, Color clearColor) override;
+
+		void Release(Texture2D texture) override;
+		void Release(RenderTarget renderTarget) override;
+		void Release(ShaderResource shaderResource) override;
 		
+		void Draw(int32_t nbIndices) override;
 		void Clear(Color const& clearColor) override;
 		void ResetDepthBuffer();
 		void Present() override;
@@ -52,6 +61,7 @@ namespace Cookie
 		static HMODULE GetCurrentModule();
 
 	private:
+		static void ThrowOnError(HRESULT result);
 		void InitDepthBuffer();
 		void InitBlendStates();
 
