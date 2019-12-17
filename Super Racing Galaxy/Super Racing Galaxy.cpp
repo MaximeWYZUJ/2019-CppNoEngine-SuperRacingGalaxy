@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 				camDistance = 100.0f;
 			}
 			cameraLogic.ThirdSetDistance(camDistance);
-			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform.GetPosition(), 0.2f);
+			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform, 0.2f);
 
 			auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());
 			Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
