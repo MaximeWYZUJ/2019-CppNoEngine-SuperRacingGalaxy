@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="CameraLogic.cpp" />
     <ClCompile Include="DemoScenario.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="HUDLogic.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
@@ -243,6 +244,7 @@
   <ItemGroup>
     <ClInclude Include="CameraLogic.h" />
     <ClInclude Include="DemoScenario.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="HUDLogic.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />

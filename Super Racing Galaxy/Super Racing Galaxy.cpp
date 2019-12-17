@@ -8,12 +8,14 @@
 #include "DemoScenario.h"
 #include "Vehicle.h"
 #include "Planet.h"
+#include "Goal.h"
 #include "Teleport.h"
 #include "CameraLogic.h"
 #include "HUDLogic.h"
 #include "VehicleHovering.h"
 #include "Vector3.h"
 #include "Text.h"
+#include "GuiManager.h"
 
 #undef max
 
@@ -36,63 +38,55 @@ int main(int argc, char* argv[])
 		ActionManager* actionManager = engine->GetActionManager();
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
-		HUDLogic hudLogic(guiManager, actionManager, cameraLogic);
-		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
 		
 		VehicleHovering hovering(engine->GetPhysicsEngine());
 
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-		int skip = 0;
+
+		HUDLogic hudLogic(guiManager, actionManager, cameraLogic, scenario, engine.get());
+		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
+
+		scenario.goal->bindHUD(&hudLogic);
 		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &actionManager]() {
+		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &actionManager]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
 			Planet* closestPlanet = nullptr;
 
-			if (skip > 1)
+			Vehicle* vehicle = scenario.vehicle;
+			hudLogic.Update(vehicle->root->physics->velocity);
+			Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
+
+			float distanceMin = numeric_limits<float>::max();
+			for (auto& planet : scenario.gravityGenerators)
 			{
-				Vehicle* vehicle = scenario.vehicle;
-				hudLogic.Update(vehicle->root->physics->velocity);
-				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
+				auto planetPos = planet->root->localTransform.GetPosition();
+				auto planetRadius = planet->root->localTransform.GetScale().x / 2;
+				auto distance = Vector3<>::Distance(vehiclePos, planetPos) - planetRadius;
 
-				if (inputManager->IsKeyPressed(Key::P) && find(actionManager->GetState().begin(), actionManager->GetState().end(), "menuContext") == actionManager->GetState().end())
+				if (distance < distanceMin)
 				{
-					hudLogic.setActiveHUD(HUDType::PauseMenuHUD);
+					distanceMin = distance;
+					closestPlanet = planet;
 				}
-
-				float distanceMin = numeric_limits<float>::max();
-				for (auto& planet : scenario.gravityGenerators)
-				{
-					auto planetPos = planet->root->localTransform.GetPosition();
-					auto planetRadius = planet->root->localTransform.GetScale().x / 2;
-					auto distance = Vector3<>::Distance(vehiclePos, planetPos) - planetRadius;
-
-					if (distance < distanceMin)
-					{
-						distanceMin = distance;
-						closestPlanet = planet;
-					}
-				}
-
-				vehicle->gravityApplied = Vector3<>(0.0f, 1.0f, 0.0f);
-				if (closestPlanet->isUpVectorDynamic)
-				{
-					vehicle->gravityApplied = vehiclePos - closestPlanet->gravityCenter;
-				}
-
-				vehicle->gravityApplied.Normalize();
-				up = vehicle->gravityApplied;
-				vehicle->gravityApplied *= closestPlanet->gravityValue;
-				vehicle->root->physics->addForce(vehicle->gravityApplied);
-
-				hovering.Update(vehicle, closestPlanet->gravityValue, up);
 			}
 
-			skip++;
+			vehicle->gravityApplied = Vector3<>(0.0f, 1.0f, 0.0f);
+			if (closestPlanet->isUpVectorDynamic)
+			{
+				vehicle->gravityApplied = vehiclePos - closestPlanet->gravityCenter;
+			}
+
+			vehicle->gravityApplied.Normalize();
+			up = vehicle->gravityApplied;
+			vehicle->gravityApplied *= closestPlanet->gravityValue;
+			vehicle->root->physics->addForce(vehicle->gravityApplied);
+
+			hovering.Update(vehicle, closestPlanet->gravityValue, up);
 
 			if (lastClosestPlanet != closestPlanet)
 			{
@@ -108,19 +102,6 @@ int main(int argc, char* argv[])
 			}
 
 			lastForward.Normalize();
-
-			if (inputManager->IsKeyPressed(Key::Alpha1))
-			{
-				cameraLogic.SetActiveCamera(CameraType::FirstPerson);
-			}
-			else if (inputManager->IsKeyPressed(Key::Alpha2))
-			{
-				cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
-			}
-			else if (inputManager->IsKeyPressed(Key::Alpha3))
-			{
-				cameraLogic.SetActiveCamera(CameraType::FreeCam);
-			}
 
 			Vector2<int> mouseDelta = inputManager->GetMouseDelta();
 			if (inputManager->IsMouseButtonPressed(Mouse::LeftButton))
@@ -140,46 +121,7 @@ int main(int argc, char* argv[])
 				camDistance = 100.0f;
 			}
 			cameraLogic.ThirdSetDistance(camDistance);
-			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform.GetPosition(), 0.2f);
-
-			auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());
-			Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
-			Vector3<> vehicleRight = rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
-			Vector4<> vehicleUp = Vector4<>::CrossProduct(vehicleForward, vehicleRight);
-			vehicleUp.Normalize();
-
-			if (inputManager->IsKeyPressed(Key::W))
-			{
-				Vector3<> velocity = scenario.vehicle->root->physics->velocity;
-
-				auto [_, projVelocity] = Vector3<>::Projection(velocity, vehicleForward);
-
-				if (projVelocity.Length() < 100.0f)
-				{
-					scenario.vehicle->root->physics->addForce(vehicleForward * 50.0f);
-					scenario.vehicle->root->physics->isDirty = true;
-				}
-			}
-
-			if (inputManager->IsKeyPressed(Key::A))
-			{
-				auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
-				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
-				scenario.vehicle->root->physics->isDirty = true;
-			}
-
-			if (inputManager->IsKeyPressed(Key::S))
-			{
-				scenario.vehicle->root->physics->addForce(-vehicleForward * 50.0f);
-				scenario.vehicle->root->physics->isDirty = true;
-			}
-
-			if (inputManager->IsKeyPressed(Key::D))
-			{
-				auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
-				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
-				scenario.vehicle->root->physics->isDirty = true;
-			}
+			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform, 0.2f);
 
 			lastClosestPlanet = closestPlanet;
 

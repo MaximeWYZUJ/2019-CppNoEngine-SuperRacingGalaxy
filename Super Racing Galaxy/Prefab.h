@@ -14,7 +14,7 @@ class Prefab
 {
 public:
 	enum class Type {
-		PLANET, SCENERY, VEHICLE, TELEPORT, NOTHING, SKYBOX
+		PLANET, SCENERY, VEHICLE, TELEPORT, NOTHING, SKYBOX, GOAL
 	};
 
 	Type type_;

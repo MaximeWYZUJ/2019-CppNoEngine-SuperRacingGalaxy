@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "ActionDescriptor.h"
 #include "ActionManager.h"
+#include "SceneNode.h"
 
 using namespace std;
 using namespace Cookie;
@@ -86,11 +87,20 @@ std::pair<float, float> CameraLogic::FreeGetRotations()
 	return { thirdTargetRotY, thirdTargetRotX };
 }
 
-void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Vector3<> const& center, float smooth)
+void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Transform<> const& shipTransform, float smooth)
 {
 	if (activeCameraType == CameraType::FirstPerson)
 	{
-		// Todo:
+		auto rot = Matrix4x4<>::FromRotation(shipTransform.GetRotation());
+		Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
+		Vector3<> vehicleRight = rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
+		Vector3<> vehicleUp = Vector3<>::CrossProduct(vehicleForward, vehicleRight);
+		vehicleForward.Normalize();
+		vehicleUp.Normalize();
+
+		firstCam->SetUpVector(vehicleUp);
+		firstCam->sceneNode->localTransform.SetPosition(shipTransform.GetPosition() + vehicleUp / 2.0);
+		firstCam->sceneNode->localTransform.SetRotation(shipTransform.GetRotation());
 	}
 	else if (activeCameraType == CameraType::ThirdPerson)
 	{
@@ -106,7 +116,7 @@ void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Vector3<
 		Quaternion targetRotX = Quaternion<>::FromDirection(thirdTargetRotX, alignedRight);
 		Vector3<> targetPos = targetRotX * targetRotY * back * thirdTargetDistance;
 		targetPos = right * targetPos.x + up * targetPos.y + forward * targetPos.z;
-		targetPos += center;
+		targetPos += shipTransform.GetPosition();
 
 		Vector3<> curCamPos = thirdCam->sceneNode->localTransform.GetPosition();
 
@@ -115,7 +125,7 @@ void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Vector3<
 		thirdCam->sceneNode->localTransform.SetPosition(targetPos);
 
 		Vector3<> front(0.0f, 0.0f, 1.0f);
-		Quaternion<> camRot = Quaternion<>::FromVectorToVector(front, Vector3<>::Normalize(center - targetPos));
+		Quaternion<> camRot = Quaternion<>::FromVectorToVector(front, Vector3<>::Normalize(shipTransform.GetPosition() -targetPos));
 		thirdCam->sceneNode->localTransform.SetRotation(camRot);
 	}
 	else if (activeCameraType == CameraType::FreeCam)

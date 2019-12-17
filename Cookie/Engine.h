@@ -36,6 +36,8 @@ namespace Cookie
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
 
+		void pauseGameSwitch();
+		
 		Device* GetDevice() const;
 		InputManager* GetInputManager() const;
 		ActionManager* GetActionManager() const;
@@ -67,6 +69,8 @@ namespace Cookie
 
 		int64_t previousTime;
 
+		bool pause = false;
+		
 		Matrix4x4<> m_MatView;
 		Matrix4x4<> m_MatProj;
 		Matrix4x4<> m_MatViewProj;
@@ -81,7 +85,8 @@ namespace Cookie
 		}
 
 		// Physics
-		physics->step();
+		if(!pause)
+			physics->step();
 		synchronizer->SyncUp();
 
 		// Physic tasks (client code)

@@ -34,6 +34,12 @@ namespace Cookie
 		InitAnimation();
 	}
 
+	void Engine::pauseGameSwitch()
+	{
+		pause = !pause;
+	}
+
+	
 	Device* Engine::GetDevice() const
 	{
 		return device.get();

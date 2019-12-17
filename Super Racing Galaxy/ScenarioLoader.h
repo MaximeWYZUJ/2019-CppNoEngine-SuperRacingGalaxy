@@ -9,6 +9,7 @@ class Planet;
 class Scenery;
 class Vehicle;
 class Teleport;
+class Goal;
 class Prefab;
 class Skybox;
 
@@ -24,4 +25,5 @@ private:
 	static void InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj);	
 	static void InitSkyboxObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Skybox* obj);
 	static void InitTeleportObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Teleport* obj);
+	static void InitGoalObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Goal* obj);
 };

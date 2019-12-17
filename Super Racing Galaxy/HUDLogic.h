@@ -1,8 +1,11 @@
 #pragma once
 #include "CameraLogic.h"
 #include "Vector3.h"
+#include "Vector4.h"
 #include <vector>
 #include "ActionManager.h"
+#include "Scenario.h"
+#include "Engine.h"
 
 namespace Cookie
 {
@@ -25,6 +28,11 @@ class HUDLogic
 	Cookie::GuiManager* guiManager;
 	Cookie::ActionManager* actionManager;
 	CameraLogic& cameraLogic;
+	Cookie::Engine* engine;
+
+	Cookie::Vector3<> vehicleForward;
+	Cookie::Vector3<> vehicleRight;
+	Cookie::Vector4<> vehicleUp;
 	
 	std::vector<std::string> menuState;
 	Cookie::ActionManager::StateType oldState;
@@ -44,6 +52,7 @@ class HUDLogic
 	Cookie::Sprite* victoryText;
 	Cookie::Button* mainMenuButton;
 
+	Scenario scenario;
 	
 	int timer = 0;
 	
@@ -53,9 +62,11 @@ class HUDLogic
 	
 	HUDType actualHUD;
 
+	void createInGameContext();
+	
 public:
 	
-	HUDLogic(Cookie::GuiManager* guiManager, Cookie::ActionManager* actionManager, CameraLogic& cameraLogic);
+	HUDLogic(Cookie::GuiManager* guiManager, Cookie::ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario, Cookie::Engine* engine);
 	
 	void setActiveHUD(HUDType hudType);
 
