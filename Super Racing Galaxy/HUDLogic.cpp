@@ -11,10 +11,11 @@
 
 using namespace Cookie;
 
-HUDLogic::HUDLogic(GuiManager* guiManager, ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario) :
+HUDLogic::HUDLogic(GuiManager* guiManager, ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario, Cookie::Engine* engine) :
 	guiManager{ guiManager },
 	actionManager{ actionManager },
 	cameraLogic{ cameraLogic },
+	engine{engine},
 	speedCounter{ nullptr },
 	timeCounter{ nullptr },
 	fondMenu{ nullptr },
@@ -119,7 +120,10 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	{
 		// Main Menu
 		if(oldState.empty())
+		{
+			engine->pauseGameSwitch();
 			oldState = actionManager->GetState();
+		}	
 		actionManager->SetState(menuState);
 		float widthButton = 500 * guiManager->ScreenWidth / 1920;
 		float heightButton = 300 * guiManager->ScreenHeight / 1080;
@@ -148,6 +152,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	}
 		
 	case HUDType::InGameHUD :
+		engine->pauseGameSwitch();
 		actionManager->SetState(oldState);
 		if(speedCounter == nullptr)
 			speedCounter = guiManager->newText(200, 50, font, L" 000 km/h", 0, 0);
@@ -159,6 +164,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	case HUDType::PauseMenuHUD :
 	{
 		// Pause Menu
+		engine->pauseGameSwitch();
 		oldState = actionManager->GetState();
 		actionManager->SetState(menuState);
 		float widthText = 1048 * guiManager->ScreenWidth / 1920;
@@ -188,6 +194,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		
 	case HUDType::EndMenuHUD :
 	{
+		engine->pauseGameSwitch();
 		oldState = actionManager->GetState();
 		actionManager->SetState(menuState);
 		float widthText = 920 * guiManager->ScreenWidth / 1920;

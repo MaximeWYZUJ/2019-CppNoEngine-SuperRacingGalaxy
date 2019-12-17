@@ -379,7 +379,7 @@ namespace Cookie
 
 				auto it = std::find_if(events.begin(), events.end(), [](auto& e)
 					{
-						return e.type == InputEventType::MouseStateChanged && std::get<MouseStateChanged>(e.data).button == Mouse::LeftButton;
+						return e.type == InputEventType::MouseStateChanged && std::get<MouseStateChanged>(e.data).button == Mouse::LeftButton && std::get<MouseStateChanged>(e.data).position == 0x00;
 					});
 
 				if (it != events.end() && mouseInside)

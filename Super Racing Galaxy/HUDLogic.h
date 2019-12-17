@@ -5,6 +5,7 @@
 #include <vector>
 #include "ActionManager.h"
 #include "Scenario.h"
+#include "Engine.h"
 
 namespace Cookie
 {
@@ -27,6 +28,7 @@ class HUDLogic
 	Cookie::GuiManager* guiManager;
 	Cookie::ActionManager* actionManager;
 	CameraLogic& cameraLogic;
+	Cookie::Engine* engine;
 
 	Cookie::Vector3<> vehicleForward;
 	Cookie::Vector3<> vehicleRight;
@@ -64,7 +66,7 @@ class HUDLogic
 	
 public:
 	
-	HUDLogic(Cookie::GuiManager* guiManager, Cookie::ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario);
+	HUDLogic(Cookie::GuiManager* guiManager, Cookie::ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario, Cookie::Engine* engine);
 	
 	void setActiveHUD(HUDType hudType);
 
