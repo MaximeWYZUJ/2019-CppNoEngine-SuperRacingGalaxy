@@ -15,6 +15,7 @@
 #include "VehicleHovering.h"
 #include "Vector3.h"
 #include "Text.h"
+#include "GuiManager.h"
 
 #undef max
 
