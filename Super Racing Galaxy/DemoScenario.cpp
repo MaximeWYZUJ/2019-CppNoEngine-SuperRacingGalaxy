@@ -53,7 +53,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete2->addTeleport(teleporteur1);
 
 		teleporteur1->linkedTeleport = nullptr;
-
+		
 	}
 
 	scenario.gravityGenerators.push_back(planete2);
@@ -75,16 +75,25 @@ Scenario ScenarioCreator::CreateDemoScenario()
 
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 107.0f, 0.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 	
-	/*{
-		Teleport* teleporteur1 = new Teleport(Transform<>({ 0.275252f, -0.315539f, 0.148886f }, { 0.246564f, 0.098625f, 0.246564f }, { 0.04615f, -0.108863f, -0.964831f, 0.234776f }), "graphics\\meshs\\teleporteur.obj", L"graphics\\textureDDS\\teleporteurTexture.dds");
-		planete1->addTeleport(teleporteur1);
+	{
+		/*Teleport* teleporteur1 = new Teleport(Transform<>({ 0.0f, 107.0f, 5.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
+		planete2->addTeleport(teleporteur1);
 
-		Teleport *teleporteur2 = new Teleport(Transform<>({ 0.003491f, 0.30429f, -0.387107f }, { 0.246564f, 0.098626f, 0.246564f }, { 0.042097f, -0.853319f, 0.516571f,0.056826f }), "graphics\\meshs\\teleporteur.obj", L"graphics\\textureDDS\\teleporteurTexture.dds");
-		planete1->addTeleport(teleporteur2);
+		Teleport *teleporteur2 = new Teleport(Transform<>({ 0.0f, 107.0f, 100.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
+		planete2->addTeleport(teleporteur2);
 
-		teleporteur1->linkedTeleport = teleporteur2;
-		teleporteur2->linkedTeleport = teleporteur1;
-	}*/
+		auto T1 = teleporteur1->initialTransform;
+		T1.SetPosition({ 10.0f, 107.0f, 30.0f });
+		
+		auto T2 = teleporteur1->initialTransform;
+		T2.SetPosition({ -10.0f, 107.0f, 60.0f });
+
+		auto T3 = teleporteur1->initialTransform;
+		T3.SetPosition({ 2.0f, 22.0f, 95.59f });
+		
+		teleporteur1->linkTo(teleporteur2, { T1, T2, T3 });
+		teleporteur2->linkTo(teleporteur1, { T3, T2, T1 });*/
+	}
 
 	return scenario;
 }
