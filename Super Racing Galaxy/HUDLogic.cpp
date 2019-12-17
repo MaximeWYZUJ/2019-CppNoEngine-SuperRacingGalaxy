@@ -123,7 +123,10 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		{
 			engine->pauseGameSwitch();
 			oldState = actionManager->GetState();
-		}	
+		}
+		scenario.vehicle->root->localTransform = scenario.vehicle->initialTransform;
+		scenario.vehicle->root->physics->isDirty = true;
+		scenario.vehicle->root->physics->resetAcceleration = true;
 		actionManager->SetState(menuState);
 		float widthButton = 500 * guiManager->ScreenWidth / 1920;
 		float heightButton = 300 * guiManager->ScreenHeight / 1080;
