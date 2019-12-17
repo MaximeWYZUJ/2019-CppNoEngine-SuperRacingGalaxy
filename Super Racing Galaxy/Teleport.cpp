@@ -93,8 +93,6 @@ Cookie::Transform<> Teleport::animateTeleport(double t)
 
 	auto newPos = hermite(P0, m0, P1, m1, N * t - index);
 
-	//cout << "index = " << index << " et t = " << t << " :  " << newPos.x << " ; " << newPos.y << " ; " << newPos.z << endl;
-
 	auto newTransform = objToTeleport->root->localTransform;
 	newTransform.SetPosition(newPos);
 	

@@ -26,7 +26,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Planet *planete2 = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, "graphics/meshs/planete2.obj", L"graphics/textureDDS/planete2/planete2Texture2.dds");
 
 	{
-		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.44991758465766907f, 0.0174355860799551f, -0.20012310147285461f }, { 0.1499950885772705f, 0.14999498426914215f, 0.2999899089336395f }, { 0.6058107614517212, -0.7750918865203857, 0.05823089927434921, 0.16980868577957153 }), "graphics/meshs/bonhommeNeige.obj", L"graphics/textureDDS/bonhommeNeigeTexture.dds"));
+		/*planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.44991758465766907f, 0.0174355860799551f, -0.20012310147285461f }, { 0.1499950885772705f, 0.14999498426914215f, 0.2999899089336395f }, { 0.6058107614517212, -0.7750918865203857, 0.05823089927434921, 0.16980868577957153 }), "graphics/meshs/bonhommeNeige.obj", L"graphics/textureDDS/bonhommeNeigeTexture.dds"));
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.4768911600112915f, -0.3066578507423401f, -0.021480485796928406f }, { 0.09270559251308441f, 0.09270557761192322f, 0.18541111052036285f }, { 0.6938583850860596, 0.2537615895271301, -0.6709803342819214, -0.06285690516233444 }), "graphics/meshs/bonhommeNeige.obj", L"graphics/textureDDS/bonhommeNeigeTexture.dds"));
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.2274918407201767f, 0.03310556709766388f, 0.4983408451080322f }, { 0.020684342831373215f, 0.020684324204921722f, 0.04136865213513374f }, { 0.7710033059120178, 0.036688558757305145, -0.039404381066560745, -0.6345511078834534 }), "graphics/meshs/bonhommeNeige.obj", L"graphics/textureDDS/bonhommeNeigeTexture.dds"));
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.21352627873420715f, 0.062308311462402344f, 0.5027865171432495f }, { 0.02501821331679821f, 0.025018204003572464f, 0.05003640055656433f }, { 0.9906410574913025, -0.008501547388732433, -0.024720488116145134, -0.13396631181240082 }), "graphics/meshs/bonhommeNeige.obj", L"graphics/textureDDS/bonhommeNeigeTexture.dds"));
@@ -56,7 +56,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete2->addTeleport(teleporteur1);
 
 		teleporteur1->linkedTeleport = nullptr;
-		
+		*/
 	}
 
 	scenario.gravityGenerators.push_back(planete2);
@@ -79,23 +79,23 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 107.0f, 0.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 	
 	{
-		/*Teleport* teleporteur1 = new Teleport(Transform<>({ 0.0f, 107.0f, 5.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
+		Teleport* teleporteur1 = new Teleport(Transform<>({ -12.0f, 5.0f, -8.0f }, { 30.0f, 30.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 		planete2->addTeleport(teleporteur1);
 
-		Teleport *teleporteur2 = new Teleport(Transform<>({ 0.0f, 107.0f, 100.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
+		Teleport *teleporteur2 = new Teleport(Transform<>({ 10.0f, 105.0f, 0.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 		planete2->addTeleport(teleporteur2);
 
 		auto T1 = teleporteur1->initialTransform;
-		T1.SetPosition({ 10.0f, 107.0f, 30.0f });
+		T1.SetPosition({ -12.5f, 38.0f, -79.0f });
 		
 		auto T2 = teleporteur1->initialTransform;
-		T2.SetPosition({ -10.0f, 107.0f, 60.0f });
+		T2.SetPosition({ 400.0f, 264.0f, -644.0f });
 
 		auto T3 = teleporteur1->initialTransform;
-		T3.SetPosition({ 2.0f, 22.0f, 95.59f });
+		T3.SetPosition({ 322.0f, 44.0f, 392.0f });
 		
 		teleporteur1->linkTo(teleporteur2, { T1, T2, T3 });
-		teleporteur2->linkTo(teleporteur1, { T3, T2, T1 });*/
+		teleporteur2->linkTo(teleporteur1, { T3, T2, T1 });
 	}
 
 	return scenario;

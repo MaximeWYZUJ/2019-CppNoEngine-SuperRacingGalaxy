@@ -18,7 +18,7 @@ public:
 	bool isActive = false;
 	Prefab* objToTeleport = nullptr;
 
-	Teleport(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, double timeTravel = 2.0, float cooldown = 5.0f);
+	Teleport(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, double timeTravel = 20.0, float cooldown = 5.0f);
 	void linkTo(Teleport* teleport, std::vector<Cookie::Transform<>> controlPoints_);
 	void resetCooldown();
 	bool mayUse() const;

@@ -54,7 +54,7 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 			CreateObject(smgr, materialManager, textureManager, device, elem->root, scenery);
 		}
 		for (auto &teleport : elem->teleportElements) {
-			CreateObject(smgr, materialManager, textureManager, device, elem->root, teleport);
+			CreateObject(smgr, materialManager, textureManager, device, root, teleport); // TODO
 		}
 	}
 

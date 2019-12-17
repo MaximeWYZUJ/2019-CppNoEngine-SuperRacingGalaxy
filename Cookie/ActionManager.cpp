@@ -98,7 +98,6 @@ namespace Cookie
 				}
 
 				vector<InputEvent> const& events = inputManager->GetEvents();
-				cout << events.size() << endl;
 
 				// Todo: really slow if ActionContext are more complex
 				for (auto event : events)
