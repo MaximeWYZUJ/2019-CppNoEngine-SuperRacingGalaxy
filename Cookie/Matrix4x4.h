@@ -2,11 +2,13 @@
 
 #include "Vector3.h"
 #include "Quaternion.h"
-#include "Transform.h"
 #include <corecrt_math_defines.h>
 
 namespace Cookie
 {
+	template<class T>
+	class Transform;
+
 	// Column-Major Matrix4x4.
 	template<class T = float>
 	class Matrix4x4
@@ -23,12 +25,14 @@ namespace Cookie
 		// (21) (22) (23) (24)
 		// (31) (32) (33) (34)
 		// (41) (42) (43) (44)
-		
+
 		// Translation example
 		// (11) (12) (13) x
 		// (21) (22) (23) y
 		// (31) (32) (33) z
 		// (41) (42) (43) (44)
+
+		Matrix4x4<T> Inverse();
 
 		Vector4<T> operator*(Vector4<T> const& rhs);
 
@@ -36,13 +40,89 @@ namespace Cookie
 		static Matrix4x4<T> FromScaling(Vector3<T> s);
 		static Matrix4x4<T> FromRotation(Quaternion<T> r);
 		static Matrix4x4<T> FromTranslation(Vector3<T> t);
-		
+
 		static Matrix4x4<T> FromTransform(Transform<T> const& t);
 		static Matrix4x4<T> FromLookAtLH(Vector3<T> eyePosition, Vector3<T> focusPosition, Vector3<T> upDirection);
 		static Matrix4x4<T> FromPerspectiveLH(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
 		static Matrix4x4<T> Transpose(Matrix4x4<> const& matrix);
-	};
 
+	private:
+		static void GetCoFactor(T A[4][4], T temp[4][4], int p, int q, int n);
+		static T Determinant(T A[4][4], int n);
+		static void Adjoint(T A[4][4], T adj[4][4]);
+	};
+}
+
+#include "Transform.h"
+
+namespace Cookie
+{
+	template<class T>
+	Matrix4x4<T> Matrix4x4<T>::Inverse()
+	{
+		T A[4][4];
+		A[0][0] = _11;
+		A[0][1] = _12;
+		A[0][2] = _13;
+		A[0][3] = _14;
+
+		A[1][0] = _21;
+		A[1][1] = _22;
+		A[1][2] = _23;
+		A[1][3] = _24;
+
+		A[2][0] = _31;
+		A[2][1] = _32;
+		A[2][2] = _33;
+		A[2][3] = _34;
+
+		A[3][0] = _41;
+		A[3][1] = _42;
+		A[3][2] = _43;
+		A[3][3] = _44;
+
+		T inverse[4][4];
+		
+		// Find determinant of A[][] 
+		T det = Determinant(A, 4);
+		if (det == 0)
+		{
+			std::exception("Singular matrix, can't find its inverse");
+		}
+
+		// Find adjoint 
+		T adj[4][4];
+		Adjoint(A, adj);
+
+		// Find Inverse using formula "inverse(A) = adj(A)/det(A)" 
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
+				inverse[i][j] = adj[i][j] / det;
+
+		Matrix4x4<T> r;
+		r._11 = inverse[0][0];
+		r._12 = inverse[0][1];
+		r._13 = inverse[0][2];
+		r._14 = inverse[0][3];
+
+		r._21 = inverse[1][0];
+		r._22 = inverse[1][1];
+		r._23 = inverse[1][2];
+		r._24 = inverse[1][3];
+
+		r._31 = inverse[2][0];
+		r._32 = inverse[2][1];
+		r._33 = inverse[2][2];
+		r._34 = inverse[2][3];
+
+		r._41 = inverse[3][0];
+		r._42 = inverse[3][1];
+		r._43 = inverse[3][2];
+		r._44 = inverse[3][3];
+		
+		return r;
+	}
+	
 	template<class T>
 	Vector4<T> Matrix4x4<T>::operator*(Vector4<T> const& rhs)
 	{
@@ -296,6 +376,85 @@ namespace Cookie
 		m._44 = matrix._44;
 		
 		return m;
+	}
+
+	template<class T>
+	void Matrix4x4<T>::GetCoFactor(T A[4][4], T temp[4][4], int p, int q, int n)
+	{
+		int i = 0, j = 0;
+
+		// Looping for each element of the matrix 
+		for (int row = 0; row < n; row++)
+		{
+			for (int col = 0; col < n; col++)
+			{
+				//  Copying into temporary matrix only those element 
+				//  which are not in given row and column 
+				if (row != p && col != q)
+				{
+					temp[i][j++] = A[row][col];
+
+					// Row is filled, so increase row index and 
+					// reset col index 
+					if (j == n - 1)
+					{
+						j = 0;
+						i++;
+					}
+				}
+			}
+		}
+	}
+
+	template<class T>
+	T Matrix4x4<T>::Determinant(T A[4][4], int n)
+	{
+		T D = 0; // Initialize result 
+
+		if (n == 1)
+			return A[0][0];
+
+		T temp[4][4]; // To store cofactors 
+
+		int sign = 1;  // To store sign multiplier 
+
+		 // Iterate for each element of first row 
+		for (int f = 0; f < n; f++)
+		{
+			// Getting Cofactor of A[0][f] 
+			GetCoFactor(A, temp, 0, f, n);
+			D += sign * A[0][f] * Determinant(temp, n - 1);
+
+			// terms are to be added with alternate sign 
+			sign = -sign;
+		}
+
+		return D;
+	}
+
+	template<class T>
+	void Matrix4x4<T>::Adjoint(T A[4][4], T adj[4][4])
+	{
+		// temp is used to store cofactors of A[][] 
+		int sign = 1;
+		T temp[4][4];
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				// Get cofactor of A[i][j] 
+				GetCoFactor(A, temp, i, j, 4);
+
+				// sign of adj[j][i] positive if sum of row 
+				// and column indexes is even. 
+				sign = ((i + j) % 2 == 0) ? 1 : -1;
+
+				// Interchanging rows and columns to get the 
+				// transpose of the cofactor matrix 
+				adj[j][i] = (sign) * (Determinant(temp, 4 - 1));
+			}
+		}
 	}
 
 	template<class T>
