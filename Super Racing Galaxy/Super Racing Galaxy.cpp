@@ -10,6 +10,7 @@
 #include "Planet.h"
 #include "Teleport.h"
 #include "CameraLogic.h"
+#include "HUDLogic.h"
 #include "VehicleHovering.h"
 #include "Vector3.h"
 #include "Text.h"
@@ -33,33 +34,21 @@ int main(int argc, char* argv[])
 		PhysicsEngine* physics = engine->GetPhysicsEngine();
 		GuiManager* guiManager = engine->GetGuiManager();
 		ActionManager* actionManager = engine->GetActionManager();
-
-		//guiManager->newSprite("tree02S.dds", 0, 200);
-		Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
-		Text* text1 = guiManager->newText(200, 50, font, L" 000 km/h", 0, 50);
-		Text* text2 = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200)/2, 50);
-
-		int xPos = 0;
-		int yPos = 200;
-		
-		/*Button* bouton = guiManager->newButton("fondBouton.dds", "fondBoutonOver.dds", 200, 200, font, L"Ajouter \narbre", 400, 500, [&xPos, &yPos, &guiManager]() { xPos += 20; yPos += 20; guiManager->newSprite("tree02S.dds", xPos, yPos); });*/
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
-		cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
+		HUDLogic hudLogic(guiManager, actionManager, cameraLogic);
+		bool keyPushed = false;
+		hudLogic.setActiveHUD(HUDType::MainMenuHUD, keyPushed);
 		
 		VehicleHovering hovering(engine->GetPhysicsEngine());
-		
+
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
-		int speed = 0;
 		int skip = 0;
-		int min = 0;
-		int sec = 0;
-		wstring fill;
-		wstring fill2;
+		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &guiManager, &text1, &speed, &fill, &fill2, &sec, &min, &text2]() {
+		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &keyPushed]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
@@ -67,29 +56,17 @@ int main(int argc, char* argv[])
 
 			if (skip > 1)
 			{
-				Vehicle *vehicle = scenario.vehicle;
-				Vector3<> velocity = vehicle->root->physics->velocity;
+				Vehicle* vehicle = scenario.vehicle;
+				hudLogic.Update(vehicle->root->physics->velocity);
 				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 
-				speed = round(velocity.Length() * 3.6);
-				speed < 100 ? (speed < 10 ? fill = L"00" : fill = L"0") : fill = L"";
-				
-				guiManager->Write(fill + to_wstring(speed) + L" km/h", text1);
-
-				if (skip % 60 == 0)
-					++sec;
-				if (sec == 60)
+				if (inputManager->IsKeyPressed(Key::P) && !keyPushed)
 				{
-					++min;
-					sec = 0;
+					hudLogic.setActiveHUD(HUDType::PauseMenuHUD, keyPushed);
 				}
 
-				min < 10 ? fill = L"0" : fill = L"";
-				sec < 10 ? fill2 = L"0" : fill2 = L"";
-				guiManager->Write(fill + to_wstring(min) + L" : " + fill2 + to_wstring(sec), text2);
-				
 				float distanceMin = numeric_limits<float>::max();
-				for (auto &planet : scenario.gravityGenerators)
+				for (auto& planet : scenario.gravityGenerators)
 				{
 					auto planetPos = planet->root->localTransform.GetPosition();
 					auto planetRadius = planet->root->localTransform.GetScale().x / 2;
@@ -115,6 +92,7 @@ int main(int argc, char* argv[])
 
 				hovering.Update(vehicle, closestPlanet->gravityValue, up);
 			}
+
 			skip++;
 
 			if (lastClosestPlanet != closestPlanet)
@@ -167,10 +145,10 @@ int main(int argc, char* argv[])
 
 			auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());
 			Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
-			Vector3<> vehicleRight= rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
+			Vector3<> vehicleRight = rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
 			Vector4<> vehicleUp = Vector4<>::CrossProduct(vehicleForward, vehicleRight);
 			vehicleUp.Normalize();
-			
+
 			if (inputManager->IsKeyPressed(Key::W))
 			{
 				Vector3<> velocity = scenario.vehicle->root->physics->velocity;
@@ -200,7 +178,7 @@ int main(int argc, char* argv[])
 			if (inputManager->IsKeyPressed(Key::D))
 			{
 				auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
-				scenario.vehicle->root->localTransform.SetRotation(rot *scenario.vehicle->root->localTransform.GetRotation());
+				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 				scenario.vehicle->root->physics->isDirty = true;
 			}
 

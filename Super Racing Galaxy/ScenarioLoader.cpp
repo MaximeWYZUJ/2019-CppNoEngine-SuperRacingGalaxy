@@ -11,6 +11,7 @@
 #include "Scenery.h"
 #include "Vehicle.h"
 #include "Teleport.h"
+#include "Skybox.h"
 
 using namespace std;
 using namespace Cookie;
@@ -63,6 +64,8 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	}
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
+
+	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
@@ -89,6 +92,10 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 		InitTeleportObject(smgr, materialManager, static_cast<Teleport*>(obj));
 		break;
 
+	case Prefab::Type::SKYBOX:
+		InitSkyboxObject(smgr, materialManager, static_cast<Skybox *>(obj));
+		break;
+
 	case Prefab::Type::NOTHING:
 		break;
 	}
@@ -104,8 +111,8 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::Materi
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f });
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
@@ -126,8 +133,8 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::Mater
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		 { 1.0f, 1.0f, 1.0f, 1.0f });
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
@@ -150,8 +157,8 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f });
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
@@ -166,14 +173,26 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 	obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }
 
+void ScenarioLoader::InitSkyboxObject(Cookie::SceneManager *smgr, Cookie::MaterialManager *materialManager, Skybox *obj)
+{
+	auto mat = materialManager->GetNewMaterial(
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
+		obj->texture,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
+
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
+}
+
 void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Teleport* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
 		obj->texture,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f });
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 	
