@@ -4,6 +4,7 @@
 #include <gdiplus.h>
 #include "Shaders.h"
 #include "Button.h"
+#include <random>
 
 #pragma comment(lib, "gdiplus.lib")
 
@@ -43,11 +44,15 @@ namespace Cookie
 		
 		std::vector<Sprite*> sprites;
 		std::vector<Button*> buttons;
+
+		int frameNumber = 0;
+		std::mt19937 prng;
 		
 		static void InitText();
 		static void CloseText();
 
-		void SetPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_, int xDimPix, int yDimPix) const;
+		void SetPosDim(Sprite* sprite, int x_, int y_, int dx_, int dy_, int xDimPix, int yDimPix, Matrix4x4<> rotMat) const;
+		void ActualizeRot(Sprite* sprite);
 	public:
 		uint32_t ScreenHeight;
 		uint32_t ScreenWidth;
@@ -55,11 +60,12 @@ namespace Cookie
 		GuiManager(TextureManager* textureManager, InputManager* inputManager, DeviceD3D11* device);
 		~GuiManager();
 		
-		Sprite* newSprite(const std::string& textureName, int xPos, int yPos, int xScale = 1, int yScale = 1, int xDimPix = 0, int yDimPix = 0);
-		Text* newText(int width, int height, Gdiplus::Font* font, const std::wstring& text_, int xPos, int yPos);
-		Button* newButton(const std::string& textureBackgroung, const std::string& textureOver, int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, std::function<void()> action = []() {}, int offsetTextBoutonX = 0, int offsetTextBoutony = 0);
+		Sprite* newSprite(const std::string& textureName, int xPos, int yPos, int xScale = 1, int yScale = 1, int xDimPix = 0, int yDimPix = 0, float angleRotMin = 0.0f, Vector3<> axeRot = {}, bool rotStatic = true, float angleRotMax = 0.0f);
+		Text* newText(int width, int height, Gdiplus::Font* font, const std::wstring& text_, int xPos, int yPos, float angleRotMin = 0.0f, Vector3<> axeRot = {}, bool rotStatic = true, float angleRotMax = 0.0f);
+		Button* newButton(const std::string& textureBackgroung, const std::string& textureOver, int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, std::function<void()> action = []() {}, int offsetTextBoutonX = 0, int offsetTextBoutony = 0, float angleRotMin = 0.0f, Vector3<> axeRot = {}, bool rotStatic = true, float angleRotMax = 0.0f);
 		void deleteGuiElement(Sprite* sprite);
 
+		void addSwapTextureSprite(const std::string& textureName, Sprite* sprite) const;
 		void changeSpriteTexture(const std::string& textureName, Sprite* sprite) const;
 		void changeButtonBackground(const std::string& textureName, Button* button) const;
 		

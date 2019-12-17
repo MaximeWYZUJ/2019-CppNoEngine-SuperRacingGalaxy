@@ -36,8 +36,7 @@ int main(int argc, char* argv[])
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
 		HUDLogic hudLogic(guiManager, actionManager, cameraLogic);
-		bool keyPushed = false;
-		hudLogic.setActiveHUD(HUDType::MainMenuHUD, keyPushed);
+		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
 		
 		VehicleHovering hovering(engine->GetPhysicsEngine());
 
@@ -47,7 +46,7 @@ int main(int argc, char* argv[])
 		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &keyPushed]() {
+		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &actionManager]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
@@ -59,9 +58,9 @@ int main(int argc, char* argv[])
 				hudLogic.Update(vehicle->root->physics->velocity);
 				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 
-				if (inputManager->IsKeyPressed(Key::P) && !keyPushed)
+				if (inputManager->IsKeyPressed(Key::P) && find(actionManager->GetState().begin(), actionManager->GetState().end(), "menuContext") == actionManager->GetState().end())
 				{
-					hudLogic.setActiveHUD(HUDType::PauseMenuHUD, keyPushed);
+					hudLogic.setActiveHUD(HUDType::PauseMenuHUD);
 				}
 
 				float distanceMin = numeric_limits<float>::max();
