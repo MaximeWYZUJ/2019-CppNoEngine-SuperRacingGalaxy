@@ -73,7 +73,7 @@ namespace Cookie
 			auto it = contexts.find(name);
 			if (it != end(contexts))
 			{
-				it->second.isEnabled = true;
+				EnableContext(name);
 			}
 		}
 	}

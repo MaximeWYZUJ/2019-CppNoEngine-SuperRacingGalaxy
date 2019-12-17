@@ -4,25 +4,110 @@
 #include "GuiManager.h"
 #include "Button.h"
 #include "ActionDescriptor.h"
+#include "Vehicle.h"
+#include "SceneManager.h"
 
-HUDLogic::HUDLogic(Cookie::GuiManager* guiManager, Cookie::ActionManager* actionManager, CameraLogic& cameraLogic) :
-guiManager{ guiManager },
-actionManager{ actionManager },
-cameraLogic{ cameraLogic },
-speedCounter{ nullptr },
-timeCounter{ nullptr },
-fondMenu{ nullptr },
-effetVitesse{ nullptr },
-exit{ nullptr },
-play{ nullptr },
-playDuFond { nullptr },
-pauseText{ nullptr },
-reprendre{ nullptr },
-victoryText{ nullptr },
-mainMenuButton{ nullptr },
-menuState{ "MenuContext" }
+#undef max
+
+using namespace Cookie;
+
+HUDLogic::HUDLogic(GuiManager* guiManager, ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario, Cookie::Engine* engine) :
+	guiManager{ guiManager },
+	actionManager{ actionManager },
+	cameraLogic{ cameraLogic },
+	engine{engine},
+	speedCounter{ nullptr },
+	timeCounter{ nullptr },
+	fondMenu{ nullptr },
+	effetVitesse{ nullptr },
+	exit{ nullptr },
+	playDuFond{ nullptr },
+	play{ nullptr },
+	pauseText{ nullptr },
+	reprendre{ nullptr },
+	menuState{ "MenuContext" },
+	victoryText{ nullptr },
+	mainMenuButton{ nullptr },
+	scenario{ scenario }
 {
 	actionManager->CreateContext("MenuContext", {});
+	createInGameContext();
+	actionManager->EnableContext("InGameContext");
+}
+
+void HUDLogic::createInGameContext()
+{	
+	actionManager->CreateContext("InGameContext", {
+		ActionDescriptor(Key::Alpha1, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			this->cameraLogic.SetActiveCamera(CameraType::FirstPerson);
+		},
+		[]() {})),
+		ActionDescriptor(Key::Alpha2, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			this->cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
+		},
+		[]() {})),
+		ActionDescriptor(Key::Alpha3, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			this->cameraLogic.SetActiveCamera(CameraType::FreeCam);
+		},
+		[]() {})),
+		ActionDescriptor(Key::W, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			Vector3<> velocity = scenario.vehicle->root->physics->velocity;
+
+				auto [_, projVelocity] = Vector3<>::Projection(velocity, vehicleForward);
+
+				if (projVelocity.Length() < 100.0f)
+				{
+					scenario.vehicle->root->physics->addForce(vehicleForward * 50.0f);
+					scenario.vehicle->root->physics->isDirty = true;
+				}
+		},
+		[]() {})),
+		ActionDescriptor(Key::A, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
+				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
+				scenario.vehicle->root->physics->isDirty = true;
+		},
+		[]() {})),
+		ActionDescriptor(Key::S, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			scenario.vehicle->root->physics->addForce(-vehicleForward * 50.0f);
+			scenario.vehicle->root->physics->isDirty = true;
+		},
+		[]() {})),
+		ActionDescriptor(Key::D, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
+			scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
+			scenario.vehicle->root->physics->isDirty = true;
+		},
+		[]() {})),
+		ActionDescriptor(Key::P, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(std::numeric_limits<long long>::max()), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			setActiveHUD(HUDType::PauseMenuHUD);
+		},
+		[]() {}))
+		});
 }
 
 void HUDLogic::setActiveHUD(HUDType hudType)
@@ -34,15 +119,22 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	case HUDType::MainMenuHUD :
 	{
 		// Main Menu
-		oldState = actionManager->GetState();
+		if(oldState.empty())
+		{
+			engine->pauseGameSwitch();
+			oldState = actionManager->GetState();
+		}
+		scenario.vehicle->root->localTransform = scenario.vehicle->initialTransform;
+		scenario.vehicle->root->physics->isDirty = true;
+		scenario.vehicle->root->physics->resetAcceleration = true;
 		actionManager->SetState(menuState);
 		float widthButton = 500 * guiManager->ScreenWidth / 1920;
 		float heightButton = 300 * guiManager->ScreenHeight / 1080;
-		float angleRotBouton = 10.0f * Cookie::Math::Pi / 180.0f;
+		float angleRotBouton = 10.0f * Math::Pi / 180.0f;
 		fondMenu = guiManager->newSprite("graphics/sprite/dds/mainMenu.dds", 0, 0, 1, 1, guiManager->ScreenWidth, guiManager->ScreenHeight);
 		effetVitesse = guiManager->newSprite("graphics/sprite/dds/effetVitesse1.dds", 0, 0, 1, 1, guiManager->ScreenWidth, guiManager->ScreenHeight);
 		guiManager->addSwapTextureSprite("graphics/sprite/dds/effetVitesse2.dds", effetVitesse);
-		playDuFond = guiManager->newSprite("graphics/sprite/dds/boutonPlay1.dds", guiManager->ScreenWidth/2 - widthButton / 2, guiManager->ScreenHeight*3/4 - heightButton/2, 1, 1, widthButton, heightButton, -angleRotBouton, Cookie::Vector3<>{0.0f, 0.0f, 1.0f}, false, angleRotBouton);
+		playDuFond = guiManager->newSprite("graphics/sprite/dds/boutonPlay1.dds", guiManager->ScreenWidth/2 - widthButton / 2, guiManager->ScreenHeight*3/4 - heightButton/2, 1, 1, widthButton, heightButton, -angleRotBouton, Vector3<>{0.0f, 0.0f, 1.0f}, false, angleRotBouton);
 		exit = guiManager->newButton("graphics/sprite/dds/boutonQuitter1.dds", "graphics/sprite/dds/boutonQuitter2.dds", 90, 102, font, L"", guiManager->ScreenWidth * 9 / 10, (guiManager->ScreenHeight - 102) / 2, []()
 			{
 				std::exit(0);
@@ -56,13 +148,14 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 				guiManager->deleteGuiElement(effetVitesse);
 				cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
 				setActiveHUD(HUDType::InGameHUD);
-			}, 0, 0, -angleRotBouton, Cookie::Vector3{0.0f, 0.0f, 1.0f}, false, angleRotBouton);
+			}, 0, 0, -angleRotBouton, Vector3{0.0f, 0.0f, 1.0f}, false, angleRotBouton);
 		
 		actualHUD = HUDType::MainMenuHUD;
 		break;
 	}
 		
 	case HUDType::InGameHUD :
+		engine->pauseGameSwitch();
 		actionManager->SetState(oldState);
 		if(speedCounter == nullptr)
 			speedCounter = guiManager->newText(200, 50, font, L" 000 km/h", 0, 0);
@@ -74,6 +167,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	case HUDType::PauseMenuHUD :
 	{
 		// Pause Menu
+		engine->pauseGameSwitch();
 		oldState = actionManager->GetState();
 		actionManager->SetState(menuState);
 		float widthText = 1048 * guiManager->ScreenWidth / 1920;
@@ -103,6 +197,8 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		
 	case HUDType::EndMenuHUD :
 	{
+		engine->pauseGameSwitch();
+		oldState = actionManager->GetState();
 		actionManager->SetState(menuState);
 		float widthText = 920 * guiManager->ScreenWidth / 1920;
 		float heightText = 132 * guiManager->ScreenHeight / 1080;
@@ -125,8 +221,14 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	}	
 }
 
-void HUDLogic::Update(Cookie::Vector3<> velocity)
+void HUDLogic::Update(Vector3<> velocity)
 {
+	auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());
+	vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
+	vehicleRight = rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
+	vehicleUp = Vector4<>::CrossProduct(vehicleForward, vehicleRight);
+	vehicleUp.Normalize();
+	
 	if(actualHUD == HUDType::InGameHUD)
 	{
 		std::wstring fill;
