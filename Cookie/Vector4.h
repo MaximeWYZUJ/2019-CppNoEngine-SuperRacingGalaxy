@@ -19,6 +19,7 @@ namespace Cookie
 
 		void Normalize();
 		void Normalize4d();
+		T Length();
 
 		T x;
 		T y;
@@ -71,6 +72,12 @@ namespace Cookie
 		y /= len;
 		z /= len;
 		w /= len;
+	}
+
+	template<class T>
+	T Vector4<T>::Length()
+	{
+		return sqrt(x * x + y * y + z * z + w * w);
 	}
 
 	template<class T>

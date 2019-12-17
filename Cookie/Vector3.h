@@ -16,6 +16,7 @@ namespace Cookie
 		static constexpr Vector3<T> Forward();
 		static constexpr Vector3<T> Up();
 		static constexpr Vector3<T> Right();
+		static constexpr Vector3<T> Unit();
 		static Vector3<T> Normalize(Vector3<T> const& v);
 		static T DotProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
 		static Vector3<T> CrossProduct(Vector3<T> const& lhs, Vector3<T> const& rhs);
@@ -103,6 +104,12 @@ namespace Cookie
 	constexpr Vector3<T> Vector3<T>::Right()
 	{
 		return Vector3<T>(1.0f, 0.0f, 0.0f);
+	}
+
+	template<class T>
+	constexpr Vector3<T> Vector3<T>::Unit()
+	{
+		return Vector3<T>(1.0f, 1.0f, 1.0f);
 	}
 
 	template<class T>
