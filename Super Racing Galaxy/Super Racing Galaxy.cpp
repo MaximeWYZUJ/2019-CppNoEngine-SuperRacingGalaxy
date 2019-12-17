@@ -15,6 +15,7 @@
 #include "VehicleHovering.h"
 #include "Vector3.h"
 #include "Text.h"
+#include "GuiManager.h"
 
 #undef max
 
@@ -120,7 +121,7 @@ int main(int argc, char* argv[])
 				camDistance = 100.0f;
 			}
 			cameraLogic.ThirdSetDistance(camDistance);
-			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform.GetPosition(), 0.2f);
+			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform, 0.2f);
 
 			lastClosestPlanet = closestPlanet;
 

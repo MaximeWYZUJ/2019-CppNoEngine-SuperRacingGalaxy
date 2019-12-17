@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3.h"
+#include "Transform.h"
 
 namespace Cookie
 {
@@ -31,7 +32,7 @@ public:
 	void FreeSetRotations(float rotY, float rotX);
 	std::pair<float, float> FreeGetRotations();
 
-	void Update(Cookie::Vector3<> const& up, Cookie::Vector3<> const& forward, Cookie::Vector3<> const& center, float smooth);
+	void Update(Cookie::Vector3<> const& up, Cookie::Vector3<> const& forward, Cookie::Transform<> const& shipTransform, float smooth);
 private:
 	void CreateCameras();
 	void RegisterCameraActions();
