@@ -12,6 +12,7 @@
 #include "Vehicle.h"
 #include "Teleport.h"
 #include "Skybox.h"
+#include "Goal.h"
 
 using namespace std;
 using namespace Cookie;
@@ -35,6 +36,16 @@ struct TriggerTeleport : public PhysicsCollisionCallback {
 		}
 		else {
 			cout << "trigger : nullptr mdr" << endl;
+		}
+	}
+};
+
+struct TriggerGoal : PhysicsCollisionCallback {
+	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
+		cout << "trigger goal" << endl;
+		Goal* g = reinterpret_cast<Goal*>(selfComponent->userData);
+		if (g) {
+			g->showEndingScreen();
 		}
 	}
 };
@@ -66,6 +77,8 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
+
+	CreateObject(smgr, materialManager, textureManager, device, root, scenario.goal);
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
@@ -94,6 +107,10 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 
 	case Prefab::Type::SKYBOX:
 		InitSkyboxObject(smgr, materialManager, static_cast<Skybox *>(obj));
+		break;
+
+	case Prefab::Type::GOAL:
+		InitGoalObject(smgr, materialManager, static_cast<Goal*>(obj));
 		break;
 
 	case Prefab::Type::NOTHING:
@@ -206,4 +223,27 @@ void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::Mate
 	obj->root->physics->addFilterMask(FilterGroup::VEHICULE);
 
 	obj->root->physics->changeTriggerCallback<TriggerTeleport>();
+}
+
+void ScenarioLoader::InitGoalObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Goal* obj)
+{
+	auto mat = materialManager->GetNewMaterial(
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
+		obj->texture,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
+
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
+
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+	obj->root->physics->userData = obj;
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+
+	// Mask
+	obj->root->physics->addFilterMask(FilterGroup::VEHICULE);
+
+	obj->root->physics->changeTriggerCallback<TriggerGoal>();
 }
