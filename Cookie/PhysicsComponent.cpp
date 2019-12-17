@@ -15,7 +15,7 @@ namespace Cookie
 			return;
 		
 		addedForces.push_back(force);
-		actor->is<PxRigidDynamic>()->addForce(PxVec3(force.x, force.y, force.z));
+		
 	}
 
 	void PhysicsComponent::SetAngularVelocity(Vector3<PhysicsComponent_t> velocity)
@@ -23,7 +23,7 @@ namespace Cookie
 		if (type == STATIC)
 			return;
 
-		actor->is<PxRigidDynamic>()->setAngularVelocity(PxVec3(velocity.x, velocity.y, velocity.z));
+		this->velocityAngular = velocity;
 	}
 	
 	void PhysicsComponent::addFilterGroup(FilterGroup f)

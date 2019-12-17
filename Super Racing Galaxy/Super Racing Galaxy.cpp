@@ -45,54 +45,47 @@ int main(int argc, char* argv[])
 
 		HUDLogic hudLogic(guiManager, actionManager, cameraLogic, scenario, engine.get());
 		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
-		
-		int skip = 0;
 
 		scenario.goal->bindHUD(&hudLogic);
 		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([&skip, inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &actionManager]() {
+		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &actionManager]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
 			Planet* closestPlanet = nullptr;
 
-			if (skip > 1)
+			Vehicle* vehicle = scenario.vehicle;
+			hudLogic.Update(vehicle->root->physics->velocity);
+			Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
+
+			float distanceMin = numeric_limits<float>::max();
+			for (auto& planet : scenario.gravityGenerators)
 			{
-				Vehicle* vehicle = scenario.vehicle;
-				hudLogic.Update(vehicle->root->physics->velocity);
-				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
+				auto planetPos = planet->root->localTransform.GetPosition();
+				auto planetRadius = planet->root->localTransform.GetScale().x / 2;
+				auto distance = Vector3<>::Distance(vehiclePos, planetPos) - planetRadius;
 
-				float distanceMin = numeric_limits<float>::max();
-				for (auto& planet : scenario.gravityGenerators)
+				if (distance < distanceMin)
 				{
-					auto planetPos = planet->root->localTransform.GetPosition();
-					auto planetRadius = planet->root->localTransform.GetScale().x / 2;
-					auto distance = Vector3<>::Distance(vehiclePos, planetPos) - planetRadius;
-
-					if (distance < distanceMin)
-					{
-						distanceMin = distance;
-						closestPlanet = planet;
-					}
+					distanceMin = distance;
+					closestPlanet = planet;
 				}
-
-				vehicle->gravityApplied = Vector3<>(0.0f, 1.0f, 0.0f);
-				if (closestPlanet->isUpVectorDynamic)
-				{
-					vehicle->gravityApplied = vehiclePos - closestPlanet->gravityCenter;
-				}
-
-				vehicle->gravityApplied.Normalize();
-				up = vehicle->gravityApplied;
-				vehicle->gravityApplied *= closestPlanet->gravityValue;
-				vehicle->root->physics->addForce(vehicle->gravityApplied);
-
-				hovering.Update(vehicle, closestPlanet->gravityValue, up);
 			}
 
-			skip++;
+			vehicle->gravityApplied = Vector3<>(0.0f, 1.0f, 0.0f);
+			if (closestPlanet->isUpVectorDynamic)
+			{
+				vehicle->gravityApplied = vehiclePos - closestPlanet->gravityCenter;
+			}
+
+			vehicle->gravityApplied.Normalize();
+			up = vehicle->gravityApplied;
+			vehicle->gravityApplied *= closestPlanet->gravityValue;
+			vehicle->root->physics->addForce(vehicle->gravityApplied);
+
+			hovering.Update(vehicle, closestPlanet->gravityValue, up);
 
 			if (lastClosestPlanet != closestPlanet)
 			{
