@@ -25,7 +25,7 @@ namespace Cookie
 		void DisableContext(std::string const& contextName);
 
 		StateType GetState() const;
-		void SetState(StateType state);
+		void SetState(StateType const& state);
 
 		void DisableAllContexts();
 

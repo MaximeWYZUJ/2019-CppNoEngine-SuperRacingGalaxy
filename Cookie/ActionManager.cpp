@@ -65,7 +65,7 @@ namespace Cookie
 		return state;
 	}
 
-	void ActionManager::SetState(StateType state)
+	void ActionManager::SetState(StateType const& state)
 	{
 		DisableAllContexts();
 		for (auto& name : state)
