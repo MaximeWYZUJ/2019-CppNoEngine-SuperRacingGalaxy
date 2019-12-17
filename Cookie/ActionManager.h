@@ -12,6 +12,7 @@ namespace Cookie
 	class COOKIE_API ActionManager
 	{
 	public:
+		using StateType = std::vector<std::string>;
 		ActionManager(InputManager* inputManager);
 
 		// Create an ActionContext.
@@ -22,6 +23,11 @@ namespace Cookie
 
 		// Disable a context for subsequent frames.
 		void DisableContext(std::string const& contextName);
+
+		StateType GetState() const;
+		void SetState(StateType state);
+
+		void DisableAllContexts();
 
 		void Update();
 	private:

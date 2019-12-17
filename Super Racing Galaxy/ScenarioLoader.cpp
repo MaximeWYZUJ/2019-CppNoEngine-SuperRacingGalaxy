@@ -27,12 +27,10 @@ struct TriggerTeleport : public PhysicsCollisionCallback {
 		Teleport* teleport = reinterpret_cast<Teleport*>(selfComponent->userData);
 		if (teleport) {
 			if (teleport->mayUse() && teleport->linkedTeleport->mayUse()) {
-				otherComponent->sceneNode->localTransform.SetPosition(teleport->linkedTeleport->initialTransform.GetPosition());
-				otherComponent->transform.SetPosition(teleport->linkedTeleport->initialTransform.GetPosition());
-				otherComponent->isDirty = true;
-
-				teleport->useNow();
-				teleport->linkedTeleport->useNow();
+				teleport->resetCooldown();
+				teleport->isActive = true;
+				teleport->objToTeleport = static_cast<Prefab*>(otherComponent->userData);
+				teleport->linkedTeleport->resetCooldown();
 			}
 		}
 		else {

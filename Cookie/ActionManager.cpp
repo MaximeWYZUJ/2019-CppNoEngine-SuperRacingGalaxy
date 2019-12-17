@@ -50,6 +50,42 @@ namespace Cookie
 		}
 	}
 
+	auto ActionManager::GetState() const -> StateType
+	{
+		StateType state;
+
+		for (auto& e : contexts)
+		{
+			if (e.second.isEnabled)
+			{
+				state.push_back(e.first);
+			}
+		}
+
+		return state;
+	}
+
+	void ActionManager::SetState(StateType state)
+	{
+		DisableAllContexts();
+		for (auto& name : state)
+		{
+			auto it = contexts.find(name);
+			if (it != end(contexts))
+			{
+				it->second.isEnabled = true;
+			}
+		}
+	}
+
+	void ActionManager::DisableAllContexts()
+	{
+		for (auto& c : contexts)
+		{
+			c.second.isEnabled = false;
+		}
+	}
+
 	void ActionManager::Update()
 	{
 		for (auto& [contextName, context] : contexts)
