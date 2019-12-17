@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 				hudLogic.Update(vehicle->root->physics->velocity);
 				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 
-				if (inputManager->IsKeyPressed(Key::P) && find(actionManager->GetState().begin(), actionManager->GetState().end(), "menuContext") == actionManager->GetState().end())
+				if (inputManager->IsKeyPressed(Key::P) )//&& find(actionManager->GetState().begin(), actionManager->GetState().end(), "menuContext") == actionManager->GetState().end())
 				{
 					hudLogic.setActiveHUD(HUDType::PauseMenuHUD);
 				}

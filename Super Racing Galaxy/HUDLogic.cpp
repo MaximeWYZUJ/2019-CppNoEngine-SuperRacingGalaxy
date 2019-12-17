@@ -34,8 +34,8 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	case HUDType::MainMenuHUD :
 	{
 		// Main Menu
-		oldState = actionManager->GetState();
-		actionManager->SetState(menuState);
+		//oldState = actionManager->GetState();
+		//actionManager->SetState(menuState);
 		float widthButton = 500 * guiManager->ScreenWidth / 1920;
 		float heightButton = 300 * guiManager->ScreenHeight / 1080;
 		float angleRotBouton = 10.0f * Cookie::Math::Pi / 180.0f;
@@ -63,7 +63,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	}
 		
 	case HUDType::InGameHUD :
-		actionManager->SetState(oldState);
+		//actionManager->SetState(oldState);
 		if(speedCounter == nullptr)
 			speedCounter = guiManager->newText(200, 50, font, L" 000 km/h", 0, 0);
 		if(timeCounter == nullptr)
@@ -74,8 +74,8 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	case HUDType::PauseMenuHUD :
 	{
 		// Pause Menu
-		oldState = actionManager->GetState();
-		actionManager->SetState(menuState);
+		//oldState = actionManager->GetState();
+		//actionManager->SetState(menuState);
 		float widthText = 1048 * guiManager->ScreenWidth / 1920;
 		float heightText = 256 * guiManager->ScreenHeight / 1080;
 		float widthBouton = 500 * guiManager->ScreenWidth / 1920;
@@ -103,7 +103,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		
 	case HUDType::EndMenuHUD :
 	{
-		actionManager->SetState(menuState);
+		//actionManager->SetState(menuState);
 		float widthText = 920 * guiManager->ScreenWidth / 1920;
 		float heightText = 132 * guiManager->ScreenHeight / 1080;
 		float widthBouton = 500 * guiManager->ScreenWidth / 1920;

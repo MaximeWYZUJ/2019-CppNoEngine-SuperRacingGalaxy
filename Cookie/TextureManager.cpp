@@ -4,7 +4,7 @@
 namespace Cookie
 {
 	Texture* TextureManager::GetNewTexture(const std::wstring& fileName, Device* device)
-	{
+	{		
 		Texture* pTexture = GetTexture(fileName);
 		
 		if (!pTexture)
