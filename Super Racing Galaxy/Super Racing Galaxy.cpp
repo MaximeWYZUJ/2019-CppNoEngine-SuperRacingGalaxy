@@ -8,6 +8,7 @@
 #include "DemoScenario.h"
 #include "Vehicle.h"
 #include "Planet.h"
+#include "Goal.h"
 #include "Teleport.h"
 #include "CameraLogic.h"
 #include "HUDLogic.h"
@@ -46,6 +47,8 @@ int main(int argc, char* argv[])
 		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
 		
 		int skip = 0;
+
+		scenario.goal->bindHUD(&hudLogic);
 		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);

@@ -6,6 +6,7 @@
 #include "Scenery.h"
 #include "Vector3.h"
 #include "Skybox.h"
+#include "Goal.h"
 
 using namespace Cookie;
 
@@ -97,6 +98,8 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		teleporteur1->linkTo(teleporteur2, { T1, T2, T3 });
 		teleporteur2->linkTo(teleporteur1, { T3, T2, T1 });
 	}
+
+	scenario.goal = new Goal(Transform<>({ -12.5f, 38.0f, -79.0f }, { 10.0f, 10.0f, 10.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 
 	return scenario;
 }
