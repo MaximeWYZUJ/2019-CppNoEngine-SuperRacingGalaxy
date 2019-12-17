@@ -8,7 +8,11 @@ planete = "planete2"
 
 f = open("E:/Cours/Projet-Automne/Super Racing Galaxy/graphics/blenderFiles/" + planete + ".txt", "w+")
 
-f.write("Planet *" + planete + " = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, \"graphics/meshs/" + planete + ".obj\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture2.dds\");\n\n{\n")
+for obj in objects:
+    if(not obj.parent):
+        objPlanete = obj
+
+f.write("Planet *" + planete + " = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { " + str(objPlanete.rotation_quaternion[0]) + ", " + str(objPlanete.rotation_quaternion[1]) + ", " + str(objPlanete.rotation_quaternion[2]) + ", " + str(objPlanete.rotation_quaternion[3]) + " }), -9.81f * 10, true, \"graphics/meshs/" + planete + ".obj\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture2.dds\");\n\n{\n")
         
 cptTeleport = 0
 for obj in objects:

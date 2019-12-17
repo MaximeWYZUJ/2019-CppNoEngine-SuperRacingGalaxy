@@ -8,6 +8,7 @@
 #include "DemoScenario.h"
 #include "Vehicle.h"
 #include "Planet.h"
+#include "Teleport.h"
 #include "CameraLogic.h"
 #include "HUDLogic.h"
 #include "VehicleHovering.h"
@@ -181,6 +182,13 @@ int main(int argc, char* argv[])
 			}
 
 			lastClosestPlanet = closestPlanet;
+
+			// Animation des teleporteurs (interpolation de la courbe)
+			for_each(scenario.gravityGenerators.begin(), scenario.gravityGenerators.end(), [](Planet* p) {
+				for_each(p->teleportElements.begin(), p->teleportElements.end(), [](Teleport* t) {
+					t->run();
+				});
+			});
 		}));
 
 		return (int)1;

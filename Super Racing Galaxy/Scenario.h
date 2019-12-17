@@ -14,7 +14,6 @@ class Scenario
 public:
 	std::vector<Planet*> gravityGenerators;
 	std::vector<Scenery*> sceneries;
-	std::vector<Teleport*> teleports;
 	Vehicle* vehicle;
 	Skybox *skybox;
 };

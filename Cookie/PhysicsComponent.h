@@ -42,6 +42,8 @@ namespace Cookie
 		PhysicsCollisionCallback* onCollisionCallback = nullptr;
 		PhysicsCollisionCallback* onTriggerCallback = nullptr;
 
+		bool resetAcceleration = false;
+
 		bool isDirty = false;
 
 		void* userData = nullptr; // meh... (pointeur sur le prefab en pratique)

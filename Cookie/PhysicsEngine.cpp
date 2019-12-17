@@ -273,6 +273,14 @@ namespace Cookie
 			static_cast<PxRigidDynamic*>(actor)->setMass(modifs->mass);
 			static_cast<PxRigidDynamic*>(actor)->setCMassLocalPose(PxTransform(PxVec3(-modifs->massCenter.x, modifs->massCenter.y, modifs->massCenter.z)));
 			static_cast<PxRigidDynamic*>(actor)->setLinearVelocity(PxVec3(modifs->velocity.x, modifs->velocity.y, modifs->velocity.z));
+
+			if (modifs->resetAcceleration) {
+				static_cast<PxRigidDynamic*>(actor)->clearForce();
+				static_cast<PxRigidDynamic*>(actor)->clearTorque();
+				static_cast<PxRigidDynamic*>(actor)->setLinearVelocity(PxVec3(0, 0, 0));
+
+				modifs->resetAcceleration = false;
+			}
 		}
 
 		// On calcule les nouveaux word0 et word1
@@ -299,7 +307,7 @@ namespace Cookie
 		}*/
 
 		// On met les data dans le userData de l'actor, utile pour les callbacks
-		actor->userData = modifs;
+		//actor->userData = modifs;
 	}
 
 	void PhysicsEngine::UpdateBoxActor(PhysicsBoxComponent* modifs, ActorPtr toBeModified)
