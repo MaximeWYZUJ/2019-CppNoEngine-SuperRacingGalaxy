@@ -264,7 +264,10 @@
     <ClInclude Include="D3D11PixelShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PostEffectPanel.h">
+    <ClInclude Include="RadialBlurParams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -446,10 +449,10 @@
     <ClCompile Include="D3D11VertexShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PostEffectPanel.cpp">
+    <ClCompile Include="D3D11PixelShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11PixelShader.cpp">
+    <ClCompile Include="PostEffectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

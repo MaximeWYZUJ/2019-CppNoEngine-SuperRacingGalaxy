@@ -3,7 +3,7 @@
 #include "EntryPoint.h"
 #include "DeviceD3D11.h"
 #include "ActionManager.h"
-#include "PostEffectPanel.h"
+#include "PostEffectManager.h"
 
 namespace Cookie
 {
@@ -22,7 +22,7 @@ namespace Cookie
 		auto guiManager = make_unique<GuiManager>(textureManager.get(), inputManager.get(), device.get());
 		auto materialManager = make_unique<MaterialManager>();
 		auto synchronizer = make_unique<Synchronizer>();
-		auto postEffectPanel = make_unique<PostEffectPanel>(device.get());
+		auto postEffectManager = make_unique<PostEffectManager>(device.get());
 		
 		return make_unique<Engine>(
 			move(device),
@@ -34,7 +34,7 @@ namespace Cookie
 			move(guiManager),
 			move(materialManager),
 			move(synchronizer),
-			move(postEffectPanel));
+			move(postEffectManager));
 #else
 		throw exception("The standalone engine only supports windows platform with DirectX API");
 #endif

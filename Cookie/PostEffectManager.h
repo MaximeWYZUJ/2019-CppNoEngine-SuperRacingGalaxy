@@ -24,11 +24,11 @@ namespace Cookie
 		Vector2<> m_coordTex;
 	};
 
-	class PostEffectPanel
+	class PostEffectManager
 	{
 	public:
-		explicit PostEffectPanel(DeviceD3D11* device);
-		virtual ~PostEffectPanel();
+		explicit PostEffectManager(DeviceD3D11* device);
+		virtual ~PostEffectManager();
 		virtual void Draw();
 		void BeginPostEffect();
 		void EndPostEffect();
@@ -39,7 +39,8 @@ namespace Cookie
 		ID3D11Buffer* pVertexBuffer;
 		DeviceD3D11* device;
 
-		Shaders shader;
+		Shaders shaderNUL;
+		Shaders radialBlur;
 
 		// Texture de rendu pour effets
 		ID3D11Texture2D* pTextureScene;

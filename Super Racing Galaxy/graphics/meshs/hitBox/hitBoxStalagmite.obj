@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'hitBoxStalagmite.blend'
 # www.blender.org
 mtllib hitBoxStalagmite.mtl
-o hitBoxStalagmite_Cube.017
+o hitBoxStalagmite
 v 0.333878 -0.505679 -0.387530
 v 0.333878 0.435235 -0.387530
 v 0.333878 -0.505679 0.387530

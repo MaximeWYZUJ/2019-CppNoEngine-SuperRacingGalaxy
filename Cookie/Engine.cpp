@@ -19,7 +19,7 @@ namespace Cookie
 		unique_ptr<GuiManager>&& guiManager,
 		unique_ptr<MaterialManager>&& materialManager,
 		unique_ptr<Synchronizer>&& synchronizer,
-		std::unique_ptr<PostEffectPanel>&& postEffectPanel)
+		std::unique_ptr<PostEffectManager>&& postEffectManager)
 		:
 		device{ move(device) },
 		inputManager{ move(inputManager) },
@@ -30,7 +30,7 @@ namespace Cookie
 		guiManager{ move(guiManager) },
 		materialManager { move(materialManager) },
 		synchronizer { move(synchronizer) },
-		postEffectPanel{ move(postEffectPanel) }
+		postEffectManager{ move(postEffectManager) }
 	{
 		InitScene();
 		InitAnimation();
@@ -146,10 +146,10 @@ namespace Cookie
 	void Engine::RenderScene() const
 	{
 		device->Clear(Color::Black);
-		postEffectPanel->BeginPostEffect();
+		postEffectManager->BeginPostEffect();
 		device->Clear(Color::Black);
 		sceneManager->DrawAll(*this);
-		postEffectPanel->EndPostEffect();
-		postEffectPanel->Draw();
+		postEffectManager->EndPostEffect();
+		postEffectManager->Draw();
 	}
 }

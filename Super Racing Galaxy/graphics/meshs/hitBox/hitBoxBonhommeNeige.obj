@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'hitBoxBonhommeNeige.blend'
 # www.blender.org
 mtllib hitBoxBonhommeNeige.mtl
-o hitBoxBonhommeNeige_Cube.002
+o hitBoxBonhommeNeige
 v 0.296273 -0.015477 -0.341091
 v 0.296273 0.522485 -0.341091
 v 0.296273 -0.015477 0.341091

@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'hitBoxPlante1.blend'
 # www.blender.org
-mtllib hitBoxPlante1.mtl
-o hitBoxPlante1_Cube.013
+mtllib hitBoxPlante.mtl
+o hitBoxPlante1
 v 0.366089 -0.194306 -0.037448
 v 0.366089 0.516960 -0.037448
 v 0.366089 -0.194306 0.089255
