@@ -438,6 +438,25 @@ namespace Cookie
 		pImmediateContext->OMSetDepthStencilState(pDSState, 1);
 	}
 
+	ID3D11DepthStencilView* DeviceD3D11::GetDepthStencilView()
+	{
+		return pDepthStencilView;
+	}
+
+	ID3D11RenderTargetView* DeviceD3D11::GetRenderTargetView()
+	{
+		return pRenderTargetView;
+	}
+
+	void DeviceD3D11::SetRenderTargetView(ID3D11RenderTargetView* targetView, ID3D11DepthStencilView* depthStencilView)
+	{
+		pRenderTargetView = targetView;
+		pDepthStencilView = depthStencilView;
+
+		ID3D11RenderTargetView* tabRTV[1];
+		tabRTV[0] = pRenderTargetView;
+		pImmediateContext->OMSetRenderTargets(1, tabRTV, pDepthStencilView);
+	}
 	
 	void DeviceD3D11::InitBlendStates()
 	{
