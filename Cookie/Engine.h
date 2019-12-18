@@ -46,6 +46,7 @@ namespace Cookie
 		PhysicsEngine* GetPhysicsEngine() const;
 		SceneManager* GetSceneManager() const;
 		GuiManager* GetGuiManager() const;
+		PostEffectManager* GetPostEffectManager() const;
 		TextureManager* GetTextureManager() const noexcept;
 		MaterialManager* GetMaterialManager() const noexcept;
 

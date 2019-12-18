@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 		PhysicsEngine* physics = engine->GetPhysicsEngine();
 		GuiManager* guiManager = engine->GetGuiManager();
 		ActionManager* actionManager = engine->GetActionManager();
+		PostEffectManager* postEffectManager = engine->GetPostEffectManager();
 		
 		CameraLogic cameraLogic(*smgr, *actionManager);
 		
@@ -53,14 +54,18 @@ int main(int argc, char* argv[])
 		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &actionManager]() {
+		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &postEffectManager]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
 			Planet* closestPlanet = nullptr;
 
 			Vehicle* vehicle = scenario.vehicle;
-			hudLogic.Update(vehicle->root->physics->velocity);
+			if (vehicle->root->physics->velocity.Length() * 1.5 > 141.62f)
+				postEffectManager->activatePostEffect(PostEffectManager::PostEffectType::RadialBlur);
+			else postEffectManager->deactivatePostEffect(PostEffectManager::PostEffectType::RadialBlur);
+
+			hudLogic.Update();
 			Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 
 			float distanceMin = numeric_limits<float>::max();
