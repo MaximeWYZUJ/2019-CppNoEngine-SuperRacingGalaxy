@@ -1,6 +1,11 @@
 #pragma once
 
 namespace Cookie {
+	class SceneNode;
+	class Device;
+	class TextureManager;
+	class MaterialManager;
+	class SceneManager;
 	class Engine;
 }
 

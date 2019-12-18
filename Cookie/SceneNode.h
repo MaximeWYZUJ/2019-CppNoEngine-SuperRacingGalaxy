@@ -22,7 +22,5 @@ namespace Cookie
 		std::vector<Component*> components;
 
 		PhysicsComponent* physics;
-
-		bool root = false;
 	};
 }
