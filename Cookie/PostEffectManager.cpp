@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "PostEffectPanel.h"
+#include "PostEffectManager.h"
 #include "util.h"
 #include "resource.h"
 #include "DeviceD3D11.h"
 #include "ShaderParams.h"
+#include "RadialBlurParams.h"
 
 namespace Cookie {
 	// Definir l’organisation de notre sommet
@@ -13,7 +14,7 @@ namespace Cookie {
 
 	UINT CSommetPanneauPE::numElements = ARRAYSIZE(layout);
 
-	CSommetPanneauPE PostEffectPanel::sommets[6] = {
+	CSommetPanneauPE PostEffectManager::sommets[6] = {
 		CSommetPanneauPE(Vector3<>(-1.0f, -1.0f, 0.0f), Vector2<>(0.0f, 1.0f)),
 		CSommetPanneauPE(Vector3<>(-1.0f, 1.0f, 0.0f), Vector2<>(0.0f, 0.0f)),
 		CSommetPanneauPE(Vector3<>(1.0f, 1.0f, 0.0f), Vector2<>(1.0f, 0.0f)),
@@ -21,7 +22,7 @@ namespace Cookie {
 		CSommetPanneauPE(Vector3<>(1.0f, 1.0f, 0.0f), Vector2<>(1.0f, 0.0f)),
 		CSommetPanneauPE(Vector3<>(1.0f, -1.0f, 0.0f), Vector2<>(1.0f, 1.0f)) };
 
-	PostEffectPanel::~PostEffectPanel()
+	PostEffectManager::~PostEffectManager()
 	{
 		DXRelacher(pVertexBuffer);
 		DXRelacher(pResourceView);
@@ -31,10 +32,11 @@ namespace Cookie {
 		DXRelacher(pDepthTexture);
 	}
 
-	PostEffectPanel::PostEffectPanel(DeviceD3D11* device) :
+	PostEffectManager::PostEffectManager(DeviceD3D11* device) :
 		device(device),
 		pVertexBuffer(nullptr),
-	shader{device, L"PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, CSommetPanneauPE::numElements, false }
+		shaderNUL{ device, L"PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, CSommetPanneauPE::numElements, false },
+		radialBlur{ device, L"RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, CSommetPanneauPE::numElements }
 	{
 		ID3D11Device* d3dDevice = device->GetD3DDevice();
 		
@@ -58,7 +60,7 @@ namespace Cookie {
 
 	}
 
-	void PostEffectPanel::InitPostEffect()
+	void PostEffectManager::InitPostEffect()
 	{
 		D3D11_TEXTURE2D_DESC textureDesc;
 		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -127,7 +129,7 @@ namespace Cookie {
 		DXEssayer(device->GetD3DDevice()->CreateDepthStencilView( pDepthTexture, &descDSView, &pDepthStencilView ), DXE_ERREURCREATIONDEPTHSTENCILTARGET );
 	}
 
-	void PostEffectPanel::BeginPostEffect()
+	void PostEffectManager::BeginPostEffect()
 	{
 		// Prendre en note l’ancienne surface de rendu
 		pOldRenderTargetView = device->GetRenderTargetView();
@@ -139,16 +141,21 @@ namespace Cookie {
 		device->SetRenderTargetView(pRenderTargetView, pDepthStencilView);
 	}
 
-	void PostEffectPanel::EndPostEffect()
+	void PostEffectManager::EndPostEffect()
 	{
 		// Restaurer l’ancienne surface de rendu et le tampon de profondeur associé
 		device->SetRenderTargetView(pOldRenderTargetView, pOldDepthStencilView);
 	}
 
-	void PostEffectPanel::Draw()
+	void PostEffectManager::Draw()
 	{
 		ShadersParams* sp = new ShadersParams;
-
+		RadialBlurParams* rbp = new RadialBlurParams;
+		rbp->distance = 0.10f;
+		rbp->remplissage1 = 0;
+		rbp->remplissage2 = 0;
+		rbp->remplissage3 = 0;
+		
 		// Obtenir le contexte
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
@@ -161,8 +168,9 @@ namespace Cookie {
 		UINT offset = 0;
 		pImmediateContext->IASetVertexBuffers( 0, 1, &pVertexBuffer, &stride, &offset );
 
-		shader.Activate(sp, pResourceView, false);
-
+		shaderNUL.Activate(sp, pResourceView, false);
+		//radialBlur.Activate(rbp, pResourceView);
+		
 		// **** Rendu de l’objet
 		pImmediateContext->Draw( 6, 0 );
 	}

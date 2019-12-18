@@ -11,7 +11,7 @@
 #include "ActionManager.h"
 #include "Synchronizer.h"
 #include "GuiManager.h"
-#include "PostEffectPanel.h"
+#include "PostEffectManager.h"
 
 namespace Cookie
 {

@@ -3,7 +3,7 @@
 #include "EntryPoint.h"
 #include "DeviceD3D11.h"
 #include "ActionManager.h"
-#include "PostEffectPanel.h"
+#include "PostEffectManager.h"
 
 namespace Cookie
 {

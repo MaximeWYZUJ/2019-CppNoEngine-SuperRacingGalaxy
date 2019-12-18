@@ -244,8 +244,9 @@
     <ClInclude Include="PhysicsMeshComponent.h" />
     <ClInclude Include="PhysicsSphereComponent.h" />
     <ClInclude Include="PhysicsTask.h" />
-    <ClInclude Include="PostEffectPanel.h" />
+    <ClInclude Include="PostEffectManager.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="RadialBlurParams.h" />
     <ClInclude Include="RaycastCallback.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneManager.h" />
@@ -320,7 +321,7 @@
     <ClCompile Include="PhysicsMeshComponent.cpp" />
     <ClCompile Include="PhysicsSphereComponent.cpp" />
     <ClCompile Include="PhysicsTask.cpp" />
-    <ClCompile Include="PostEffectPanel.cpp" />
+    <ClCompile Include="PostEffectManager.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="RaycastCallback.cpp" />
     <ClCompile Include="SceneManager.cpp" />
