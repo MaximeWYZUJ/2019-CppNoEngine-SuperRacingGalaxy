@@ -21,22 +21,19 @@ Teleport::Teleport(Cookie::Transform<> transform, std::string meshPath, std::wst
 	texture = nullptr;
 
 	controlPoints = { transform.GetPosition() };
-	linkedTeleport = nullptr;
 }
 
-void Teleport::linkTo(Landing* teleport, vector<Cookie::Vector3<>> contP)
+void Teleport::linkTo(Landing* landing, vector<Cookie::Vector3<>> contP)
 {
 #ifdef _DEBUG
-	assert(teleport);
+	assert(landing);
 #endif // DEBUG
 
-	linkedTeleport = teleport;
-	controlPoints = { initialTransform.GetPosition() };
+	controlPoints = { root->localTransform.GetPosition() };
 	for_each(contP.begin(), contP.end(), [&](const Cookie::Vector3<>& t) {
 		controlPoints.push_back(t);
 	});
-	controlPoints.push_back(teleport->initialTransform.GetPosition());
-	//controlPoints = { contP[0], initialTransform, teleport->initialTransform, contP[1] };
+	controlPoints.push_back(landing->root->localTransform.GetPosition());
 }
 
 void Teleport::resetCooldown()
@@ -64,12 +61,18 @@ void Teleport::run()
 		}
 		else {
 			// Keep on animating
-			objToTeleport->root->localTransform = animateTeleport(realTimeTravel / timeTravel);
+			objToTeleport->root->localTransform.SetPosition(animateTeleport(realTimeTravel / timeTravel));
 			objToTeleport->root->physics->isDirty = true;
-
-			//linkedTeleport->resetCooldown();
 		}
 	}
+}
+
+void Teleport::printControlPoints(ostream& out)
+{
+	out << "Control points : " << endl;
+	std::for_each(controlPoints.begin(), controlPoints.end(), [&out](const Cookie::Vector3<>& p) {
+		out << p.x << " ; " << p.y << " ; " << p.z << endl;
+	});
 }
 
 Cookie::Vector3<> hermite(Cookie::Vector3<> P0, Cookie::Vector3<> m0, Cookie::Vector3<> P1, Cookie::Vector3<> m1, double t) {
@@ -81,22 +84,25 @@ Cookie::Vector3<> hermite(Cookie::Vector3<> P0, Cookie::Vector3<> m0, Cookie::Ve
 	return h00 * P0 + h10 * m0 + h01 * P1 + h11 * m1;
 }
 
-Cookie::Transform<> Teleport::animateTeleport(double t)
+Cookie::Vector3<> Teleport::animateTeleport(double t)
 {
 	int N = controlPoints.size() - 1; // indice de fin [P0, PN]
 	int index = floor(t / (1.0/N));
 	if (index == N)
-		return objToTeleport->root->localTransform;
+		return objToTeleport->root->localTransform.GetPosition();
 
-	auto P0 = controlPoints[index];
-	auto P1 = controlPoints[index + 1];
-	auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1]);
-	auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2] - P0);
-
-	auto newPos = hermite(P0, m0, P1, m1, N * t - index);
-
-	auto newTransform = objToTeleport->root->localTransform;
-	newTransform.SetPosition(newPos);
+	if (index == 0 || index == N - 1) {
+		// Interpolation linéaire
+		double ratio = N * t - index;
+		return controlPoints[index] * (1 - ratio) + controlPoints[index + 1] * ratio;
+	}
+	else {
+		// Interpolation par hermite
+		auto P0 = controlPoints[index];
+		auto P1 = controlPoints[index + 1];
+		auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1]);
+		auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2] - P0);
 	
-	return newTransform;
+		return hermite(P0, m0, P1, m1, N * t - index);
+	}
 }

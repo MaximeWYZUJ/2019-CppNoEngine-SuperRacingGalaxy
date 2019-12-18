@@ -7,6 +7,7 @@
 #include "Scenery.h"
 #include "Teleport.h"
 #include "Skybox.h"
+#include "Landing.h"
 #include "Goal.h"
 
 using namespace std;
@@ -22,15 +23,15 @@ struct TriggerTeleport : public PhysicsCollisionCallback {
 	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
 		Teleport* teleport = reinterpret_cast<Teleport*>(selfComponent->userData);
 		if (teleport) {
-			if (teleport->mayUse()) {//&& teleport->linkedTeleport->mayUse()) {
+			if (teleport->mayUse()) {
 				teleport->resetCooldown();
 				teleport->isActive = true;
 				teleport->objToTeleport = static_cast<Prefab*>(otherComponent->userData);
-				//teleport->linkedTeleport->resetCooldown();
+				teleport->printControlPoints(cout);
 			}
 		}
 		else {
-			cout << "trigger : nullptr mdr" << endl;
+			cout << "trigger teleport : nullptr mdr" << endl;
 		}
 	}
 };
@@ -76,7 +77,40 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
 
+	// Linkage des teleporteurs avec leur piste d'atterissage, et définition des points de contrôle
+	for_each(scenario.tpLinks.begin(), scenario.tpLinks.end(), [](TeleportLinksParams params) {
+		vector<Cookie::Vector3<>> controlPoints;
 
+		// Premier point de contrôle
+		Cookie::Vector3<> pc1;
+		if (params.firstDefinedControlPoint.first) {
+			pc1 = params.firstDefinedControlPoint.second;
+		}
+		else {
+			auto direction1 = params.teleport->root->localTransform.GetPosition() - params.teleportPlanet->root->localTransform.GetPosition();
+			direction1.Normalize();
+			pc1 = params.teleport->root->localTransform.GetPosition() + direction1 * 50;
+		}
+		controlPoints.push_back(pc1);
+
+		// Points de contrôle intermédiaires
+		for_each(params.otherControlPoints.begin(), params.otherControlPoints.end(), [&controlPoints](Cookie::Vector3<> p) {
+			controlPoints.push_back(p);
+		});
+
+		// Dernier point de contrôle
+		Cookie::Vector3<> pc2;
+		if (params.lastDefinedControlPoint.first) {
+			pc2 = params.lastDefinedControlPoint.second;
+		} else {
+			auto direction2 = params.landing->root->localTransform.GetPosition() - params.landingPlanet->root->localTransform.GetPosition();
+			direction2.Normalize();
+			pc2 = params.landing->root->localTransform.GetPosition() + direction2 * 50;
+		}
+		controlPoints.push_back(pc2);
+
+		params.teleport->linkTo(params.landing, controlPoints);
+	});
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
@@ -140,7 +174,7 @@ void ScenarioLoader::InitPlanetObject(SceneManager* smgr, MaterialManager* mater
 
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -162,7 +196,7 @@ void ScenarioLoader::InitVehicleObject(SceneManager* smgr, MaterialManager* mate
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -186,7 +220,7 @@ void ScenarioLoader::InitSceneryObject(SceneManager* smgr, MaterialManager* mate
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -209,7 +243,7 @@ void ScenarioLoader::InitSkyboxObject(SceneManager* smgr, MaterialManager* mater
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -221,7 +255,7 @@ void ScenarioLoader::InitTeleportObject(SceneManager* smgr, MaterialManager* mat
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -245,7 +279,7 @@ void ScenarioLoader::InitGoalObject(SceneManager* smgr, MaterialManager* materia
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });

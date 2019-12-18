@@ -35,8 +35,8 @@ namespace Cookie {
 	PostEffectManager::PostEffectManager(DeviceD3D11* device) :
 		device(device),
 		pVertexBuffer(nullptr),
-		shaderNUL{ device, L"PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, CSommetPanneauPE::numElements, false },
-		radialBlur{ device, L"RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, CSommetPanneauPE::numElements }
+		shaderNUL{ {device, L"PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements), false}, true },
+		radialBlur{ {device, L"RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, true }
 	{
 		ID3D11Device* d3dDevice = device->GetD3DDevice();
 		
@@ -147,11 +147,37 @@ namespace Cookie {
 		device->SetRenderTargetView(pOldRenderTargetView, pOldDepthStencilView);
 	}
 
+	void PostEffectManager::activatePostEffect(PostEffectType postEffectType)
+	{
+		switch(postEffectType)
+		{
+		case PostEffectType::NUL :
+			shaderNUL.second = true;
+			break;
+		case PostEffectType::RadialBlur:
+			radialBlur.second = true;
+			break;
+		}
+	}
+	
+	void PostEffectManager::deactivatePostEffect(PostEffectType postEffectType)
+	{
+		switch (postEffectType)
+		{
+		case PostEffectType::NUL:
+			shaderNUL.second = false;
+			break;
+		case PostEffectType::RadialBlur:
+			radialBlur.second = false;
+			break;
+		}
+	}
+	
 	void PostEffectManager::Draw()
 	{
 		ShadersParams* sp = new ShadersParams;
 		RadialBlurParams* rbp = new RadialBlurParams;
-		rbp->distance = 0.10f;
+		rbp->distance = 0.03f;
 		rbp->remplissage1 = 0;
 		rbp->remplissage2 = 0;
 		rbp->remplissage3 = 0;
@@ -168,8 +194,10 @@ namespace Cookie {
 		UINT offset = 0;
 		pImmediateContext->IASetVertexBuffers( 0, 1, &pVertexBuffer, &stride, &offset );
 
-		shaderNUL.Activate(sp, pResourceView, false);
-		//radialBlur.Activate(rbp, pResourceView);
+		if(shaderNUL.second)
+			shaderNUL.first.Activate(sp, pResourceView, false);
+		if(radialBlur.second)
+			radialBlur.first.Activate(rbp, pResourceView);
 		
 		// **** Rendu de l’objet
 		pImmediateContext->Draw( 6, 0 );

@@ -347,3 +347,4 @@ healthchecksdb
 !Super Racing Galaxy/*.obj
 !Super Racing Galaxy/graphics/meshs/*.obj
 !Super Racing Galaxy/graphics/**
+!Cookie/lib_PhysX/**

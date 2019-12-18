@@ -70,6 +70,8 @@ public:
 	
 	void setActiveHUD(HUDType hudType);
 
-	void Update(Cookie::Vector3<>);
+	HUDType getActiveHUD() const;
+
+	void Update();
 	
 };

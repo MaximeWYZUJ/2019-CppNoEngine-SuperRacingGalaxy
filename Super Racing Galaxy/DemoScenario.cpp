@@ -8,6 +8,7 @@
 #include "Skybox.h"
 #include "Goal.h"
 #include "Landing.h"
+#include <utility>
 
 using namespace Cookie;
 
@@ -222,35 +223,12 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	auto T1 = teleporteur3->initialTransform.GetPosition() * planete2->initialTransform.GetScale() * teleporteur3->initialTransform.GetRotation();
 	auto T2 = piste1->initialTransform.GetPosition() * planete1->initialTransform.GetScale() * piste1->initialTransform.GetRotation();
 	teleporteur3->linkTo(piste1, { T1,  T2});
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-55.0f, 13.86f, 113.21f)}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/});
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds"));
 
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 117.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
-	
-	/*
-	{
-		Teleport* teleporteur1 = new Teleport(Transform<>({ -12.0f, 5.0f, -8.0f }, { 30.0f, 30.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
-		planete2->addTeleport(teleporteur1);
-
-		Teleport *teleporteur2 = new Teleport(Transform<>({ 10.0f, 105.0f, 0.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
-		planete2->addTeleport(teleporteur2);
-
-		auto T1 = teleporteur1->initialTransform;
-		T1.SetPosition({ -12.5f, 38.0f, -79.0f });
-		
-		auto T2 = teleporteur1->initialTransform;
-		T2.SetPosition({ 400.0f, 264.0f, -644.0f });
-
-		auto T3 = teleporteur1->initialTransform;
-		T3.SetPosition({ 322.0f, 44.0f, 392.0f });
-		
-		teleporteur1->linkTo(teleporteur2, { T1, T2, T3 });
-		teleporteur2->linkTo(teleporteur1, { T3, T2, T1 });
-	}
-	*/
-
-	//scenario.goal = new Goal(Transform<>({ -12.5f, 38.0f, -79.0f }, { 10.0f, 10.0f, 10.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 
 	return scenario;
 }
