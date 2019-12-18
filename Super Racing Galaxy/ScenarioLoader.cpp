@@ -7,6 +7,7 @@
 #include "Scenery.h"
 #include "Teleport.h"
 #include "Skybox.h"
+#include "Landing.h"
 #include "Goal.h"
 
 using namespace std;
@@ -22,15 +23,15 @@ struct TriggerTeleport : public PhysicsCollisionCallback {
 	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
 		Teleport* teleport = reinterpret_cast<Teleport*>(selfComponent->userData);
 		if (teleport) {
-			if (teleport->mayUse()) {//&& teleport->linkedTeleport->mayUse()) {
+			if (teleport->mayUse()) {
 				teleport->resetCooldown();
 				teleport->isActive = true;
 				teleport->objToTeleport = static_cast<Prefab*>(otherComponent->userData);
-				//teleport->linkedTeleport->resetCooldown();
+				teleport->printControlPoints(cout);
 			}
 		}
 		else {
-			cout << "trigger : nullptr mdr" << endl;
+			cout << "trigger teleport : nullptr mdr" << endl;
 		}
 	}
 };
@@ -75,6 +76,29 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
+
+	// Linkage des teleporteurs avec leur piste d'atterissage, et définition des points de contrôle
+	for_each(scenario.tpLinks.begin(), scenario.tpLinks.end(), [](TeleportLinksParams params) {
+		Cookie::Vector3<> pc1;
+		if (params.firstDefinedControlPoint.first) {
+			pc1 = params.firstDefinedControlPoint.second;
+		}
+		else {
+			auto direction1 = params.teleport->root->localTransform.GetPosition() - params.teleportPlanet->root->localTransform.GetPosition();
+			direction1.Normalize();
+			pc1 = params.teleport->root->localTransform.GetPosition() + direction1 * params.teleportPlanet->root->localTransform.GetScale().x;
+		}
+
+		Cookie::Vector3<> pc2;
+		if (params.lastDefinedControlPoint.first) {
+			pc2 = params.lastDefinedControlPoint.second;
+		} else {
+			auto direction2 = params.landing->root->localTransform.GetPosition() - params.landingPlanet->root->localTransform.GetPosition();
+			direction2.Normalize();
+			pc2 = params.landing->root->localTransform.GetPosition() + direction2 * params.landingPlanet->root->localTransform.GetScale().x;
+		}
+		params.teleport->linkTo(params.landing, { pc1, pc2 });
+	});
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
@@ -226,8 +250,8 @@ void ScenarioLoader::InitTeleportObject(SceneManager* smgr, MaterialManager* mat
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->triggerMesh, obj->root);
-	//obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+	//obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, *obj->triggerMesh, obj->root, true);
+	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
 	obj->root->physics->userData = obj;
 
 	// Filter group

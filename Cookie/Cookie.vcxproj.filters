@@ -261,6 +261,10 @@
     <ClInclude Include="DeferredShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RadialBlurParams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffectManager.h">
     <ClInclude Include="DeferredLightingShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -443,6 +447,7 @@
     <ClCompile Include="DeferredShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PostEffectManager.cpp">
     <ClCompile Include="DeferredLightingShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
