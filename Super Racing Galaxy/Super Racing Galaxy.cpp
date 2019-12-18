@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
 
+
+
 		HUDLogic hudLogic(guiManager, actionManager, cameraLogic, scenario, engine.get());
 		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
 

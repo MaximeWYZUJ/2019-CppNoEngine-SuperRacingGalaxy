@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'hitBoxChampi2.blend'
 # www.blender.org
 mtllib hitBoxChampi2.mtl
-o hitBoxChampi2_Cube.005
+o hitBoxChampi2
 v 0.465665 0.196246 -0.407665
 v 0.294526 0.630036 -0.407665
 v 0.465665 0.196246 0.474779

@@ -75,6 +75,8 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
+
+
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
