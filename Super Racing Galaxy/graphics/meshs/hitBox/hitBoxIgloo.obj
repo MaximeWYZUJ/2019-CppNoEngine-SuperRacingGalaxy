@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'hitBoxIgloo.blend'
 # www.blender.org
 mtllib hitBoxIgloo.mtl
-o hitBoxIgloo
+o hitBoxIgloo_Sphere
 v 0.000000 0.304186 0.329749
 v 0.000000 -0.510372 0.696450
 v -0.415210 0.266988 0.250720
