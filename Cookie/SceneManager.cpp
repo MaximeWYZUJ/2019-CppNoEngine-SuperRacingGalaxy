@@ -21,7 +21,7 @@ namespace Cookie
 {
 	using namespace std;
 
-	SceneManager::SceneManager(Device* device) : device { device }, shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }
+	SceneManager::SceneManager(Device* device) : device{ device }, shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);
@@ -35,7 +35,7 @@ namespace Cookie
 		{
 			return *it;
 		}
-		
+
 		ObjData res = ObjReader::Read(filePath);
 		MeshPtr meshRes = ObjDataToMeshConverter::Convert(res, filePath);
 		Mesh* mesh = meshes.emplace_back(meshRes);
@@ -46,7 +46,7 @@ namespace Cookie
 	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
 	{
 		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
-		
+
 		parent->components.push_back(renderer);
 		renderer->sceneNode = parent;
 		renderer->matrix = &parent->matrix;
@@ -65,7 +65,7 @@ namespace Cookie
 			parent->localTransform.GetScale().y,
 			parent->localTransform.GetScale().z,
 			trigger);
-		
+
 		parent->components.push_back(component);
 		component->sceneNode = parent;
 		component->matrix = &parent->matrix;
@@ -146,11 +146,11 @@ namespace Cookie
 			}
 		}
 	}
-	
+
 	void SceneManager::SetMainCamera(Camera* camera)
 	{
 		assert(Algo::Exists(cameras, camera));
-		
+
 		mainCamera = camera;
 	}
 
@@ -204,7 +204,7 @@ namespace Cookie
 		{
 			// Todo: should have access to globalTransform here (there is only localTransform)
 			Vector3<> camPos = Vector3<>(mainCamera->sceneNode->matrix._14, mainCamera->sceneNode->matrix._24, mainCamera->sceneNode->matrix._34);
-			
+
 			for (auto& renderer : meshRenderers)
 			{
 				renderer->Draw(mainCamera->GetProjView(), camPos, shaders);

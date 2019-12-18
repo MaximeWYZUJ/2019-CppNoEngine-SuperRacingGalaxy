@@ -15,7 +15,7 @@ namespace Cookie
 			return;
 		this->isDirty;
 		addedForces.push_back(force);
-		
+		isDirty = true;
 	}
 
 	void PhysicsComponent::SetAngularVelocity(Vector3<PhysicsComponent_t> velocity)
@@ -24,6 +24,7 @@ namespace Cookie
 			return;
 		this->isDirty;
 		this->velocityAngular = velocity;
+		isDirty = true;
 	}
 	
 	void PhysicsComponent::addFilterGroup(FilterGroup f)

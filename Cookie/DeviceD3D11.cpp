@@ -4,9 +4,12 @@
 #include "Util.h"
 #include "DeviceInfo.h"
 #include "Color.h"
+#include <string>
 
 namespace Cookie
 {
+	using namespace std;
+	
 	DeviceD3D11::DeviceD3D11()
 	{
 		Init(CdsMode::Windowed);
@@ -203,7 +206,56 @@ namespace Cookie
 		ID3D11Buffer* buffer;
 		DXEssayer(device->CreateBuffer(&desc, &subResData, &buffer), DXE_CREATIONBUFFER);
 
-		return reinterpret_cast<BufferPointer>(buffer);
+		return BufferPointer{ reinterpret_cast<intptr_t>(buffer) };
+	}
+
+	auto DeviceD3D11::CreateTexture2D(Vector2<> size) -> Texture2D
+	{
+		D3D11_TEXTURE2D_DESC desc;
+		ZeroMemory(&desc, sizeof desc);
+		desc.Width = size.x;
+		desc.Height = size.y;
+		desc.MipLevels = 1;
+		desc.ArraySize = 1;
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		desc.SampleDesc.Count = 1;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+
+		ID3D11Texture2D* result;
+		ThrowOnError(device->CreateTexture2D(&desc, nullptr, &result));
+		
+		return Texture2D{ reinterpret_cast<intptr_t>(result) };
+	}
+
+	auto DeviceD3D11::CreateRenderTarget(Texture2D texture) -> RenderTarget
+	{
+		D3D11_RENDER_TARGET_VIEW_DESC desc;
+		
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		desc.Texture2D.MipSlice = 0;
+
+		ID3D11RenderTargetView* result;
+		ThrowOnError(device->CreateRenderTargetView(reinterpret_cast<ID3D11Texture2D*>(texture.p), &desc, &result));
+		
+		return RenderTarget{ reinterpret_cast<intptr_t>(result) };
+	}
+
+	auto DeviceD3D11::CreateShaderResource(Texture2D texture) -> ShaderResource
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		desc.Texture2D.MostDetailedMip = 0;
+		desc.Texture2D.MipLevels = 1;
+		
+		ID3D11ShaderResourceView* result;
+		ThrowOnError(device->CreateShaderResourceView(reinterpret_cast<ID3D11Texture2D*>(texture.p), &desc, &result));
+		
+		return ShaderResource{ reinterpret_cast<intptr_t>(result) };
 	}
 
 	void DeviceD3D11::SetTopology()
@@ -216,6 +268,22 @@ namespace Cookie
 
 	void DeviceD3D11::SetIndexBuffer()
 	{
+	}
+
+	void DeviceD3D11::SetRenderTargets(vector<RenderTarget> renderTargets)
+	{
+		ID3D11RenderTargetView* targets = reinterpret_cast<ID3D11RenderTargetView*>(renderTargets.data());
+		pImmediateContext->OMSetRenderTargets(renderTargets.size(), &targets, pDepthStencilView);
+	}
+
+	void DeviceD3D11::ClearRenderTargets(vector<RenderTarget> renderTargets, Color clearColor)
+	{
+		for (auto& renderTarget : renderTargets)
+		{
+			pImmediateContext->ClearRenderTargetView(
+				reinterpret_cast<ID3D11RenderTargetView*>(renderTarget.p),
+				reinterpret_cast<FLOAT const*>(&clearColor));
+		}
 	}
 
 	void DeviceD3D11::Draw(int32_t nbIndices)
@@ -236,6 +304,21 @@ namespace Cookie
 	void DeviceD3D11::Present()
 	{
 		pSwapChain->Present(0, 0);
+	}
+
+	void DeviceD3D11::Release(Texture2D texture)
+	{
+		reinterpret_cast<ID3D11Texture2D*>(texture.p)->Release();
+	}
+
+	void DeviceD3D11::Release(RenderTarget renderTarget)
+	{
+		reinterpret_cast<ID3D11Texture2D*>(renderTarget.p)->Release();
+	}
+
+	void DeviceD3D11::Release(ShaderResource shaderResource)
+	{
+		reinterpret_cast<ID3D11Texture2D*>(shaderResource.p)->Release();
 	}
 
 	ID3D11Device* DeviceD3D11::GetD3DDevice() const
@@ -335,6 +418,14 @@ namespace Cookie
 			&hModule);
 
 		return hModule;
+	}
+
+	void DeviceD3D11::ThrowOnError(HRESULT result)
+	{
+		if (FAILED(result))
+		{
+			throw std::exception("Direct3D ThrowOnError");
+		}
 	}
 
 	void DeviceD3D11::InitDepthBuffer()
@@ -477,7 +568,7 @@ namespace Cookie
 		
 		// On créé l'état alphaBlendEnable
 		DXEssayer(device->CreateBlendState(&blendDesc, &alphaBlendEnable), DXE_ERREURCREATION_BLENDSTATE);
-
+		
 		// Seul le booleen BlendEnable nécéssite d'être modifié
 		blendDesc.RenderTarget[0].BlendEnable = FALSE;
 

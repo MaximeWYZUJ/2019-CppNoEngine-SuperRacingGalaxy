@@ -6,7 +6,7 @@ class Goal : public Prefab
 {
 	HUDLogic* hud;
 public:
-	Goal(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath);
+	Goal(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, std::string hitBoxPath);
 
 	void bindHUD(HUDLogic* hud);
 	void showEndingScreen();

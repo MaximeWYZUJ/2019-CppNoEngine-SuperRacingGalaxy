@@ -1,15 +1,10 @@
 #include "pch.h"
-
-#include <random>
-
-#include "EntryPoint.h"
 #include "ScenarioLoader.h"
 #include "Scenario.h"
 #include "Vehicle.h"
 #include "Prefab.h"
 #include "Planet.h"
 #include "Scenery.h"
-#include "Vehicle.h"
 #include "Teleport.h"
 #include "Skybox.h"
 #include "Goal.h"
@@ -27,11 +22,11 @@ struct TriggerTeleport : public PhysicsCollisionCallback {
 	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
 		Teleport* teleport = reinterpret_cast<Teleport*>(selfComponent->userData);
 		if (teleport) {
-			if (teleport->mayUse() && teleport->linkedTeleport->mayUse()) {
+			if (teleport->mayUse()) {//&& teleport->linkedTeleport->mayUse()) {
 				teleport->resetCooldown();
 				teleport->isActive = true;
 				teleport->objToTeleport = static_cast<Prefab*>(otherComponent->userData);
-				teleport->linkedTeleport->resetCooldown();
+				//teleport->linkedTeleport->resetCooldown();
 			}
 		}
 		else {
@@ -61,15 +56,18 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	for (auto& elem : scenario.gravityGenerators)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
-		for (auto &scenery : elem->setElements) {
+		for (auto& scenery : elem->setElements) {
 			CreateObject(smgr, materialManager, textureManager, device, elem->root, scenery);
 		}
-		for (auto &teleport : elem->teleportElements) {
-			CreateObject(smgr, materialManager, textureManager, device, root, teleport); // TODO
+		for (auto& teleport : elem->teleportElements) {
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, teleport);
 		}
+
+		if (elem->goal)
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, elem->goal);
 	}
 
-	for (auto &elem : scenario.sceneries)
+	for (auto& elem : scenario.sceneries)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}
@@ -77,16 +75,30 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
-
-	CreateObject(smgr, materialManager, textureManager, device, root, scenario.goal);
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
 {
 	obj->mesh = smgr->GetMesh(obj->meshPath_);
+	if (obj->triggerPath_ != "")
+		obj->triggerMesh = smgr->GetMesh(obj->triggerPath_);
+	if (obj->hitBoxPath_ != "")
+		obj->hitBox = smgr->GetMesh(obj->hitBoxPath_);
 	obj->texture = textureManager->GetNewTexture(obj->texturePath_, device);
-	obj->root = smgr->AddSceneNode(root);
-	obj->root->localTransform = obj->initialTransform;
+
+	// (Begin Hack) Place scenery object in the scene root but as if they were children of root, work only for 1 depth (planet->scenery)
+	SceneNode* trueRoot = root;
+	Transform<> trueTransform = obj->initialTransform;
+	if (root->parent)
+	{
+		trueRoot = root->parent;
+		trueTransform = Transform<>::FromMatrix(Matrix4x4<>::FromTransform(root->localTransform) * Matrix4x4<>::FromTransform(obj->initialTransform));
+	}
+
+	obj->root = smgr->AddSceneNode(trueRoot);
+	obj->root->localTransform = trueTransform;
+
+	// (End Hack)
 
 	switch (obj->type_) {
 	case Prefab::Type::PLANET:
@@ -106,7 +118,7 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 		break;
 
 	case Prefab::Type::SKYBOX:
-		InitSkyboxObject(smgr, materialManager, static_cast<Skybox *>(obj));
+		InitSkyboxObject(smgr, materialManager, static_cast<Skybox*>(obj));
 		break;
 
 	case Prefab::Type::GOAL:
@@ -118,7 +130,7 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 	}
 }
 
-void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Planet* obj)
+void ScenarioLoader::InitPlanetObject(SceneManager* smgr, MaterialManager* materialManager, Planet* obj)
 {
 	/*random_device dev;
 	mt19937 rng(dev());
@@ -144,7 +156,7 @@ void ScenarioLoader::InitPlanetObject(Cookie::SceneManager* smgr, Cookie::Materi
 	//obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }
 
-void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Vehicle* obj)
+void ScenarioLoader::InitVehicleObject(SceneManager* smgr, MaterialManager* materialManager, Vehicle* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
@@ -168,7 +180,7 @@ void ScenarioLoader::InitVehicleObject(Cookie::SceneManager* smgr, Cookie::Mater
 	obj->root->physics->changeCollisionCallback<CollisionCallbackShip>();
 }
 
-void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Scenery* obj)
+void ScenarioLoader::InitSceneryObject(SceneManager* smgr, MaterialManager* materialManager, Scenery* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
@@ -179,7 +191,8 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->hitBox, obj->root);
+	//obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, obj->root);
 	//obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 	obj->root->physics->userData = obj;
 
@@ -190,7 +203,7 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 	obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }
 
-void ScenarioLoader::InitSkyboxObject(Cookie::SceneManager *smgr, Cookie::MaterialManager *materialManager, Skybox *obj)
+void ScenarioLoader::InitSkyboxObject(SceneManager* smgr, MaterialManager* materialManager, Skybox* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
@@ -202,7 +215,7 @@ void ScenarioLoader::InitSkyboxObject(Cookie::SceneManager *smgr, Cookie::Materi
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 }
 
-void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Teleport* obj)
+void ScenarioLoader::InitTeleportObject(SceneManager* smgr, MaterialManager* materialManager, Teleport* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
@@ -212,8 +225,9 @@ void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::Mate
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
-	
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->triggerMesh, obj->root);
+	//obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
 	obj->root->physics->userData = obj;
 
 	// Filter group
@@ -225,7 +239,7 @@ void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::Mate
 	obj->root->physics->changeTriggerCallback<TriggerTeleport>();
 }
 
-void ScenarioLoader::InitGoalObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Goal* obj)
+void ScenarioLoader::InitGoalObject(SceneManager* smgr, MaterialManager* materialManager, Goal* obj)
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
@@ -236,7 +250,7 @@ void ScenarioLoader::InitGoalObject(Cookie::SceneManager* smgr, Cookie::Material
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, *obj->hitBox, obj->root, true);
 	obj->root->physics->userData = obj;
 
 	// Filter group

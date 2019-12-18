@@ -4,17 +4,19 @@
 
 #include "SceneNode.h"
 #include "PhysicsComponent.h"
+#include "Landing.h"
 
 using namespace std;
 using namespace chrono;
 
-Teleport::Teleport(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, double timeTravel, float cooldown)
+Teleport::Teleport(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, std::string triggerMeshpath, double timeTravel, float cooldown)
 	: cooldown{ cooldown }, timeTravel{ timeTravel }
 {
 	initialTransform = transform;
 	type_ = Type::TELEPORT;
 	meshPath_ = meshPath;
 	texturePath_ = texturePath;
+	triggerPath_ = triggerMeshpath;
 	mesh = nullptr;
 	texture = nullptr;
 
@@ -22,7 +24,7 @@ Teleport::Teleport(Cookie::Transform<> transform, std::string meshPath, std::wst
 	linkedTeleport = nullptr;
 }
 
-void Teleport::linkTo(Teleport* teleport, vector<Cookie::Transform<>> contP)
+void Teleport::linkTo(Landing* teleport, vector<Cookie::Transform<>> contP)
 {
 #ifdef _DEBUG
 	assert(teleport);
@@ -65,7 +67,7 @@ void Teleport::run()
 			objToTeleport->root->localTransform = animateTeleport(realTimeTravel / timeTravel);
 			objToTeleport->root->physics->isDirty = true;
 
-			linkedTeleport->resetCooldown();
+			//linkedTeleport->resetCooldown();
 		}
 	}
 }
