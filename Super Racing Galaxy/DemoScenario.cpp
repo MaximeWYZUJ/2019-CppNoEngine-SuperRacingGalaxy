@@ -18,7 +18,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 
 	scenario.skybox = new Skybox(Transform<>({ 0.0f, 0.0f, 0.00001f }, { 10000.0f, 10000.0f, 10000.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/skybox.obj", L"graphics/textureDDS/skyboxTexture.dds");
 
-	Planet *planete1 = new Planet(Transform<>({ 1000.0f, 1000.0f, 1000.0f }, { 500.0f, 500.0f, 500.0f }, { 0.0f, 0.0f, 0.707f, 0.707f }), -9.81f * 10, true, "graphics/meshs/planete1.obj", L"graphics/textureDDS/planete1/planete1Texture2.dds");
+	Planet *planete1 = new Planet(Transform<>({ 1000.0f, 1000.0f, 1000.0f }, { 500.0f, 500.0f, 500.0f }, { 0.0f, 0.0f, 0.707f, 0.707f }), -9.81f * 10, true, "graphics/meshs/planete1.obj", L"graphics/textureDDS/planete1/planete1Texture1.dds", L"graphics/textureDDS/planete1/planete1Texture2.dds", L"graphics/textureDDS/planete1/planete1Alpha.dds");
 
 	{
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.23050619661808014f, 0.5650302767753601f, 0.19113726913928986f }, { 0.3621213436126709f, 0.4190943241119385f, 0.43927112221717834f }, { -0.36444199085235596, 0.4469699561595917, 0.3463343381881714, 0.7399002909660339 }), "graphics/meshs/champi2.obj", L"graphics/textureDDS/champi2Texture.dds", "graphics/meshs/hitBox/hitBoxchampi2.obj"));
@@ -145,7 +145,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	}
 
 	
-	Planet *planete2 = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { 0.0f, 0.0f, 0.707f, 0.707f }), -9.81f * 10, true, "graphics/meshs/planete2.obj", L"graphics/textureDDS/planete2/planete2Texture2.dds");
+	Planet *planete2 = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { 0.0f, 0.0f, 0.707f, 0.707f }), -9.81f * 10, true, "graphics/meshs/planete2.obj", L"graphics/textureDDS/planete2/planete2Texture1.dds", L"graphics/textureDDS/planete2/planete2Texture2.dds", L"graphics/textureDDS/planete2/planete2Alpha.dds");
 
 	{
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.44991758465766907f, 0.0174355860799551f, -0.20012310147285461f }, { 0.1499950885772705f, 0.14999498426914215f, 0.2999899089336395f }, { 0.6058107614517212, -0.7750918865203857, 0.05823089927434921, 0.16980868577957153 }), "graphics/meshs/bonhommeNeige.obj", L"graphics/textureDDS/bonhommeNeigeTexture.dds", "graphics/meshs/hitBox/hitBoxbonhommeNeige.obj"));
@@ -227,7 +227,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-55.0f, 13.86f, 113.21f)}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/});
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
-										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds"));
+										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds"));
 
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 117.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 

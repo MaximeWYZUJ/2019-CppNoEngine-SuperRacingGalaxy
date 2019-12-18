@@ -12,6 +12,7 @@
 #include "PhysicsBoxComponent.h"
 #include "MiniPhongParams.h"
 #include "Layout.h"
+#include "Material.h"
 
 #undef max
 
@@ -21,7 +22,11 @@ namespace Cookie
 {
 	using namespace std;
 
-	SceneManager::SceneManager(Device* device) : device{ device }, shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }, shading(device, 1024, 768)
+	SceneManager::SceneManager(Device* device)
+		: device{ device },
+		shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements },
+		planetShader{ device, L"MiniPhongAlphaBlending", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements },
+		shading(device, 1024, 768)
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);
@@ -207,7 +212,14 @@ namespace Cookie
 
 			for (auto& renderer : meshRenderers)
 			{
-				renderer->Draw(mainCamera->GetProjView(), camPos, shaders);
+				if (renderer->GetMaterial()->textures.size() > 1)
+				{
+					renderer->Draw(mainCamera->GetProjView(), camPos, planetShader);
+				}
+				else
+				{
+					renderer->Draw(mainCamera->GetProjView(), camPos, shaders);
+				}
 			}
 		}
 	}

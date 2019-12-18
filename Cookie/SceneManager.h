@@ -67,7 +67,8 @@ namespace Cookie
 		
 		Camera* mainCamera;
 
-		Shaders shaders;
+		Shaders shaders; // standard shader
+		Shaders planetShader; // blending 2 textures shader based on alpha (3rd texture)
 		DeferredShadingPipeline shading;
 		
 		std::vector<MeshPtr> meshes;

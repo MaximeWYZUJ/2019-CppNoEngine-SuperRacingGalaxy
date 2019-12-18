@@ -105,7 +105,7 @@ namespace Cookie
 		pD3DDevice->CreateSamplerState(&samplerDesc, &pSamplerState);
 	}
 
-	void Shaders::Activate(ShadersParams* sp, ID3D11ShaderResourceView* texture, bool hasConstantBuffer, bool hasVertexShader) const
+	void Shaders::Activate(ShadersParams* sp, vector<ID3D11ShaderResourceView*> textures, bool hasConstantBuffer, bool hasVertexShader) const
 	{
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
@@ -130,6 +130,6 @@ namespace Cookie
 
 		pImmediateContext->PSSetSamplers(0, 1, &pSamplerState);
 		
-		pImmediateContext->PSSetShaderResources(0, 1, &texture);
+		pImmediateContext->PSSetShaderResources(0, textures.size(), textures.data());
 	}
 }
