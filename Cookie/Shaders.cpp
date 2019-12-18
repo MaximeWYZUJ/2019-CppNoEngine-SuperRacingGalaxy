@@ -11,7 +11,7 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Shaders::Shaders(Device* device, const wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nbElements)
+	Shaders::Shaders(Device* device, const wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nbElements, bool hasConstantBuffer, bool hasVertexShader)
 		: device{ device }
 	{
 		char* entrypointVS = new char[shaderName.size() + 1];
@@ -28,41 +28,48 @@ namespace Cookie
 		entrypointPS[shaderName.size()] = 'P';
 		entrypointPS[shaderName.size() + 1] = 'S';
 		entrypointPS[shaderName.size() + 2] = '\0';
-		
+
 		ID3D11Device* pD3DDevice = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		ID3DBlob* pVSBlob = nullptr;
-		DXEssayer(D3DCompileFromFile((shaderName + L"VS.hlsl").c_str(),
-			nullptr, nullptr,
-			entrypointVS,
-			"vs_5_0",
-			D3DCOMPILE_ENABLE_STRICTNESS,
-			0,
-			&pVSBlob, nullptr), DXE_FICHIER_VS);
+		
+		if(hasVertexShader)
+		{
+			
+			ID3DBlob* pVSBlob = nullptr;
+			DXEssayer(D3DCompileFromFile((shaderName + L"VS.hlsl").c_str(),
+				nullptr, nullptr,
+				entrypointVS,
+				"vs_5_0",
+				D3DCOMPILE_ENABLE_STRICTNESS,
+				0,
+				&pVSBlob, nullptr), DXE_FICHIER_VS);
 
-		DXEssayer(pD3DDevice->CreateVertexShader(pVSBlob->GetBufferPointer(),
-			pVSBlob->GetBufferSize(),
-			nullptr,
-			&pVertexShader),
-			DXE_CREATION_VS);
+			DXEssayer(pD3DDevice->CreateVertexShader(pVSBlob->GetBufferPointer(),
+				pVSBlob->GetBufferSize(),
+				nullptr,
+				&pVertexShader),
+				DXE_CREATION_VS);
 
-		pVertexLayout = nullptr;
-		ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		DXEssayer(d->CreateInputLayout(layout,
-			nbElements,
-			pVSBlob->GetBufferPointer(),
-			pVSBlob->GetBufferSize(),
-			&pVertexLayout),
-			DXE_CREATIONLAYOUT);
-		pVSBlob->Release();
+			pVertexLayout = nullptr;
+			DXEssayer(pD3DDevice->CreateInputLayout(layout,
+				nbElements,
+				pVSBlob->GetBufferPointer(),
+				pVSBlob->GetBufferSize(),
+				&pVertexLayout),
+				DXE_CREATIONLAYOUT);
+			pVSBlob->Release();
+			
+		}	
 
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.ByteWidth = paramSize;
-		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		bd.CPUAccessFlags = 0;
-		pD3DDevice->CreateBuffer(&bd, nullptr, &pConstantBuffer);
-
+		if(hasConstantBuffer) {
+			D3D11_BUFFER_DESC bd;
+			ZeroMemory(&bd, sizeof(bd));
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.ByteWidth = paramSize;
+			bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			bd.CPUAccessFlags = 0;
+			pD3DDevice->CreateBuffer(&bd, nullptr, &pConstantBuffer);
+		}
+		
 		ID3DBlob* pPSBlob = nullptr;
 		DXEssayer(D3DCompileFromFile((shaderName + L"PS.hlsl").c_str(),
 			nullptr, nullptr,
@@ -98,18 +105,28 @@ namespace Cookie
 		pD3DDevice->CreateSamplerState(&samplerDesc, &pSamplerState);
 	}
 
-	void Shaders::Activate(ShadersParams* sp, ID3D11ShaderResourceView* texture) const
+	void Shaders::Activate(ShadersParams* sp, ID3D11ShaderResourceView* texture, bool hasConstantBuffer, bool hasVertexShader) const
 	{
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
 
-		pImmediateContext->IASetInputLayout(pVertexLayout);
-		pImmediateContext->VSSetShader(pVertexShader, nullptr, 0);
-		pImmediateContext->UpdateSubresource(pConstantBuffer, 0, nullptr, sp, 0, 0);
-		pImmediateContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+		if(hasVertexShader)
+		{
+			pImmediateContext->IASetInputLayout(pVertexLayout);
+			pImmediateContext->VSSetShader(pVertexShader, nullptr, 0);
+		}
+		
+		if (hasConstantBuffer)
+		{
+			pImmediateContext->UpdateSubresource(pConstantBuffer, 0, nullptr, sp, 0, 0);
+			pImmediateContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+		}
+		
 		pImmediateContext->GSSetShader(nullptr, nullptr, 0);
 		pImmediateContext->PSSetShader(pPixelShader, nullptr, 0);
-		pImmediateContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
+		
+		if (hasConstantBuffer)
+			pImmediateContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
 
 		pImmediateContext->PSSetSamplers(0, 1, &pSamplerState);
 		

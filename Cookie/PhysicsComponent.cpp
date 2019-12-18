@@ -13,7 +13,7 @@ namespace Cookie
 	{
 		if (type == STATIC)
 			return;
-		
+		this->isDirty;
 		addedForces.push_back(force);
 		isDirty = true;
 	}
@@ -22,7 +22,7 @@ namespace Cookie
 	{
 		if (type == STATIC)
 			return;
-
+		this->isDirty;
 		this->velocityAngular = velocity;
 		isDirty = true;
 	}
