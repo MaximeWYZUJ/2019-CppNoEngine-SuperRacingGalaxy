@@ -56,15 +56,31 @@ namespace Cookie
 
 	PhysicsComponent* SceneManager::AddPhysicsBoxComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent, bool trigger)
 	{
-		PhysicsBoxComponent* component = new PhysicsBoxComponent(
-			parent->localTransform.GetPosition(),
-			parent->localTransform.GetRotation(),
-			mat,
-			type,
-			parent->localTransform.GetScale().x,
-			parent->localTransform.GetScale().y,
-			parent->localTransform.GetScale().z,
-			trigger);
+		PhysicsBoxComponent *component;
+		if (!parent->parent->root) {
+			component = new PhysicsBoxComponent(
+				parent->parent->localTransform.GetRotation() * parent->localTransform.GetPosition() * parent->parent->localTransform.GetScale() + parent->parent->localTransform.GetPosition(),
+
+				parent->parent->localTransform.GetRotation() * parent->localTransform.GetRotation(),
+
+				mat,
+				type,
+				parent->localTransform.GetScale().x * parent->parent->localTransform.GetScale().x,
+				parent->localTransform.GetScale().y *parent->parent->localTransform.GetScale().y,
+				parent->localTransform.GetScale().y *parent->parent->localTransform.GetScale().y,
+				trigger);
+		}
+		else {
+			component = new PhysicsBoxComponent(
+				parent->localTransform.GetPosition(),
+				parent->parent->localTransform.GetRotation(),
+				mat,
+				type,
+				parent->localTransform.GetScale().x,
+				parent->localTransform.GetScale().y,
+				parent->localTransform.GetScale().z,
+				trigger);
+		}
 		
 		parent->components.push_back(component);
 		component->sceneNode = parent;
@@ -76,14 +92,27 @@ namespace Cookie
 
 	PhysicsComponent* SceneManager::AddPhysicsSphereComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, SceneNode* parent, bool trigger)
 	{
-		PhysicsSphereComponent* component = new PhysicsSphereComponent(
-			parent->localTransform.GetPosition(),
-			parent->localTransform.GetRotation(),
-			mat,
-			type,
-			parent->localTransform.GetScale().x,
-			trigger);
+		PhysicsSphereComponent *component;
+		if (!parent->parent->root) {
+			component = new PhysicsSphereComponent(
+				parent->parent->localTransform.GetRotation() * parent->localTransform.GetPosition() * parent->parent->localTransform.GetScale() + parent->parent->localTransform.GetPosition(),
 
+				parent->parent->localTransform.GetRotation() * parent->localTransform.GetRotation(),
+
+				mat,
+				type,
+				parent->localTransform.GetScale().x * parent->parent->localTransform.GetScale().x,
+				trigger);
+		}
+		else {
+			component = new PhysicsSphereComponent(
+				parent->localTransform.GetPosition(),
+				parent->localTransform.GetRotation(),
+				mat,
+				type,
+				parent->localTransform.GetScale().x,
+				trigger);
+		}
 		parent->components.push_back(component);
 		component->sceneNode = parent;
 		component->matrix = &parent->matrix;
@@ -94,15 +123,29 @@ namespace Cookie
 
 	PhysicsComponent* SceneManager::AddPhysicsMeshComponent(PhysicMaterial mat, PhysicsComponent::BodyType type, Mesh& mesh, SceneNode* parent, bool trigger)
 	{
-		PhysicsMeshComponent* component = new PhysicsMeshComponent(
-			parent->localTransform.GetPosition(),
-			parent->localTransform.GetRotation(),
-			mat,
-			type,
-			mesh,
-			parent->localTransform.GetScale(),
-			trigger);
+		PhysicsMeshComponent *component;
+		if (!parent->parent->root) {
+			component = new PhysicsMeshComponent(
+				parent->parent->localTransform.GetRotation() * parent->localTransform.GetPosition() * parent->parent->localTransform.GetScale() + parent->parent->localTransform.GetPosition(),
 
+				parent->parent->localTransform.GetRotation() * parent->localTransform.GetRotation(),
+
+				mat,
+				type,
+				mesh,
+				parent->localTransform.GetScale() * parent->parent->localTransform.GetScale(),
+				trigger);
+		}
+		else {
+			component = new PhysicsMeshComponent(
+				parent->localTransform.GetPosition(),
+				parent->localTransform.GetRotation(),
+				mat,
+				type,
+				mesh,
+				parent->localTransform.GetScale(),
+				trigger);
+		}
 		parent->components.push_back(component);
 		component->sceneNode = parent;
 		component->matrix = &parent->matrix;

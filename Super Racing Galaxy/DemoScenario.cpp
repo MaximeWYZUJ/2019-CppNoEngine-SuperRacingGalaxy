@@ -28,18 +28,12 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.06060575693845749f, 0.12812846899032593f, -0.5156003832817078f }, { 0.24656377732753754f, 0.24699999392032623f, 0.09862598776817322f }, { 0.09108452498912811, -0.9936930537223816, -0.06166311725974083, 0.0218034815043211 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/teleporteur.obj"));
 
 		
-		Teleport *teleporteur1 = new Teleport(Transform<>::BlenderToCookie({ 0.06060575693845749f, 0.12812846899032593f, -0.5156003832817078f }, { 0.24656377732753754f, 0.24699999392032623f, 0.09862598776817322f }, { 0.09108452498912811, -0.9936930537223816, -0.06166311725974083, 0.0218034815043211 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
-		planete1->addTeleport(teleporteur1);
-
-		teleporteur1->linkedTeleport = nullptr;
+		
 
 		
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.2363140881061554f, -0.2919428050518036f, 0.2624201476573944f }, { 0.24656377732753754f, 0.24699999392032623f, 0.09862598776817322f }, { 0.2847753167152405, -0.1996743232011795, 0.48375675082206726, -0.8031267523765564 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/teleporteur.obj"));
 
-		Teleport *teleporteur2 = new Teleport(Transform<>::BlenderToCookie({ 0.2363140881061554f, -0.2919428050518036f, 0.2624201476573944f }, { 0.24656377732753754f, 0.24699999392032623f, 0.09862598776817322f }, { 0.2847753167152405, -0.1996743232011795, 0.48375675082206726, -0.8031267523765564 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
-		planete1->addTeleport(teleporteur2);
-
-		teleporteur2->linkedTeleport = nullptr;
+		
 
 		
 		
@@ -160,8 +154,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.20490628480911255f, 0.12952658534049988f, -0.3386874794960022f }, { 0.08252932876348495f, 0.07326994091272354f, 0.9539483189582825f }, { 0.21828541159629822, -0.9451954364776611, -0.17860744893550873, -0.16448840498924255 }), "graphics/meshs/rocher2.obj", L"graphics/textureDDS/rocher2Texture.dds", "graphics/meshs/hitBox/hitBoxrocher2.obj"));
 		
 
-		Landing *piste1 = new Landing(Transform<>::BlenderToCookie({ -0.04780895262956619f, 0.19801679253578186f, 0.4536110758781433f }, { 0.14850157499313354f, 0.14850157499313354f, 0.02970030903816223f }, { 0.9790792465209961, -0.20340189337730408, 0.0053962902165949345, 0.0015553263947367668 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
-		planete1->addElement(piste1);
+		
 		
 
 		Goal *goal = new Goal(Transform<>({ -0.21949639916419983f, -0.3839835822582245f, -0.16273409128189087f }, { 0.04449579119682312f, 0.07121192663908005f, 0.08899158239364624f }, { 0.6414487957954407, 0.7015249133110046, -0.2820320725440979, -0.1298622190952301 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
@@ -202,19 +195,32 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.08071883022785187f, 0.0829712525010109f, 0.07322761416435242f }, { 0.2999899983406067f, 0.2999902367591858f, 0.11999598145484924f }, { 0.8121207356452942, -0.5750795602798462, -0.04842349886894226, -0.08601487427949905 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/teleporteur.obj"));
 
-		Teleport *teleporteur3 = new Teleport(Transform<>::BlenderToCookie({ 0.08071883022785187f, 0.0829712525010109f, 0.07322761416435242f }, { 0.2999899983406067f, 0.2999902367591858f, 0.11999598145484924f }, { 0.8121207356452942, -0.5750795602798462, -0.04842349886894226, -0.08601487427949905 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
-		planete2->addTeleport(teleporteur3);
-
-		teleporteur3->linkedTeleport = nullptr;
-
-		Landing *piste2 = new Landing(Transform<>::BlenderToCookie({ 0.5022356510162354f, 0.06358853727579117f, 0.027239730581641197f }, { 0.09634342044591904f, 0.09634342044591904f, 0.019268682226538658f }, { 0.705961287021637, -0.040233463048934937, 0.7059612274169922, 0.04023345932364464 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
-		planete2->addElement(piste2);
+		
 		
 
 	}
 	
 	scenario.gravityGenerators.push_back(planete1);
 	scenario.gravityGenerators.push_back(planete2);
+
+	Teleport *teleporteur1 = new Teleport(Transform<>::BlenderToCookie({ 0.06060575693845749f, 0.12812846899032593f, -0.5156003832817078f }, { 0.24656377732753754f, 0.24699999392032623f, 0.09862598776817322f }, { 0.09108452498912811, -0.9936930537223816, -0.06166311725974083, 0.0218034815043211 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
+	planete1->addTeleport(teleporteur1);
+
+	Teleport *teleporteur2 = new Teleport(Transform<>::BlenderToCookie({ 0.2363140881061554f, -0.2919428050518036f, 0.2624201476573944f }, { 0.24656377732753754f, 0.24699999392032623f, 0.09862598776817322f }, { 0.2847753167152405, -0.1996743232011795, 0.48375675082206726, -0.8031267523765564 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
+	planete1->addTeleport(teleporteur2);
+
+	Teleport *teleporteur3 = new Teleport(Transform<>::BlenderToCookie({ 0.08071883022785187f, 0.0829712525010109f, 0.07322761416435242f }, { 0.2999899983406067f, 0.2999902367591858f, 0.11999598145484924f }, { 0.8121207356452942, -0.5750795602798462, -0.04842349886894226, -0.08601487427949905 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
+	planete2->addTeleport(teleporteur3);
+
+	Landing *piste1 = new Landing(Transform<>::BlenderToCookie({ -0.04780895262956619f, 0.19801679253578186f, 0.4536110758781433f }, { 0.14850157499313354f, 0.14850157499313354f, 0.02970030903816223f }, { 0.9790792465209961, -0.20340189337730408, 0.0053962902165949345, 0.0015553263947367668 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
+	planete1->addElement(piste1);
+
+	Landing *piste2 = new Landing(Transform<>::BlenderToCookie({ 0.5022356510162354f, 0.06358853727579117f, 0.027239730581641197f }, { 0.09634342044591904f, 0.09634342044591904f, 0.019268682226538658f }, { 0.705961287021637, -0.040233463048934937, 0.7059612274169922, 0.04023345932364464 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
+	planete2->addElement(piste2);
+
+	auto T1 = teleporteur3->initialTransform;
+	auto T2 = piste1->initialTransform;
+	teleporteur3->linkTo(piste1, { T1,  });
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds"));

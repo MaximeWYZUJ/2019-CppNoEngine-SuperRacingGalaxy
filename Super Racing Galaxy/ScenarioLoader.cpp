@@ -58,6 +58,7 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	TextureManager* textureManager = engine->GetTextureManager();
 	Device* device = engine->GetDevice();
 	SceneNode* root = smgr->GetRoot();
+	root->root = true;
 
 	for (auto& elem : scenario.gravityGenerators)
 	{
@@ -220,7 +221,7 @@ void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::Mate
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 	
-	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->triggerMesh, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->triggerMesh, obj->root, true);
 	//obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
 	obj->root->physics->userData = obj;
 
