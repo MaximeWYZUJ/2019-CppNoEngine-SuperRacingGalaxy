@@ -11,6 +11,7 @@
 #include "ActionManager.h"
 #include "Synchronizer.h"
 #include "GuiManager.h"
+#include "PostEffectPanel.h"
 
 namespace Cookie
 {
@@ -31,7 +32,8 @@ namespace Cookie
 			std::unique_ptr<TextureManager>&& textureManager,
 			std::unique_ptr<GuiManager>&& guiManager,
 			std::unique_ptr<MaterialManager>&& materialManager,
-			std::unique_ptr<Synchronizer>&& synchronizer);
+			std::unique_ptr<Synchronizer>&& synchronizer,
+			std::unique_ptr<PostEffectPanel>&& postEffectPanel);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
@@ -66,6 +68,7 @@ namespace Cookie
 		std::unique_ptr<GuiManager> guiManager;
 		std::unique_ptr<MaterialManager> materialManager;
 		std::unique_ptr<Synchronizer> synchronizer;
+		std::unique_ptr<PostEffectPanel> postEffectPanel;
 
 		int64_t previousTime;
 

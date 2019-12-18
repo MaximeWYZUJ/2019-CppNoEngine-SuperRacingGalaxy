@@ -50,6 +50,10 @@ namespace Cookie
 		void enableZBuffer();
 		void disableZBuffer();
 
+		ID3D11RenderTargetView* GetRenderTargetView();
+		ID3D11DepthStencilView* GetDepthStencilView();
+		void SetRenderTargetView(ID3D11RenderTargetView* targetView, ID3D11DepthStencilView* depthStencilView);
+			
 	protected:
 		ID3D11RasterizerState* mSolidCullBackRS;
 

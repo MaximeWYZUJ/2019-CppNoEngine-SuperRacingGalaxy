@@ -346,4 +346,4 @@ healthchecksdb
 !cargo.obj
 !Super Racing Galaxy/*.obj
 !Super Racing Galaxy/graphics/meshs/*.obj
-!Super Racing Galaxy/graphics/meshs/hitBox/*.obj
+!Super Racing Galaxy/graphics/**

@@ -7,6 +7,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include "D3D11PixelShader.h"
 
 namespace Cookie
 {
@@ -17,94 +18,92 @@ namespace Cookie
 	{
 	}
 
-	auto ShaderManager::GetVertexShader(std::wstring const& fileName) -> ShaderType
+	auto ShaderManager::GetVPShader(std::string const& shaderName) -> D3D11VPShader*
 	{
-		/*wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
-		string entryPoint = converter.to_bytes(fileName.substr(0, fileName.find('.') + 1));*/
+		auto it = nameToShaders.find(shaderName);
+		if (it != end(nameToShaders))
+		{
+			return &vpShaders[it->second];
+		}
 
-		//ID3D11Device* d3d11Device = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		//ID3DBlob* pVSBlob = nullptr;
-		//DXEssayer(D3DCompileFromFile(fileName.c_str(),
-		//	nullptr, nullptr,
-		//	entryPoint.c_str(),
-		//	"vs_5_0",
-		//	D3DCOMPILE_ENABLE_STRICTNESS,
-		//	0,
-		//	&pVSBlob, nullptr), DXE_FICHIER_VS);
+		string vEntryPoint = shaderName + "VS";
+		string t = vEntryPoint + ".hlsl";
+		std::wstring vFileName = wstring(begin(t), end(t));
 
-		//DXEssayer(d3d11Device->CreateVertexShader(pVSBlob->GetBufferPointer(),
-		//	pVSBlob->GetBufferSize(),
-		//	nullptr,
-		//	&pVertexShader),
-		//	DXE_CREATION_VS);
+		ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
+		ID3DBlob* pVSBlob = nullptr;
+		DXEssayer(D3DCompileFromFile(vFileName.c_str(),
+			nullptr, nullptr,
+			vEntryPoint.c_str(),
+			"vs_5_0",
+			D3DCOMPILE_ENABLE_STRICTNESS,
+			0,
+			&pVSBlob, nullptr), DXE_FICHIER_VS);
 
-		//pVertexLayout = nullptr;
-		//ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
-		//DXEssayer(d->CreateInputLayout(VertexData::layout,
-		//	nbElements,
-		//	pVSBlob->GetBufferPointer(),
-		//	pVSBlob->GetBufferSize(),
-		//	&pVertexLayout),
-		//	DXE_CREATIONLAYOUT);
-		//pVSBlob->Release();
+		D3D11VPShader vp{};
+		DXEssayer(d->CreateVertexShader(pVSBlob->GetBufferPointer(),
+			pVSBlob->GetBufferSize(),
+			nullptr,
+			&vp.vertexShader),
+			DXE_CREATION_VS);
 
-		//D3D11_BUFFER_DESC bd;
-		//ZeroMemory(&bd, sizeof(bd));
-		//bd.Usage = D3D11_USAGE_DEFAULT;
-		//bd.ByteWidth = paramSize;
-		//bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		//bd.CPUAccessFlags = 0;
-		//d3d11Device->CreateBuffer(&bd, nullptr, &pConstantBuffer);
+		DXEssayer(d->CreateInputLayout(VertexData::layout,
+			VertexData::nbElements,
+			pVSBlob->GetBufferPointer(),
+			pVSBlob->GetBufferSize(),
+			&vp.inputLayout),
+			DXE_CREATIONLAYOUT);
+		pVSBlob->Release();
 
-		//ID3DBlob* pPSBlob = nullptr;
-		//DXEssayer(D3DCompileFromFile((shaderName + L"PS.hlsl").c_str(),
-		//	nullptr, nullptr,
-		//	entrypointPS,
-		//	"ps_5_0",
-		//	D3DCOMPILE_ENABLE_STRICTNESS,
-		//	0,
-		//	&pPSBlob,
-		//	nullptr), DXE_FICHIER_PS);
-		//DXEssayer(d3d11Device->CreatePixelShader(pPSBlob->GetBufferPointer(),
-		//	pPSBlob->GetBufferSize(),
-		//	nullptr,
-		//	&pPixelShader),
-		//	DXE_CREATION_PS);
-		//pPSBlob->Release();
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof bd);
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof MatrixBuffer;
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = 0;
+		d->CreateBuffer(&bd, nullptr, &vp.constantBuffer);
 
-		//// Initialisation des paramètres de sampling de la texture
-		//D3D11_SAMPLER_DESC samplerDesc;
-		//samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		//samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		//samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		//samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		//samplerDesc.MipLODBias = 0.0f;
-		//samplerDesc.MaxAnisotropy = 1;
-		//samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-		//samplerDesc.BorderColor[0] = 0;
-		//samplerDesc.BorderColor[1] = 0;
-		//samplerDesc.BorderColor[2] = 0;
-		//samplerDesc.BorderColor[3] = 0;
-		//samplerDesc.MinLOD = 0;
-		//samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		//// Création de l’état de sampling
-		//d3d11Device->CreateSamplerState(&samplerDesc, &pSamplerState);
-		return ShaderType();
+		string pEntryPoint = shaderName + "PS";
+		t = pEntryPoint + ".hlsl";
+		std::wstring pFileName = wstring(begin(t), end(t));
+		
+		ID3DBlob* pPSBlob = nullptr;
+		DXEssayer(D3DCompileFromFile(pFileName.c_str(),
+			nullptr, nullptr,
+			pEntryPoint.c_str(),
+			"ps_5_0",
+			D3DCOMPILE_ENABLE_STRICTNESS,
+			0,
+			&pPSBlob,
+			nullptr), DXE_FICHIER_PS);
+
+		DXEssayer(d->CreatePixelShader(pPSBlob->GetBufferPointer(),
+			pPSBlob->GetBufferSize(),
+			nullptr,
+			&vp.pixelShader),
+			DXE_CREATION_PS);
+		pPSBlob->Release();
+
+		D3D11_SAMPLER_DESC desc;
+		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.MipLODBias = 0.0f;
+		desc.MaxAnisotropy = 1;
+		desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+		desc.BorderColor[0] = 0;
+		desc.BorderColor[1] = 0;
+		desc.BorderColor[2] = 0;
+		desc.BorderColor[3] = 0;
+		desc.MinLOD = 0;
+		desc.MaxLOD = D3D11_FLOAT32_MAX;
+		d->CreateSamplerState(&desc, &vp.sampler);
+
+		vpShaders.push_back(vp);
+
+		nameToShaders.insert({ shaderName, vpShaders.size() - 1 });
+
+		return &vpShaders.back();
 	}
-
-	auto ShaderManager::GetHullShader(std::wstring const& fileName) -> ShaderType
-	{
-		return ShaderType();
-	}
-
-	auto ShaderManager::GetDomainShader(std::wstring const& fileName) -> ShaderType
-	{
-		return ShaderType();
-	}
-
-	auto ShaderManager::GetPixelShader(std::wstring const& fileName) -> ShaderType
-	{
-		return ShaderType();
-	}
-
 }

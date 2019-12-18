@@ -10,6 +10,7 @@ namespace Cookie
 	{
 	public:
 		static Transform<T> BlenderToCookie(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation);
+		static Transform<T> FromMatrix(Matrix4x4<T> m);
 		
 		Transform();
 		Transform(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation);
@@ -44,6 +45,40 @@ namespace Cookie
 	Transform<T> Transform<T>::BlenderToCookie(Vector3<T> pos, Vector3<T> scale, Quaternion<T> rotation)
 	{
 		return Transform<T>(Vector3<T>(pos.x, pos.z, pos.y), Vector3<T>(scale.x, scale.z, scale.y), Quaternion<T>(rotation.y, rotation.w, rotation.z, -rotation.x));
+	}
+
+	template<class T>
+	Transform<T> Transform<T>::FromMatrix(Matrix4x4<T> m)
+	{
+		// Position
+		Vector3<T> pos;
+		pos.x = m._14;
+		pos.y = m._24;
+		pos.z = m._34;
+
+		// Scale
+		m._14 = m._24 = m._34 = 0.0f;
+		Vector3<T> scale;
+		scale.x = Vector3<T>(m._11, m._21, m._31).Length();
+		scale.y = Vector3<T>(m._12, m._22, m._32).Length();
+		scale.z = Vector3<T>(m._13, m._23, m._33).Length();
+
+		// Rotation
+		m._11 /= scale.x;
+		m._21 /= scale.x;
+		m._31 /= scale.x;
+
+		m._12 /= scale.y;
+		m._22 /= scale.y;
+		m._32 /= scale.y;
+
+		m._13 /= scale.z;
+		m._23 /= scale.z;
+		m._33 /= scale.z;
+
+		Quaternion<T> rotation = Quaternion<T>::FromRotationMatrix(m);
+
+		return Transform<T>(pos, scale, rotation);
 	}
 
 	template<class T>
