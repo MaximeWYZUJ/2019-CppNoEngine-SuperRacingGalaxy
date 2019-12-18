@@ -175,8 +175,8 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.42955711483955383f, 0.3114015460014343f, -0.2056649923324585f }, { 0.08318579941987991f, 0.16637162864208221f, 0.16637156903743744f }, { 0.4183803200721741, 0.09335704147815704, 0.8272531032562256, 0.36317312717437744 }), "graphics/meshs/stalagmite.obj", L"graphics/textureDDS/stalagmiteTexture.dds", "graphics/meshs/hitBox/hitBoxstalagmite.obj"));
 	}
 	
-	Planet *planete3 = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 0.1f }), -9.81f * 10, true, "graphics/meshs/planete3.obj", L"graphics/textureDDS/planete3/planete3Texture2.dds");
-
+	Planet *planete3 = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, "graphics/meshs/planete3.obj", L"graphics/textureDDS/planete3/planete3Texture2.dds");
+	
 	{
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.5244293212890625f, 0.0356634221971035f, -0.07825712114572525f }, { 0.3799402415752411f, 0.3799402415752411f, 0.18997012078762054f }, { 0.6848219633102417, 0.003416382009163499, -0.7285568714141846, -0.014563476666808128 }), "graphics/meshs/pyramide.obj", L"graphics/textureDDS/pyramideTexture.dds", "graphics/meshs/hitBox/hitBoxpyramide.obj"));
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.02585684508085251f, -0.037237055599689484f, 0.5252707600593567f }, { 0.02670018933713436f, 0.02670018933713436f, 0.0719149261713028f }, { 1.0, 0.0, 0.0, 0.0 }), "graphics/meshs/cactus1.obj", L"graphics/textureDDS/cactus1Texture.dds", "graphics/meshs/hitBox/hitBoxcactus1.obj"));
@@ -191,7 +191,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.1568656712770462f, 0.1912076324224472f, 0.45743024349212646f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.777387797832489, -0.05911627411842346, -0.23806792497634888, -0.5792211890220642 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.507727324962616f, 0.09038947522640228f, -0.10643826425075531f }, { 0.1184428334236145f, 0.1184428334236145f, 0.04737712815403938f }, { 0.6566708087921143, -0.0, -0.7541773319244385, -0.0 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/teleporteur.obj"));
 	}
-
+	
 	scenario.gravityGenerators.push_back(planete1);
 	scenario.gravityGenerators.push_back(planete2);
 	scenario.gravityGenerators.push_back(planete3);
@@ -205,8 +205,10 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Teleport *teleporteur3 = new Teleport(Transform<>::BlenderToCookie({ 0.08071883022785187f, 0.0829712525010109f, 0.07322761416435242f }, { 0.2999899983406067f, 0.2999902367591858f, 0.11999598145484924f }, { 0.8121207356452942, -0.5750795602798462, -0.04842349886894226, -0.08601487427949905 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
 	planete2->addTeleport(teleporteur3);
 
+	
 	Teleport *teleporteur4 = new Teleport(Transform<>::BlenderToCookie({ -0.507727324962616f, 0.09038947522640228f, -0.10643826425075531f }, { 0.1184428334236145f, 0.1184428334236145f, 0.04737712815403938f }, { 0.6566708087921143, -0.0, -0.7541773319244385, -0.0 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
 	planete3->addTeleport(teleporteur4);
+	
 
 	Landing *piste1 = new Landing(Transform<>::BlenderToCookie({ -0.04780895262956619f, 0.19801679253578186f, 0.4536110758781433f }, { 0.14850157499313354f, 0.14850157499313354f, 0.02970030903816223f }, { 0.9790792465209961, -0.20340189337730408, 0.0053962902165949345, 0.0015553263947367668 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete1->addElement(piste1);
@@ -214,15 +216,14 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Landing *piste2 = new Landing(Transform<>::BlenderToCookie({ 0.5022356510162354f, 0.06358853727579117f, 0.027239730581641197f }, { 0.09634342044591904f, 0.09634342044591904f, 0.019268682226538658f }, { 0.705961287021637, -0.040233463048934937, 0.7059612274169922, 0.04023345932364464 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete2->addElement(piste2);
 
+	
 	Landing *piste3 = new Landing(Transform<>::BlenderToCookie({ 0.042957089841365814f, -0.4742722511291504f, 0.093037910759449f }, { 0.14733728766441345f, 0.14733728766441345f, 0.029467454180121422f }, { 0.8070926666259766, 0.5891563296318054, 0.031198911368846893, 0.022866763174533844 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete3->addElement(piste3);
 
 	Landing *piste4 = new Landing(Transform<>::BlenderToCookie({ -0.23662912845611572f, 0.42091068625450134f, -0.2262771725654602f }, { 0.14733728766441345f, 0.14733728766441345f, 0.029467454180121422f }, { 0.2029838263988495, 0.03433453291654587, -0.8655346035957336, -0.45658355951309204 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete3->addElement(piste4);
+	
 
-	auto T1 = teleporteur3->initialTransform.GetPosition() * planete2->initialTransform.GetScale() * teleporteur3->initialTransform.GetRotation();
-	auto T2 = piste1->initialTransform.GetPosition() * planete1->initialTransform.GetScale() * piste1->initialTransform.GetRotation();
-	teleporteur3->linkTo(piste1, { T1,  T2});
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-55.0f, 13.86f, 113.21f)}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/});
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 

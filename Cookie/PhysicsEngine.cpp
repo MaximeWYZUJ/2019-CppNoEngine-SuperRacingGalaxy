@@ -192,7 +192,6 @@ namespace Cookie
 			actor = gPhysics->createRigidStatic(transform);
 		}
 		
-
 		actor->attachShape(*shape);
 
 		actor->userData = compo;

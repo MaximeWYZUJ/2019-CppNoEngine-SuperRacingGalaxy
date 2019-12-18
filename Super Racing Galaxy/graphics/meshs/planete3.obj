@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'planete3.blend'
 # www.blender.org
 mtllib planete3.mtl
-o planete3_Sphere
+o planete3
 v 0.054092 0.494682 0.153237
 v 0.053011 0.485871 0.177482
 v 0.051837 0.476664 0.198583
