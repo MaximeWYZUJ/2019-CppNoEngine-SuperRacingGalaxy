@@ -13,6 +13,7 @@
 #include "Teleport.h"
 #include "Skybox.h"
 #include "Goal.h"
+#include "Landing.h"
 
 using namespace std;
 using namespace Cookie;
@@ -27,11 +28,11 @@ struct TriggerTeleport : public PhysicsCollisionCallback {
 	void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) override {
 		Teleport* teleport = reinterpret_cast<Teleport*>(selfComponent->userData);
 		if (teleport) {
-			if (teleport->mayUse() && teleport->linkedTeleport->mayUse()) {
+			if (teleport->mayUse() ){//&& teleport->linkedTeleport->mayUse()) {
 				teleport->resetCooldown();
 				teleport->isActive = true;
 				teleport->objToTeleport = static_cast<Prefab*>(otherComponent->userData);
-				teleport->linkedTeleport->resetCooldown();
+				//teleport->linkedTeleport->resetCooldown();
 			}
 		}
 		else {
@@ -65,8 +66,11 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 			CreateObject(smgr, materialManager, textureManager, device, elem->root, scenery);
 		}
 		for (auto &teleport : elem->teleportElements) {
-			CreateObject(smgr, materialManager, textureManager, device, root, teleport); // TODO
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, teleport);
 		}
+
+		if(elem->goal)
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, elem->goal);
 	}
 
 	for (auto &elem : scenario.sceneries)
@@ -77,13 +81,15 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
-
-	CreateObject(smgr, materialManager, textureManager, device, root, scenario.goal);
 }
 
 void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialManager, TextureManager* textureManager, Device* device, SceneNode* root, Prefab* obj)
 {
 	obj->mesh = smgr->GetMesh(obj->meshPath_);
+	if(obj->triggerPath_ != "")
+		obj->triggerMesh = smgr->GetMesh(obj->triggerPath_);
+	if(obj->hitBoxPath_ != "")
+		obj->hitBox = smgr->GetMesh(obj->hitBoxPath_);
 	obj->texture = textureManager->GetNewTexture(obj->texturePath_, device);
 	obj->root = smgr->AddSceneNode(root);
 	obj->root->localTransform = obj->initialTransform;
@@ -179,7 +185,8 @@ void ScenarioLoader::InitSceneryObject(Cookie::SceneManager* smgr, Cookie::Mater
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, obj->root);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->hitBox, obj->root);
+	//obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, obj->root);
 	//obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 	obj->root->physics->userData = obj;
 
@@ -213,7 +220,8 @@ void ScenarioLoader::InitTeleportObject(Cookie::SceneManager* smgr, Cookie::Mate
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 	
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->triggerMesh, obj->root);
+	//obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
 	obj->root->physics->userData = obj;
 
 	// Filter group
@@ -236,7 +244,7 @@ void ScenarioLoader::InitGoalObject(Cookie::SceneManager* smgr, Cookie::Material
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 
-	obj->root->physics = smgr->AddPhysicsBoxComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, obj->root, true);
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.0f, 0.0f), PhysicsComponent::STATIC, *obj->hitBox, obj->root, true);
 	obj->root->physics->userData = obj;
 
 	// Filter group

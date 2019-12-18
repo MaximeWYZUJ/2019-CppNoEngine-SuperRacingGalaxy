@@ -1,6 +1,7 @@
 #include "Planet.h"
 #include "Scenery.h"
 #include "Teleport.h"
+#include "Goal.h"
 
 using namespace std;
 using namespace Cookie;
@@ -15,6 +16,7 @@ Planet::Planet(Transform<> transform, float gravityValue, bool isUpVectorDynamic
 	texturePath_ = texturePath;
 	mesh = nullptr;
 	texture = nullptr;
+	goal = nullptr;
 }
 
 void Planet::addElement(Scenery* scenery)
@@ -27,6 +29,12 @@ void Planet::addTeleport(Teleport *teleport)
 {
 	if (!teleport) return;
 	teleportElements.push_back(teleport);
+}
+
+void Planet::addGoal(Goal *_goal)
+{
+	if (!_goal) return;
+	goal = _goal;
 }
 
 void Planet::anime()

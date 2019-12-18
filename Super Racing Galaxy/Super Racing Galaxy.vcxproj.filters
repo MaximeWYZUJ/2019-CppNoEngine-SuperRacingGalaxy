@@ -57,6 +57,9 @@
     <ClCompile Include="Goal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Landing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MiniPhongPS.hlsl">
@@ -113,6 +116,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Goal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Landing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

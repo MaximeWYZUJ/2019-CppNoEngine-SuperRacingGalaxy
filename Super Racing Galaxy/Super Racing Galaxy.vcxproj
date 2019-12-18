@@ -166,6 +166,7 @@
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="HUDLogic.cpp" />
+    <ClCompile Include="Landing.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="ScenarioLoader.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="DemoScenario.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="HUDLogic.h" />
+    <ClInclude Include="Landing.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="Prefab.h" />

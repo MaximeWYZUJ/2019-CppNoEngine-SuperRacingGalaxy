@@ -1,11 +1,12 @@
 #include "Goal.h"
 
-Goal::Goal(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath)
+Goal::Goal(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, std::string hitBoxPath)
 {
 	initialTransform = transform;
 	type_ = Type::GOAL;
 	meshPath_ = meshPath;
 	texturePath_ = texturePath;
+	hitBoxPath_ = hitBoxPath;
 	mesh = nullptr;
 	texture = nullptr;
 }
