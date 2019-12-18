@@ -33,7 +33,7 @@ namespace Cookie
 			std::unique_ptr<GuiManager>&& guiManager,
 			std::unique_ptr<MaterialManager>&& materialManager,
 			std::unique_ptr<Synchronizer>&& synchronizer,
-			std::unique_ptr<PostEffectPanel>&& postEffectPanel);
+			std::unique_ptr<PostEffectManager>&& postEffectManager);
 
 		template<class TUpdateFunc>
 		bool Run(TUpdateFunc update);
@@ -68,7 +68,7 @@ namespace Cookie
 		std::unique_ptr<GuiManager> guiManager;
 		std::unique_ptr<MaterialManager> materialManager;
 		std::unique_ptr<Synchronizer> synchronizer;
-		std::unique_ptr<PostEffectPanel> postEffectPanel;
+		std::unique_ptr<PostEffectManager> postEffectManager;
 
 		int64_t previousTime;
 
