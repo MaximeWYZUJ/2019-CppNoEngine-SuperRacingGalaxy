@@ -2,6 +2,7 @@
 
 #include "ExportMacro.h"
 #include "Matrix4x4.h"
+#include <vector>
 
 struct ID3D11VertexShader;
 struct ID3D11PixelShader;
@@ -22,7 +23,7 @@ namespace Cookie
 	{
 	public:
 		Shaders(Device* device, const std::wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nmElements, bool hasConstantBuffer = true, bool hasVertexShader = true);
-		void Activate(ShadersParams* sp, ID3D11ShaderResourceView* texture, bool hasConstantBuffer = true, bool hasVertexShader = true) const;
+		void Activate(ShadersParams* sp, std::vector<ID3D11ShaderResourceView*> textures, bool hasConstantBuffer = true, bool hasVertexShader = true) const;
 
 	private:
 		Device* device;
