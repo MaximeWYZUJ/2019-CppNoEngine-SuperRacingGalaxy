@@ -11,7 +11,7 @@ for obj in objects:
 
 planete = objPlanete.name
 f = open("E:/Cours/Projet-Automne/Super Racing Galaxy/graphics/blenderFiles/" + planete + ".txt", "w+")
-f.write("Planet *" + planete + " = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 0.1f }), -9.81f * 10, true, \"graphics/meshs/" + planete + ".obj\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture2.dds\");\n\n{\n")
+f.write("Planet *" + planete + " = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 0.1f }), -9.81f * 10, true, \"graphics/meshs/" + planete + ".obj\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture1.dds\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture2.dds\", L\"graphics/textureDDS/" + planete + "/" + planete + "Alpha.dds\");\n\n{\n")
               
 cptTeleport = 0
 cptAtterrissage = 0
