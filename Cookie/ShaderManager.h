@@ -1,43 +1,58 @@
 #pragma once
 #include <string>
 #include <map>
-#include "Shader.h"
 #include "Device.h"
+#include "D3D11VertexShader.h"
+#include "ShaderParams.h"
+#include "D3D11PixelShader.h"
 
 namespace Cookie
 {
+	/// <summary>
+	///		Load/Unload shaders.
+	/// </summary>
+	/// <remarks>
+	///		This class may be an interface to switch between OpenGL/Vulkan/Direct3D implementations.
+	/// </remarks>
 	class ShaderManager
 	{
 	public:
-		using ShaderType = int;
+		enum class ShaderType : uint16_t
+		{
+			Vertex,
+			Hull,
+			Domain,
+			Pixel
+		};
+		
+		struct ShaderId
+		{
+			ShaderType type;
+			uint16_t id;
+		};
+
+		struct MatrixBuffer : ShadersParams
+		{
+			Matrix4x4<> worldMatrix;
+			Matrix4x4<> projViewWorldMatrix;
+		};
 
 		ShaderManager(Device* device);
 
 		/// <summary>
-		///		Get a vertex shader. Return the same shader instance if called multiple times with the same parameters.
+		///		Get a vertex/pixel shader combination. Return the same shader instance if called multiple times with the same parameters.
 		/// </summary>
-		ShaderType GetVertexShader(std::wstring const& fileName);
+		D3D11VPShader* GetVPShader(std::string const& shaderName);
 
 		/// <summary>
-		///		Get a hull shader. Return the same shader instance if called multiple times with the same parameters.
+		///		Activate a shader.
 		/// </summary>
-		ShaderType GetHullShader(std::wstring const& fileName);
-
-		/// <summary>
-		///		Get a domain shader. Return the same shader instance if called multiple times with the same parameters.
-		/// </summary>
-		ShaderType GetDomainShader(std::wstring const& fileName);
-
-		/// <summary>
-		///		Get a pixel shader. Return the same shader instance if called multiple times with the same parameters.
-		/// </summary>
-		ShaderType GetPixelShader(std::wstring const& fileName);
-
-		void Activate(Shader* shader);
+		void Activate(ShaderId shaderId);
 
 	private:
 		Device* device;
-		
-		std::map<std::wstring, Shader*> shaders;
+
+		std::vector<D3D11VPShader> vpShaders;
+		std::map<std::string, int> nameToShaders;
 	};
 }

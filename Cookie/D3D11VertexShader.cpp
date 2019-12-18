@@ -3,11 +3,4 @@
 
 namespace Cookie
 {
-	D3D11VertexShader::D3D11VertexShader()
-	{
-	}
-	
-	D3D11VertexShader::~D3D11VertexShader()
-	{
-	}
 }
