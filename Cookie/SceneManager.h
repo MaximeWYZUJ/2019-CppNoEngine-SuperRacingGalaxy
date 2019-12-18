@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Shaders.h"
 #include "PhysicsComponent.h"
+#include "DeferredShadingPipeline.h"
 
 namespace Cookie
 {
@@ -67,6 +68,7 @@ namespace Cookie
 		Camera* mainCamera;
 
 		Shaders shaders;
+		DeferredShadingPipeline shading;
 		
 		std::vector<MeshPtr> meshes;
 		std::vector<SceneNode*> nodes;

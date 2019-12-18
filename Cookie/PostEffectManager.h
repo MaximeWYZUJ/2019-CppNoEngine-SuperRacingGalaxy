@@ -24,14 +24,37 @@ namespace Cookie
 		Vector2<> m_coordTex;
 	};
 
-	class PostEffectManager
+	class COOKIE_API PostEffectManager
 	{
 	public:
+		enum class PostEffectType
+		{
+			NUL,
+			RadialBlur
+		};
+		
 		explicit PostEffectManager(DeviceD3D11* device);
 		virtual ~PostEffectManager();
 		virtual void Draw();
 		void BeginPostEffect();
 		void EndPostEffect();
+
+		template<class ... T>
+		void activatePostEffect(T ... postEffectTypes)
+		{
+			activatePostEffect(postEffectTypes...);
+		}
+
+		void activatePostEffect(PostEffectType postEffectType);
+
+		template<class ... T>
+		void deactivatePostEffect(T ... postEffectTypes)
+		{
+			deactivatePostEffect(postEffectTypes...);
+		}
+
+		void deactivatePostEffect(PostEffectType postEffectType);
+		
 		
 	private:
 		void InitPostEffect();
@@ -39,8 +62,8 @@ namespace Cookie
 		ID3D11Buffer* pVertexBuffer;
 		DeviceD3D11* device;
 
-		Shaders shaderNUL;
-		Shaders radialBlur;
+		std::pair<Shaders, bool> shaderNUL;
+		std::pair<Shaders, bool> radialBlur;
 
 		// Texture de rendu pour effets
 		ID3D11Texture2D* pTextureScene;

@@ -174,7 +174,7 @@ void ScenarioLoader::InitPlanetObject(SceneManager* smgr, MaterialManager* mater
 
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -196,7 +196,7 @@ void ScenarioLoader::InitVehicleObject(SceneManager* smgr, MaterialManager* mate
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -220,7 +220,7 @@ void ScenarioLoader::InitSceneryObject(SceneManager* smgr, MaterialManager* mate
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -243,7 +243,7 @@ void ScenarioLoader::InitSkyboxObject(SceneManager* smgr, MaterialManager* mater
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -255,7 +255,7 @@ void ScenarioLoader::InitTeleportObject(SceneManager* smgr, MaterialManager* mat
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
@@ -279,7 +279,7 @@ void ScenarioLoader::InitGoalObject(SceneManager* smgr, MaterialManager* materia
 {
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		obj->texture,
+		{ obj->texture },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });

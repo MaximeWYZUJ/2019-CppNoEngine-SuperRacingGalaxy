@@ -103,7 +103,7 @@ namespace Cookie
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer.p), DXGI_FORMAT_R32_UINT, 0);
 
-		ID3D11ShaderResourceView* texture = material->texture->GetD3DTexture();
+		ID3D11ShaderResourceView* texture = material->textures[0]->GetD3DTexture();
 		UINT size = sizeof(MiniPhongParams);
 		shader.Activate(sp, texture);
 		

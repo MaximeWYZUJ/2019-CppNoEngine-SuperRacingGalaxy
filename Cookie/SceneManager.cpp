@@ -21,7 +21,7 @@ namespace Cookie
 {
 	using namespace std;
 
-	SceneManager::SceneManager(Device* device) : device{ device }, shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }
+	SceneManager::SceneManager(Device* device) : device{ device }, shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }, shading(device, 1024, 768)
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);

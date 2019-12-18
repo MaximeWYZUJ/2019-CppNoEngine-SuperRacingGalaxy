@@ -71,6 +71,11 @@ namespace Cookie
 	{
 		return guiManager.get();
 	}
+
+	PostEffectManager* Engine::GetPostEffectManager() const
+	{
+		return postEffectManager.get();
+	}
 	
 	TextureManager* Engine::GetTextureManager() const noexcept
 	{

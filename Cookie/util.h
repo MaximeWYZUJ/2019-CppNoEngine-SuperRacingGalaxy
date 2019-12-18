@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace Cookie
 {
@@ -72,5 +73,19 @@ namespace Cookie
 	_NODISCARD StackInsertIterator<_Container> StackInserter(_Container& _Cont) noexcept
 	{
 		return StackInsertIterator<_Container>(_Cont);
+	}
+
+	inline std::wstring ToWide(std::string const& s)
+	{
+		return std::wstring(begin(s), end(s));
+	}
+
+
+	inline void ThrowOnError(HRESULT result)
+	{
+		if (FAILED(result))
+		{
+			throw std::exception("Direct3D ThrowOnError");
+		}
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "ExportMacro.h"
 #include "Vector4.h"
+#include <vector>
 
 namespace Cookie
 {
@@ -12,7 +13,7 @@ namespace Cookie
 	class COOKIE_API Material
 	{
 	public:
-		Material(std::string name, Texture const* texture, Vector4<> const& ambient, Vector4<> const& diffuse, Vector4<> const& specular, float power, bool transparent);
+		Material(std::string name, std::vector<Texture const*> textures, Vector4<> const& ambient, Vector4<> const& diffuse, Vector4<> const& specular, float power, bool transparent);
 
 		~Material() = default;
 		
@@ -24,6 +25,6 @@ namespace Cookie
 		const float power;
 		const bool transparent;
 
-		const Texture* texture;
+		std::vector<Texture const*> textures;
 	};
 }

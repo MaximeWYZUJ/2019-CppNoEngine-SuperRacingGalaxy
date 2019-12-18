@@ -226,12 +226,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	}	
 }
 
-HUDType HUDLogic::getActiveHUD() const
-{
-	return actualHUD;
-}
-
-void HUDLogic::Update(Vector3<> velocity)
+void HUDLogic::Update()
 {
 	auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());
 	vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
@@ -243,7 +238,7 @@ void HUDLogic::Update(Vector3<> velocity)
 	{
 		std::wstring fill;
 		std::wstring fill2;
-		speed = round(velocity.Length() * 3.6);
+		speed = round(scenario.vehicle->root->physics->velocity.Length() * 1.5);
 		speed < 100 ? (speed < 10 ? fill = L"00" : fill = L"0") : fill = L"";
 		guiManager->Write(fill + std::to_wstring(speed) + L" km/h", speedCounter);
 
