@@ -195,9 +195,9 @@ namespace Cookie {
 		pImmediateContext->IASetVertexBuffers( 0, 1, &pVertexBuffer, &stride, &offset );
 
 		if(shaderNUL.second)
-			shaderNUL.first.Activate(sp, pResourceView, false);
+			shaderNUL.first.Activate(sp, { pResourceView }, false);
 		if(radialBlur.second)
-			radialBlur.first.Activate(rbp, pResourceView);
+			radialBlur.first.Activate(rbp, { pResourceView });
 		
 		// **** Rendu de l’objet
 		pImmediateContext->Draw( 6, 0 );

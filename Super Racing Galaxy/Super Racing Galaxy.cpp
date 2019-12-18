@@ -14,8 +14,8 @@
 #include "HUDLogic.h"
 #include "VehicleHovering.h"
 #include "Vector3.h"
-#include "Text.h"
 #include "GuiManager.h"
+#include "CompilerFlags.h"
 
 #undef max
 
@@ -27,7 +27,10 @@ float camDistance = 8.0f;
 
 int main(int argc, char* argv[])
 {
-	::ShowWindow(::GetConsoleWindow(), SW_SHOW);
+	if constexpr (!isDebug)
+	{
+		::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+	}
 	
 	try
 	{
@@ -46,6 +49,8 @@ int main(int argc, char* argv[])
 
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
+
+
 
 		HUDLogic hudLogic(guiManager, actionManager, cameraLogic, scenario, engine.get());
 		hudLogic.setActiveHUD(HUDType::MainMenuHUD);

@@ -122,6 +122,13 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 		obj->hitBox = smgr->GetMesh(obj->hitBoxPath_);
 	obj->texture = textureManager->GetNewTexture(obj->texturePath_, device);
 
+	if (obj->type_ == Prefab::Type::PLANET)
+	{
+		Planet* p = static_cast<Planet*>(obj);
+		p->texture2 = textureManager->GetNewTexture(p->texture2Path, device);
+		p->textureAlpha = textureManager->GetNewTexture(p->textureAlphaPath, device);
+	}
+
 	// (Begin Hack) Place scenery object in the scene root but as if they were children of root, work only for 1 depth (planet->scenery)
 	SceneNode* trueRoot = root;
 	Transform<> trueTransform = obj->initialTransform;
@@ -174,7 +181,7 @@ void ScenarioLoader::InitPlanetObject(SceneManager* smgr, MaterialManager* mater
 
 	auto mat = materialManager->GetNewMaterial(
 		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		{ obj->texture },
+		{ obj->texture, obj->texture2, obj->textureAlpha },
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
