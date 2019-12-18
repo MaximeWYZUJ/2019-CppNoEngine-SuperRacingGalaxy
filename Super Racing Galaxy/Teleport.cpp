@@ -20,22 +20,22 @@ Teleport::Teleport(Cookie::Transform<> transform, std::string meshPath, std::wst
 	mesh = nullptr;
 	texture = nullptr;
 
-	controlPoints = { transform };
+	controlPoints = { transform.GetPosition() };
 	linkedTeleport = nullptr;
 }
 
-void Teleport::linkTo(Landing* teleport, vector<Cookie::Transform<>> contP)
+void Teleport::linkTo(Landing* teleport, vector<Cookie::Vector3<>> contP)
 {
 #ifdef _DEBUG
 	assert(teleport);
 #endif // DEBUG
 
 	linkedTeleport = teleport;
-	controlPoints = { initialTransform };
-	for_each(contP.begin(), contP.end(), [&](const Cookie::Transform<>& t) {
+	controlPoints = { initialTransform.GetPosition() };
+	for_each(contP.begin(), contP.end(), [&](const Cookie::Vector3<>& t) {
 		controlPoints.push_back(t);
 	});
-	controlPoints.push_back(teleport->initialTransform);
+	controlPoints.push_back(teleport->initialTransform.GetPosition());
 	//controlPoints = { contP[0], initialTransform, teleport->initialTransform, contP[1] };
 }
 
@@ -86,12 +86,12 @@ Cookie::Transform<> Teleport::animateTeleport(double t)
 	int N = controlPoints.size() - 1; // indice de fin [P0, PN]
 	int index = floor(t / (1.0/N));
 	if (index == N)
-		return controlPoints[N];
+		return objToTeleport->root->localTransform;
 
-	auto P0 = controlPoints[index].GetPosition();
-	auto P1 = controlPoints[index + 1].GetPosition();
-	auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1].GetPosition());
-	auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2].GetPosition() - P0);
+	auto P0 = controlPoints[index];
+	auto P1 = controlPoints[index + 1];
+	auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1]);
+	auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2] - P0);
 
 	auto newPos = hermite(P0, m0, P1, m1, N * t - index);
 

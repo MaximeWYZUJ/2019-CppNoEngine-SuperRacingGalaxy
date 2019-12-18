@@ -218,9 +218,9 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Landing *piste2 = new Landing(Transform<>::BlenderToCookie({ 0.5022356510162354f, 0.06358853727579117f, 0.027239730581641197f }, { 0.09634342044591904f, 0.09634342044591904f, 0.019268682226538658f }, { 0.705961287021637, -0.040233463048934937, 0.7059612274169922, 0.04023345932364464 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete2->addElement(piste2);
 
-	auto T1 = teleporteur3->initialTransform;
-	auto T2 = piste1->initialTransform;
-	teleporteur3->linkTo(piste1, { T1,  });
+	auto T1 = teleporteur3->initialTransform.GetPosition() * planete2->initialTransform.GetScale() * teleporteur3->initialTransform.GetRotation();
+	auto T2 = piste1->initialTransform.GetPosition() * planete1->initialTransform.GetScale() * piste1->initialTransform.GetRotation();
+	teleporteur3->linkTo(piste1, { T1,  T2});
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds"));
