@@ -1,15 +1,15 @@
 #pragma once
-#include "Shader.h"
 #include <d3d11.h>
 
 namespace Cookie
 {
-	class D3D11VertexShader : public Shader
+	struct D3D11VPShader
 	{
-	public:
-		D3D11VertexShader();
-		virtual ~D3D11VertexShader();
-	private:
 		ID3D11VertexShader* vertexShader;
+		ID3D11InputLayout* inputLayout;
+		ID3D11Buffer* constantBuffer;
+
+		ID3D11PixelShader* pixelShader;
+		ID3D11SamplerState* sampler;
 	};
 }
