@@ -138,22 +138,33 @@ int main(int argc, char* argv[])
 
 	catch (const std::exception & E)
 	{
+		auto f = ofstream("error.txt");
+		f << "error!";
+		f.close();
 		const int BufferSize = 128;
 		wchar_t message[BufferSize];
 
 		size_t numCharacterConverted;
 		mbstowcs_s(&numCharacterConverted, message, E.what(), BufferSize - 1);
-		::MessageBox(nullptr, message, L"Erreur", MB_ICONWARNING);
+		auto a = string(E.what());
+		wstring msg(begin(a), end(a));
+		::MessageBox(nullptr, msg.c_str(), L"Erreur", MB_ICONWARNING);
 
 		return (int)99;
 	}
 
 	catch (int codeErreur)
 	{
+		auto f = ofstream("error.txt");
+		f << "error code!" << codeErreur;
+		f.close();
+		
 		wchar_t szErrMsg[MAX_LOADSTRING];
 
 		//::LoadString(hInstance, codeErreur, szErrMsg, MAX_LOADSTRING);
-		::MessageBox(nullptr, szErrMsg, L"Erreur", MB_ICONWARNING);
+		auto a = to_string(codeErreur);
+		wstring msg(begin(a), end(a));
+		::MessageBox(nullptr, msg.c_str(), L"Erreur", MB_ICONWARNING);
 
 		return (int)99; // POURQUOI 99???
 	}

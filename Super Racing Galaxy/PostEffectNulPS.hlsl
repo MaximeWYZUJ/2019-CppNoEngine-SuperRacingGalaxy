@@ -7,7 +7,7 @@ struct VS_Sortie
 Texture2D textureEntree; // la texture 
 SamplerState SampleState; // l’état de sampling 
 
-float4 PostEffectPS(VS_Sortie vs) : SV_Target
+float4 PostEffectNulPS(VS_Sortie vs) : SV_Target
 { 
 	float4 couleur;
 	couleur = textureEntree.Sample(SampleState, vs.CoordTex);

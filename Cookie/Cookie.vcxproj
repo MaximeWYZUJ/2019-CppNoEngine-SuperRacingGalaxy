@@ -170,15 +170,15 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>./include_PhysX;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>dxguid.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;dinput8.lib;$(SolutionDir)Cookie\lib_DirectX\Effects11d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glut32.lib;LowLevel_static_64.lib;LowLevelAABB_static_64.lib;LowLevelDynamics_static_64.lib;PhysX_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_64.lib;PhysXPvdSDK_static_64.lib;PhysXTask_static_64.lib;PhysXVehicle_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxguid.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;dinput8.lib;$(SolutionDir)Cookie\lib_DirectX\Effects11d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glut32.lib;$(SolutionDir)Cookie\lib_PhysX\Release\LowLevel_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\LowLevelAABB_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\LowLevelDynamics_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysX_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXCharacterKinematic_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXCommon_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXCooking_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXExtensions_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXFoundation_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXPvdSDK_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXTask_static_64.lib;$(SolutionDir)Cookie\lib_PhysX\Release\PhysXVehicle_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>./lib_PhysX;./lib_DirectX</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -200,8 +200,8 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CompilerFlags.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="D3D11PixelShader.h" />
-    <ClInclude Include="D3D11VertexShader.h" />
+    <ClInclude Include="DeferredLightingShader.h" />
+    <ClInclude Include="DeferredShader.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DeferredShadingPipeline.h" />
     <ClInclude Include="Device.h" />
@@ -251,7 +251,6 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="ShaderParams.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Singleton.h" />
@@ -280,8 +279,8 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CookieMath.cpp" />
-    <ClCompile Include="D3D11PixelShader.cpp" />
-    <ClCompile Include="D3D11VertexShader.cpp" />
+    <ClCompile Include="DeferredLightingShader.cpp" />
+    <ClCompile Include="DeferredShader.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="DeferredShadingPipeline.cpp" />
     <ClCompile Include="Device.cpp" />
@@ -326,7 +325,6 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="Test_API_PhysX.cpp" />

@@ -252,19 +252,16 @@
     <ClInclude Include="DeferredShadingPipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11VertexShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11PixelShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PostEffectPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredLightingShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -437,19 +434,16 @@
     <ClCompile Include="DeferredShadingPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11VertexShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PostEffectPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11PixelShader.cpp">
+    <ClCompile Include="DeferredShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredLightingShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
