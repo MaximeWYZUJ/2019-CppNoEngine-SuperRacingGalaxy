@@ -226,6 +226,11 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	}	
 }
 
+HUDType HUDLogic::getActiveHUD() const
+{
+	return actualHUD;
+}
+
 void HUDLogic::Update(Vector3<> velocity)
 {
 	auto rot = Matrix4x4<>::FromRotation(scenario.vehicle->root->localTransform.GetRotation());

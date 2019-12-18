@@ -219,7 +219,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Landing *piste2 = new Landing(Transform<>::BlenderToCookie({ 0.5022356510162354f, 0.06358853727579117f, 0.027239730581641197f }, { 0.09634342044591904f, 0.09634342044591904f, 0.019268682226538658f }, { 0.705961287021637, -0.040233463048934937, 0.7059612274169922, 0.04023345932364464 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete2->addElement(piste2);
 
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-34.9f, 15.0f, 64.9f)}, {false, Cookie::Vector3<>{}} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-55.0f, 13.86f, 113.21f)}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/});
 
 	//auto T1 = teleporteur3->initialTransform.GetPosition() * planete2->initialTransform.GetScale() * teleporteur3->initialTransform.GetRotation();
 	//auto T2 = piste1->initialTransform.GetPosition() * planete1->initialTransform.GetScale() * piste1->initialTransform.GetRotation();

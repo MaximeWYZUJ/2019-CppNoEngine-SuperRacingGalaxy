@@ -79,6 +79,9 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 
 	// Linkage des teleporteurs avec leur piste d'atterissage, et définition des points de contrôle
 	for_each(scenario.tpLinks.begin(), scenario.tpLinks.end(), [](TeleportLinksParams params) {
+		vector<Cookie::Vector3<>> controlPoints;
+
+		// Premier point de contrôle
 		Cookie::Vector3<> pc1;
 		if (params.firstDefinedControlPoint.first) {
 			pc1 = params.firstDefinedControlPoint.second;
@@ -86,18 +89,27 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 		else {
 			auto direction1 = params.teleport->root->localTransform.GetPosition() - params.teleportPlanet->root->localTransform.GetPosition();
 			direction1.Normalize();
-			pc1 = params.teleport->root->localTransform.GetPosition() + direction1 * params.teleportPlanet->root->localTransform.GetScale().x;
+			pc1 = params.teleport->root->localTransform.GetPosition() + direction1 * 50;
 		}
+		controlPoints.push_back(pc1);
 
+		// Points de contrôle intermédiaires
+		for_each(params.otherControlPoints.begin(), params.otherControlPoints.end(), [&controlPoints](Cookie::Vector3<> p) {
+			controlPoints.push_back(p);
+		});
+
+		// Dernier point de contrôle
 		Cookie::Vector3<> pc2;
 		if (params.lastDefinedControlPoint.first) {
 			pc2 = params.lastDefinedControlPoint.second;
 		} else {
 			auto direction2 = params.landing->root->localTransform.GetPosition() - params.landingPlanet->root->localTransform.GetPosition();
 			direction2.Normalize();
-			pc2 = params.landing->root->localTransform.GetPosition() + direction2 * params.landingPlanet->root->localTransform.GetScale().x;
+			pc2 = params.landing->root->localTransform.GetPosition() + direction2 * 50;
 		}
-		params.teleport->linkTo(params.landing, { pc1, pc2 });
+		controlPoints.push_back(pc2);
+
+		params.teleport->linkTo(params.landing, controlPoints);
 	});
 }
 

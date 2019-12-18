@@ -20,6 +20,7 @@ struct TeleportLinksParams {
 	Planet* landingPlanet;
 	std::pair<bool, Cookie::Vector3<>> firstDefinedControlPoint;
 	std::pair<bool, Cookie::Vector3<>> lastDefinedControlPoint;
+	std::vector<Cookie::Vector3<>> otherControlPoints;
 };
 
 class Scenario
