@@ -5,6 +5,9 @@
 
 namespace Cookie
 {
+	template<class T>
+	class Matrix4x4;
+	
 	template<class T = float>
 	class Quaternion : public Vector4<T>
 	{
@@ -13,6 +16,7 @@ namespace Cookie
 		static Quaternion<T> FromDirection(T radAngle, Vector3<T> unitDir);
 		static Quaternion<T> FromVectorToVector(Vector3<T> const& unitV1, Vector3<T> const& unitV2);
 		static Quaternion<T> FromYawPitchRoll(T yaw, T pitch, T roll);
+		static Quaternion<T> FromRotationMatrix(Matrix4x4<T> const& m);
 		static Quaternion<T> Slerp(Quaternion<T> const& lhs, Quaternion<T> const& rhs, float t);
 		static T DotProduct(Quaternion<T> const& lhs, Quaternion<T> const& rhs);
 
@@ -94,6 +98,66 @@ namespace Cookie
 		q.z = sy * cp * cr - cy * sp * sr;
 
 		return q;
+	}
+
+	template<class T>
+	Quaternion<T> Quaternion<T>::FromRotationMatrix(Matrix4x4<T> const& m)
+	{
+		// quaternion = [w, x, y, z]'
+		float q0 = (m._11 + m._22 + m._33 + 1.0f) / 4.0f;
+		float q1 = (m._11 - m._22 - m._33 + 1.0f) / 4.0f;
+		float q2 = (-m._11 + m._22 - m._33 + 1.0f) / 4.0f;
+		float q3 = (-m._11 - m._22 + m._33 + 1.0f) / 4.0f;
+		if (q0 < 0.0f) {
+			q0 = 0.0f;
+		}
+		if (q1 < 0.0f) {
+			q1 = 0.0f;
+		}
+		if (q2 < 0.0f) {
+			q2 = 0.0f;
+		}
+		if (q3 < 0.0f) {
+			q3 = 0.0f;
+		}
+		q0 = sqrt(q0);
+		q1 = sqrt(q1);
+		q2 = sqrt(q2);
+		q3 = sqrt(q3);
+		if (q0 >= q1 && q0 >= q2 && q0 >= q3) {
+			q0 *= +1.0f;
+			q1 *= Math::Sign(m._32 - m._23);
+			q2 *= Math::Sign(m._13 - m._31);
+			q3 *= Math::Sign(m._21 - m._12);
+		}
+		else if (q1 >= q0 && q1 >= q2 && q1 >= q3) {
+			q0 *= Math::Sign(m._32 - m._23);
+			q1 *= +1.0f;
+			q2 *= Math::Sign(m._21 + m._12);
+			q3 *= Math::Sign(m._13 + m._31);
+		}
+		else if (q2 >= q0 && q2 >= q1 && q2 >= q3) {
+			q0 *= Math::Sign(m._13 - m._31);
+			q1 *= Math::Sign(m._21 + m._12);
+			q2 *= +1.0f;
+			q3 *= Math::Sign(m._32 + m._23);
+		}
+		else if (q3 >= q0 && q3 >= q1 && q3 >= q2) {
+			q0 *= Math::Sign(m._21 - m._12);
+			q1 *= Math::Sign(m._31 + m._13);
+			q2 *= Math::Sign(m._32 + m._23);
+			q3 *= +1.0f;
+		}
+		else {
+			std::exception("coding error.");
+		}
+		float r = Vector4<T>(q0, q1, q2, q3).Length();
+		q0 /= r;
+		q1 /= r;
+		q2 /= r;
+		q3 /= r;
+
+		return Quaternion<T>(q1, q2, q3, q0);
 	}
 
 	template<class T>

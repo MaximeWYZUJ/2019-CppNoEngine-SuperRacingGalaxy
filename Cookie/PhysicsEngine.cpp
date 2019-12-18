@@ -264,6 +264,12 @@ namespace Cookie
 			break;
 		}
 		*/
+		std::for_each(modifs->addedForces.begin(), modifs->addedForces.end(), [&actor](Vector3 < PhysicsComponent::PhysicsComponent_t> force)
+			{
+				actor->is<physx::PxRigidDynamic>()->addForce(physx::PxVec3(force.x, force.y, force.z));
+			});
+		modifs->addedForces.clear();
+		actor->is<physx::PxRigidDynamic>()->setAngularVelocity(physx::PxVec3(modifs->velocityAngular.x, modifs->velocityAngular.y, modifs->velocityAngular.z));
 
 		Vector3<PhysicsComponent::PhysicsComponent_t> modP = modifs->transform.GetPosition();
 		Quaternion<PhysicsComponent::PhysicsComponent_t> modR = modifs->transform.GetRotation();
@@ -369,6 +375,9 @@ namespace Cookie
 		if (toBeModified->type == PhysicsComponent::DYNAMIC) {
 			PxVec3 velo = static_cast<PxRigidDynamic*>(actor)->getLinearVelocity();
 			toBeModified->velocity = Vector3<PhysicsComponent::PhysicsComponent_t>(velo.x, velo.y, velo.z);
+
+			PxVec3 angVelo = static_cast<PxRigidDynamic*>(actor)->getAngularVelocity();
+			toBeModified->velocityAngular = Vector3<PhysicsComponent::PhysicsComponent_t>(angVelo.x, angVelo.y, angVelo.z);
 
 			toBeModified->mass = static_cast<PxRigidDynamic*>(actor)->getMass();
 			PxVec3 cmass = static_cast<PxRigidDynamic*>(actor)->getCMassLocalPose().p;

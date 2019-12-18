@@ -128,6 +128,11 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		scenario.vehicle->root->physics->isDirty = true;
 		scenario.vehicle->root->physics->resetAcceleration = true;
 		actionManager->SetState(menuState);
+		speedCounter = nullptr;
+		timeCounter = nullptr;
+		timer = 0;
+		seconds = 0;
+		minutes = 0;
 		float widthButton = 500 * guiManager->ScreenWidth / 1920;
 		float heightButton = 300 * guiManager->ScreenHeight / 1080;
 		float angleRotBouton = 10.0f * Math::Pi / 180.0f;
@@ -237,8 +242,11 @@ void HUDLogic::Update(Vector3<> velocity)
 		speed < 100 ? (speed < 10 ? fill = L"00" : fill = L"0") : fill = L"";
 		guiManager->Write(fill + std::to_wstring(speed) + L" km/h", speedCounter);
 
-		if (timer % 60 == 0)
+		if (timer == 60)
+		{
 			++seconds;
+			timer = 0;
+		}	
 		if (seconds == 60)
 		{
 			++minutes;

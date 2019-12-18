@@ -28,6 +28,7 @@ namespace Cookie
 
 		Transform<PhysicsComponent_t> transform;
 		Vector3<PhysicsComponent_t> velocity;
+		Vector3<PhysicsComponent_t> velocityAngular;
 		Vector3<PhysicsComponent_t> massCenter{};
 		PhysicsComponent_t mass = 1;
 		BodyType type;
@@ -48,10 +49,8 @@ namespace Cookie
 
 		void* userData = nullptr; // meh... (pointeur sur le prefab en pratique)
 
-	protected:
 		std::vector<Vector3<PhysicsComponent_t>> addedForces;
-
-	public:
+		
 		virtual ShapeType getShapeType() = 0;
 
 		void addFilterGroup(FilterGroup f);

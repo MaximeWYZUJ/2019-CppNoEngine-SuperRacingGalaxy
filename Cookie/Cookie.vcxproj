@@ -200,7 +200,9 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CompilerFlags.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="D3D11VertexShader.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="DeferredShadingPipeline.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="DeviceD3D11.h" />
     <ClInclude Include="DeviceEvents.h" />
@@ -246,6 +248,8 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneNode.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="ShaderParams.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Singleton.h" />
@@ -274,7 +278,9 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CookieMath.cpp" />
+    <ClCompile Include="D3D11VertexShader.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="DeferredShadingPipeline.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="DeviceD3D11.cpp" />
     <ClCompile Include="DeviceInfo.cpp" />
@@ -315,6 +321,8 @@
     <ClCompile Include="RaycastCallback.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneNode.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
     <ClCompile Include="Test_API_PhysX.cpp" />

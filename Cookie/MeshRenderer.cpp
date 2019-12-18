@@ -101,7 +101,7 @@ namespace Cookie
 		constexpr UINT stride = sizeof(VertexData);
 		constexpr UINT offset = 0;
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
-		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer), DXGI_FORMAT_R32_UINT, 0);
+		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer.p), DXGI_FORMAT_R32_UINT, 0);
 
 		ID3D11ShaderResourceView* texture = material->texture->GetD3DTexture();
 		UINT size = sizeof(MiniPhongParams);

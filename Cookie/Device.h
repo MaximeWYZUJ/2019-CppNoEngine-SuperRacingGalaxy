@@ -45,7 +45,10 @@ namespace Cookie
 	class Device
 	{
 	public:
-		using BufferPointer = intptr_t;
+		struct BufferPointer { intptr_t p; };
+		struct Texture2D { intptr_t p; };
+		struct RenderTarget { intptr_t p; };
+		struct ShaderResource { intptr_t p; };
 		
 		virtual ~Device() = default;
 
@@ -64,9 +67,18 @@ namespace Cookie
 
 		// Wrappers
 		virtual BufferPointer CreateBuffer(BufferDescription const& bufferDescription, void const* data) = 0;
+		virtual Texture2D CreateTexture2D(Vector2<> size) = 0;
+		virtual RenderTarget CreateRenderTarget(Texture2D texture) = 0;
+		virtual ShaderResource CreateShaderResource(Texture2D texture) = 0;
 		virtual void SetTopology() = 0;
 		virtual void SetVertexBuffer(BufferPointer ) = 0;
 		virtual void SetIndexBuffer() = 0;
+		virtual void SetRenderTargets(std::vector<RenderTarget> renderTargets) = 0;
+		virtual void ClearRenderTargets(std::vector<RenderTarget> renderTargets, Color clearColor) = 0;
+
+		virtual void Release(Texture2D texture) = 0;
+		virtual void Release(RenderTarget texture) = 0;
+		virtual void Release(ShaderResource texture) = 0;
 
 		virtual void Draw(int32_t nbIndices) = 0;
 		virtual void Clear(Color const& clearColor) = 0;
