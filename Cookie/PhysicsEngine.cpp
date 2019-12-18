@@ -264,11 +264,7 @@ namespace Cookie
 			break;
 		}
 		*/
-		std::for_each(modifs->addedForces.begin(), modifs->addedForces.end(), [&actor](Vector3 < PhysicsComponent::PhysicsComponent_t> force)
-			{
-				actor->is<physx::PxRigidDynamic>()->addForce(physx::PxVec3(force.x, force.y, force.z));
-			});
-		modifs->addedForces.clear();
+
 		actor->is<physx::PxRigidDynamic>()->setAngularVelocity(physx::PxVec3(modifs->velocityAngular.x, modifs->velocityAngular.y, modifs->velocityAngular.z));
 
 		Vector3<PhysicsComponent::PhysicsComponent_t> modP = modifs->transform.GetPosition();
@@ -288,6 +284,17 @@ namespace Cookie
 				modifs->resetAcceleration = false;
 			}
 		}
+
+		std::for_each(modifs->addedForces.begin(), modifs->addedForces.end(), [&actor](Vector3<PhysicsComponent::PhysicsComponent_t> force)
+		{
+			actor->is<physx::PxRigidDynamic>()->addForce(physx::PxVec3(force.x, force.y, force.z));
+		});
+		modifs->addedForces.clear();
+
+		std::for_each(modifs->addedImpulses.begin(), modifs->addedImpulses.end(), [&actor](Vector3<PhysicsComponent::PhysicsComponent_t> impulse) {
+			actor->is<physx::PxRigidDynamic>()->addForce(physx::PxVec3(impulse.x, impulse.y, impulse.z), physx::PxForceMode::eIMPULSE);
+		});
+		modifs->addedImpulses.clear();
 
 		// On calcule les nouveaux word0 et word1
 		/*PxFilterData filter{};

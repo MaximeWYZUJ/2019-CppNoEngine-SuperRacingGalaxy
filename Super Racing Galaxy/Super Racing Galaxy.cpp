@@ -27,7 +27,7 @@ float camDistance = 8.0f;
 
 int main(int argc, char* argv[])
 {
-	::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+	::ShowWindow(::GetConsoleWindow(), SW_SHOW);
 	
 	try
 	{

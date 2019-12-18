@@ -55,7 +55,7 @@ void Teleport::run()
 		if (abs(realTimeTravel - timeTravel) < 1.0 / 60.0) {
 			// Stop animation
 			isActive = false;
-			root->physics->resetAcceleration = true;
+			objToTeleport->root->physics->resetAcceleration = true;
 			objToTeleport = nullptr;
 			realTimeTravel = 0.0;
 		}

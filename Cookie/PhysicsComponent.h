@@ -50,6 +50,7 @@ namespace Cookie
 		void* userData = nullptr; // meh... (pointeur sur le prefab en pratique)
 
 		std::vector<Vector3<PhysicsComponent_t>> addedForces;
+		std::vector<Vector3<PhysicsComponent_t>> addedImpulses;
 		
 		virtual ShapeType getShapeType() = 0;
 
@@ -58,6 +59,7 @@ namespace Cookie
 		void addFilterMask(FilterGroup f);
 		void removeFilterMask(FilterGroup f);
 		void addForce(Vector3<PhysicsComponent_t> force);
+		void addImpulse(Vector3<PhysicsComponent_t> impulse);
 		void SetAngularVelocity(Vector3<PhysicsComponent_t> velocity);
 
 		template <class T>
