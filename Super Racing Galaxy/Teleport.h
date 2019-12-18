@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <chrono>
+#include <ostream>
 #include "Prefab.h"
 
 class Landing;
@@ -13,10 +14,9 @@ class Teleport : public Prefab
 	double timeTravel;
 	double realTimeTravel = 0.0;
 
-	Cookie::Transform<> animateTeleport(double t);
+	Cookie::Vector3<> animateTeleport(double t);
 
 public:
-	Landing* linkedTeleport;
 	bool isActive = false;
 	Prefab* objToTeleport = nullptr;
 
@@ -25,4 +25,6 @@ public:
 	void resetCooldown();
 	bool mayUse() const;
 	void run();
+
+	void printControlPoints(std::ostream& out);
 };

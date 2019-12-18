@@ -41,7 +41,7 @@ float4 MiniPhongPS(VS_Sortie vs) : SV_Target0
 	couleur = textureColor * vAEcl.rgb * vAMat.rgb +
 		textureColor * vDEcl.rgb * vDMat.rgb * diff;
 
-	couleur += S;
+	//couleur += S;
 
 	return float4(couleur, 1.0f);
 }
