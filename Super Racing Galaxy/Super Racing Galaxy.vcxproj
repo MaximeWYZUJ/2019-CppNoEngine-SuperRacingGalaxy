@@ -249,6 +249,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</EntryPointName>
     </FxCompile>
     <FxCompile Include="RadialBlurVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -256,6 +257,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</EntryPointName>
     </FxCompile>
     <FxCompile Include="SpritePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -291,17 +293,47 @@
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="VehicleHovering.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
-  <ItemGroup>
-    <DllToDeploy Include="$(SolutionDir)Cookie\lib_PhysX\*.dll">
-    </DllToDeploy>
-  </ItemGroup>
   <ItemGroup>
     <None Include="Deferred.hlsli" />
   </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DllToDeploy Include="$(SolutionDir)Cookie\lib_PhysX*.dll">
+    </DllToDeploy>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DllToDeploy Include="$(SolutionDir)Cookie\lib_PhysX\Release\*.dll">
+    </DllToDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <ShaderToDeploy Include="$(SolutionDir)Super Racing Galaxy\*.hlsl">
+    </ShaderToDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <ShaderToDeploy2 Include="$(SolutionDir)Super Racing Galaxy\*.hlsli">
+    </ShaderToDeploy2>
+  </ItemGroup>
+  <ItemGroup>
+    <GraphicsToDeploy1 Include="$(SolutionDir)Super Racing Galaxy\graphics\meshs\*.obj" />
+    <GraphicsToDeploy2 Include="$(SolutionDir)Super Racing Galaxy\graphics\meshs\hitBox\*.obj" />
+    <GraphicsToDeploy3 Include="$(SolutionDir)Super Racing Galaxy\graphics\skybox\*.*" />
+    <GraphicsToDeploy4 Include="$(SolutionDir)Super Racing Galaxy\graphics\sprite\dds\*.dds" />
+    <GraphicsToDeploy5 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\*.dds" />
+    <GraphicsToDeploy6 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete1\*.dds" />
+    <GraphicsToDeploy7 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete2\*.dds" />
+  </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(DllToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+    <Copy SourceFiles="@(ShaderToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+    <Copy SourceFiles="@(ShaderToDeploy2)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy1)" DestinationFolder="$(OutputPath)graphics\meshs" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy2)" DestinationFolder="$(OutputPath)graphics\meshs\hitBox" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy3)" DestinationFolder="$(OutputPath)graphics\skybox" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy4)" DestinationFolder="$(OutputPath)graphics\sprite\dds" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy5)" DestinationFolder="$(OutputPath)graphics\textureDDS" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy6)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete1" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy7)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete2" ContinueOnError="true" />
   </Target>
 </Project>
