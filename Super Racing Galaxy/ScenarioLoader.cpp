@@ -9,6 +9,7 @@
 #include "Skybox.h"
 #include "Landing.h"
 #include "Goal.h"
+#include "Cargo.h"
 #include "PostEffectManager.h"
 
 using namespace std;
@@ -66,13 +67,15 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 		}
 
 		if (elem->goal)
-			CreateObject(smgr, materialManager, textureManager, device, elem->root, elem->goal);
+			CreateObject(smgr, materialManager, textureManager, device, elem->root, scenario.goal);
 	}
 
 	for (auto& elem : scenario.sceneries)
 	{
 		CreateObject(smgr, materialManager, textureManager, device, root, elem);
 	}
+
+	CreateObject(smgr, materialManager, textureManager, device, root, scenario.cargo);
 
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.vehicle);
 
@@ -170,6 +173,10 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 
 	case Prefab::Type::GOAL:
 		InitGoalObject(smgr, materialManager, static_cast<Goal*>(obj));
+		break;
+
+	case Prefab::Type::CARGO:
+		InitCargoObject(smgr, materialManager, static_cast<Cargo *>(obj));
 		break;
 
 	case Prefab::Type::NOTHING:
@@ -322,4 +329,30 @@ void ScenarioLoader::InitGoalObject(SceneManager* smgr, MaterialManager* materia
 	obj->root->physics->addFilterMask(FilterGroup::VEHICULE);
 
 	obj->root->physics->changeTriggerCallback<TriggerGoal>();
+}
+
+void ScenarioLoader::InitCargoObject(SceneManager *smgr, MaterialManager *materialManager, Cargo *obj)
+{
+	/*random_device dev;
+	mt19937 rng(dev());
+	uniform_real_distribution<float> dist(0.5f, 1.0f);*/
+
+	auto mat = materialManager->GetNewMaterial(
+		"basic " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
+		{ obj->texture},
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 0.8f, 0.8f, 0.8f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f });
+
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
+
+	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
+	obj->root->physics->userData = obj;
+
+	// Filter group
+	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+	obj->root->physics->addFilterGroup(FilterGroup::PLANET);
+
+	// Mask
+	//obj->root->physics->addFilterMask(FilterGroup::DEFAULT);
 }
