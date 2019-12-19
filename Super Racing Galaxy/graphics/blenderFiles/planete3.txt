@@ -20,7 +20,7 @@ Planet *planete3 = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f,
 	Landing* piste2 = new Landing(Transform<>::BlenderToCookie({-0.23662912845611572f, 0.42091068625450134f, -0.2262771725654602f }, { 0.14733728766441345f, 0.14733728766441345f, 0.029467454180121422f }, { 0.2029838263988495, 0.03433453291654587, -0.8655346035957336, -0.45658355951309204 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete3->addElement(piste2);
 
-	Goal *goal = new Goal(Transform<>({ -0.5121502876281738f, 0.0770370364189148f, -0.03948397934436798f }, { 0.021663449704647064f, 0.03533276915550232f, 0.03069201111793518f }, { 0.5073574185371399, 0.49264204502105713, -0.49941858649253845, 0.500473141670227 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
+	Goal *goal = new Goal(Transform<>({ -0.5106359124183655f, 0.1878826767206192f, -0.12487165629863739f }, { 0.021663449704647064f, 0.03533276915550232f, 0.03069201111793518f }, { 0.5073574185371399, 0.49264204502105713, -0.49941858649253845, 0.500473141670227 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
 	planete3->addGoal(goal);
 	scenario.goal = goal;
 }
