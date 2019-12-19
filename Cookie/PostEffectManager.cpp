@@ -186,17 +186,17 @@ namespace Cookie {
 		if (time == 6)
 			time = 0;
 		
-		ShadersParams* sp = new ShadersParams;
-		RadialBlurParams* rbp = new RadialBlurParams;
-		rbp->distance = 0.03f;
-		rbp->remplissage1 = 0;
-		rbp->remplissage2 = 0;
-		rbp->remplissage3 = 0;
-		ShakingParams* shp = new ShakingParams;
-		shp->temps = time;
-		shp->remplissage1 = 0;
-		shp->remplissage2 = 0;
-		shp->remplissage3 = 0;
+		ShadersParams sp;
+		RadialBlurParams rbp;
+		rbp.distance = 0.03f;
+		rbp.remplissage1 = 0;
+		rbp.remplissage2 = 0;
+		rbp.remplissage3 = 0;
+		ShakingParams shp;
+		shp.temps = time;
+		shp.remplissage1 = 0;
+		shp.remplissage2 = 0;
+		shp.remplissage3 = 0;
 		
 		// Obtenir le contexte
 		ID3D11DeviceContext* pImmediateContext;
@@ -211,11 +211,11 @@ namespace Cookie {
 		pImmediateContext->IASetVertexBuffers( 0, 1, &pVertexBuffer, &stride, &offset );
 
 		if(shaderNUL.second)
-			shaderNUL.first.Activate(sp, { pResourceView }, false);
+			shaderNUL.first.Activate(&sp, { pResourceView }, false);
 		if (shaking.second)
-			shaking.first.Activate(shp, { pResourceView });
+			shaking.first.Activate(&shp, { pResourceView });
 		if (radialBlur.second)
-			radialBlur.first.Activate(rbp, { pResourceView });
+			radialBlur.first.Activate(&rbp, { pResourceView });
 		
 		// **** Rendu de l’objet
 		pImmediateContext->Draw( 6, 0 );

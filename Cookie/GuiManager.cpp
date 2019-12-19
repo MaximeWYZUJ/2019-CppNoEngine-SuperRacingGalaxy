@@ -451,10 +451,10 @@ namespace Cookie
 			const UINT offset = 0;
 			pImmediateContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
 
-			SpriteParams* sp = new SpriteParams;
-			sp->matWVP = sprite->matPosDim;
+			SpriteParams sp;
+			sp.matWVP = sprite->matPosDim;
 			
-			shader.Activate(sp, { sprite->pTextureD3D });
+			shader.Activate(&sp, { sprite->pTextureD3D });
 
 			// **** Rendu de l’objet
 			device->EnableAlphaBlend();
