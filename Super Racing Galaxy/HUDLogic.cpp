@@ -30,6 +30,7 @@ HUDLogic::HUDLogic(GuiManager* guiManager, ActionManager* actionManager, CameraL
 	mainMenuButton{ nullptr },
 	scenario{ scenario }
 {
+	createFont();
 	actionManager->CreateContext("MenuContext", {});
 	createInGameContext();
 	actionManager->EnableContext("InGameContext");
@@ -126,9 +127,37 @@ void HUDLogic::createInGameContext()
 		});
 }
 
+void HUDLogic::createFont()
+{
+	int count = 0;
+	int found = 0;
+	// Add two font files to the private collection.
+	privateFontCollection.AddFontFile(L"graphics/fonts/Ash.ttf");
+	privateFontCollection.AddFontFile(L"graphics/fonts/digital-7.ttf");
+
+	// How many font families are in the private collection?
+	count = privateFontCollection.GetFamilyCount();
+
+	// Allocate a buffer to hold the array of FontFamily objects returned by GetFamilies.
+	pFontFamily = new Gdiplus::FontFamily[count];
+
+	// Get the array of FontFamily objects.
+	privateFontCollection.GetFamilies(count, pFontFamily, &found);
+
+	for (int j = 0; j < count; ++j)
+	{
+		// Get the font family name.
+		pFontFamily[j].GetFamilyName(familyName);
+	}
+}
+
+
 void HUDLogic::setActiveHUD(HUDType hudType)
 {
-	Gdiplus::Font* font = new Gdiplus::Font(new Gdiplus::FontFamily(L"Comic Sans MS", nullptr), 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel);
+	pFontFamily[0].GetFamilyName(familyName);
+	Gdiplus::Font* font = new Gdiplus::Font(familyName, 12.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel, &privateFontCollection);
+	pFontFamily[1].GetFamilyName(familyName);
+	Gdiplus::Font* font2 = new Gdiplus::Font(familyName, 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel, &privateFontCollection);
 
 	switch (hudType)
 	{
@@ -169,21 +198,51 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 				guiManager->deleteGuiElement(effetVitesse);
 				cameraLogic.SetActiveCamera(CameraType::ThirdPerson);
 				setActiveHUD(HUDType::InGameHUD);
-			}, 0, 0, -angleRotBouton, Vector3{0.0f, 0.0f, 1.0f}, false, angleRotBouton);
+			}, Gdiplus::Color(255, 255 ,255, 255), 0, 0,-angleRotBouton, Vector3{0.0f, 0.0f, 1.0f}, false, angleRotBouton);
 		
 		actualHUD = HUDType::MainMenuHUD;
 		break;
 	}
 		
 	case HUDType::InGameHUD :
+	{
 		engine->pauseGameSwitch();
 		actionManager->SetState(oldState);
-		if(speedCounter == nullptr)
-			speedCounter = guiManager->newText(200, 50, font, L" 000 km/h", 0, 0);
-		if(timeCounter == nullptr)
-			timeCounter = guiManager->newText(200, 50, font, L" 00 : 00", (guiManager->ScreenWidth - 200) / 2, 0);
+		int widthVitessometre = 300;
+		int heightVitessometre = 300;
+		if(fondVitessometre == nullptr)
+			fondVitessometre = guiManager->newSprite("graphics/sprite/dds/fondVitessometre.dds", 50, 50, 1, 1, widthVitessometre, heightVitessometre);
+		if (aiguilleVitessometre == nullptr)
+			aiguilleVitessometre = guiManager->newSprite("graphics/sprite/dds/aiguilleVitessometre.dds", 50, 50, 1, 1, widthVitessometre, heightVitessometre, Math::Pi/6, Vector3<>{0.0f, 0.0f, 1.0f}, true);
+		if (avantVitessometre == nullptr)
+		{
+			avantVitessometre = guiManager->newSprite("graphics/sprite/dds/avantVitessometre.dds", 50, 50, 1, 1, widthVitessometre, heightVitessometre);
+			guiManager->addSwapTextureSprite("graphics/sprite/dds/avantBleuVitessometre.dds", avantVitessometre, true, [this]()
+				{
+				
+					float vehicleSpeed = scenario.vehicle->root->physics->velocity.Length();
+					if(vehicleSpeed * 180 / 142 > 99 && !ultraSpeed)
+					{
+						ultraSpeed = true;
+						return true;
+					} if(vehicleSpeed * 180 / 142 < 99 && ultraSpeed)
+					{
+						ultraSpeed = false;
+						return true;
+					}
+					return false;
+					
+				});
+		}
+			
+		
+		if (speedCounter == nullptr)
+			speedCounter = guiManager->newText(60, 50, font, L" 000 %", 50 + widthVitessometre / 2 - 60 / 2, 50 + widthVitessometre * 3 / 5);
+		if (timeCounter == nullptr)
+			timeCounter = guiManager->newText(120, 50, font2, L" 00 : 00", (guiManager->ScreenWidth - 120) / 2, 0, Gdiplus::Color(255, 0, 255, 0));
 		actualHUD = HUDType::InGameHUD;
 		break;
+	}
 		
 	case HUDType::PauseMenuHUD :
 	{
@@ -210,6 +269,9 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 				guiManager->deleteGuiElement(mainMenuButton);
 				guiManager->deleteGuiElement(speedCounter);
 				guiManager->deleteGuiElement(timeCounter);
+				guiManager->deleteGuiElement(avantVitessometre);
+				guiManager->deleteGuiElement(aiguilleVitessometre);
+				guiManager->deleteGuiElement(fondVitessometre);
 				setActiveHUD(HUDType::MainMenuHUD);
 			});
 		actualHUD = HUDType::PauseMenuHUD;
@@ -234,6 +296,9 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 				guiManager->deleteGuiElement(mainMenuButton);
 				guiManager->deleteGuiElement(speedCounter);
 				guiManager->deleteGuiElement(timeCounter);
+				guiManager->deleteGuiElement(avantVitessometre);
+				guiManager->deleteGuiElement(aiguilleVitessometre);
+				guiManager->deleteGuiElement(fondVitessometre);
 				setActiveHUD(HUDType::MainMenuHUD);
 			});
 		actualHUD = HUDType::EndMenuHUD;
@@ -253,15 +318,18 @@ void HUDLogic::Update()
 	vehicleRight = rot * Vector3<>{ 1.0f, 0.0f, 0.0f };
 	vehicleUp = Vector4<>::CrossProduct(vehicleForward, vehicleRight);
 	vehicleUp.Normalize();
+	float vehicleSpeed = scenario.vehicle->root->physics->velocity.Length();
+	if(aiguilleVitessometre != nullptr && vehicleSpeed * 180 / 14162 < 1)
+		aiguilleVitessometre->rotAngleMin = Math::Pi / 6 - 5 * Math::Pi / 6 * vehicleSpeed * 180 / 14162;
 	
 	if(actualHUD == HUDType::InGameHUD)
 	{
 		std::wstring fill;
 		std::wstring fill2;
-		speed = round(scenario.vehicle->root->physics->velocity.Length() * 1.5);
-		speed < 100 ? (speed < 10 ? fill = L"00" : fill = L"0") : fill = L"";
-		guiManager->Write(fill + std::to_wstring(speed) + L" km/h", speedCounter);
 
+		if (vehicleSpeed * 180 / 142 <= 100.4f)
+			guiManager->Write(fill + std::to_wstring(static_cast<int>(round(vehicleSpeed * 180 / 142))) + L" %", speedCounter);
+		
 		if (timer == 60)
 		{
 			++seconds;

@@ -99,23 +99,30 @@ namespace Cookie
 		
 		
 		// Dimensions en facteur
-		float facteurX = dimX * 2.0f / device->GetWidth() * static_cast<float>(scaleX);
-		float facteurY = dimY * 2.0f / device->GetHeight() * static_cast<float>(scaleY);
+		float facteurX = dimX * static_cast<float>(scaleX);
+		float facteurY = dimY * static_cast<float>(scaleY);
 
+		// Scale screen
+		float ratioX = 2.0f / device->GetWidth();
+		float ratioY = 2.0f / device->GetHeight();
+		
 		// Positions en coordonnées logiques
 		// 0,0 pixel = -1,1 (haut a gauche ecran)
-		float posX = (static_cast<float>(x_) + dimX/2)* 2.0f / device->GetWidth() -1.0f;
-		float posY = 1.0f - (static_cast<float>(y_) + dimY/2) * 2.0f / device->GetHeight();
+		float posX = (static_cast<float>(x_) + dimX/2) - device->GetWidth() / 2;
+		float posY =(static_cast<float>(-y_) - dimY/2) + device->GetHeight() / 2;
 
 		sprite->Translation = Matrix4x4<>::FromTranslation(Vector3{ posX, posY, 0.0f });
 		sprite->Scale = Matrix4x4<>::FromScaling(Vector3{ facteurX, facteurY, 1.0f });
+		sprite->ScaleScreen = Matrix4x4<>::FromScaling(Vector3{ ratioX, ratioY, 1.0f });
 		
-		sprite->matPosDim =  sprite->Translation * rotMat * sprite->Scale;
+		sprite->matPosDim = sprite->ScaleScreen * sprite->Translation * rotMat * sprite->Scale;
 	}
 
 	void GuiManager::ActualizeRot(Sprite* sprite)
 	{
-		sprite->matPosDim = sprite->Translation * Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(sprite->actualRot, sprite->axe)) * sprite->Scale;
+		Vector3<> test = { 0.0f, 1.0f, 0.0f };
+		sprite->matPosDim = sprite->ScaleScreen * sprite->Translation * Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(sprite->actualRot, sprite->axe)) * sprite->Scale;
+		auto test2 = sprite->matPosDim* test;
 	}
 
 
@@ -147,20 +154,18 @@ namespace Cookie
 				SetPosDim(sprite, xPos, yPos, xScale, yScale, xDimPix, yDimPix, Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(angleRotMax, axeRot)));
 				sprite->rotationType = Sprite::RotType::randomRot;
 				sprite->rotAngleMax = angleRotMax;
-				sprite->rotAngleMin = angleRotMin;
-				sprite->actualRot = angleRotMax;
-				sprite->axe = axeRot;
 			} else if (!rotStatic)
 			{
 				SetPosDim(sprite, xPos, yPos, xScale, yScale, xDimPix, yDimPix, Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(angleRotMin, axeRot)));
 				sprite->rotationType = Sprite::RotType::continuousRot;
-				sprite->rotAngleMin = angleRotMin;
-				sprite->actualRot = angleRotMin;
-				sprite->axe = axeRot;
 			} else
 			{
 				SetPosDim(sprite, xPos, yPos, xScale, yScale, xDimPix, yDimPix, Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(angleRotMin, axeRot)));
 			}
+
+			sprite->rotAngleMin = angleRotMin;
+			sprite->actualRot = angleRotMin;
+			sprite->axe = axeRot;
 		
 			sprites.push_back(sprite);
 
@@ -168,7 +173,7 @@ namespace Cookie
 		}
 	}
 
-	Text* GuiManager::newText(int width, int height, Gdiplus::Font* font, const std::wstring& text_, int xPos, int yPos, float angleRotMin, Vector3<> axeRot, bool rotStatic, float angleRotMax)
+	Text* GuiManager::newText(int width, int height, Gdiplus::Font* font, const std::wstring& text_, int xPos, int yPos, Gdiplus::Color color, float angleRotMin, Vector3<> axeRot, bool rotStatic, float angleRotMax)
 	{
 		Text* text = new Text();
 		text->TextWidth = width;
@@ -189,9 +194,7 @@ namespace Cookie
 		text->pCharGraphics->SetTextRenderingHint(hint);
 
 		// Un brosse noire pour le remplissage
-		// Notez que la brosse aurait pu être passée
-		// en paramètre pour plus de flexibilité
-		text->pBrush = new Gdiplus::SolidBrush(Gdiplus ::Color(255, 255, 255, 255));
+		text->pBrush = new Gdiplus::SolidBrush(color);
 
 		// On efface le bitmap (notez le NOIR TRANSPARENT...)
 		text->pCharGraphics->Clear(Gdiplus ::Color(0, 0, 0, 0));
@@ -245,29 +248,27 @@ namespace Cookie
 			SetPosDim(text, xPos, yPos, 1, 1, 0, 0, Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(angleRotMax, axeRot)));
 			text->rotationType = Sprite::RotType::randomRot;
 			text->rotAngleMax = angleRotMax;
-			text->rotAngleMin = angleRotMin;
-			text->actualRot = angleRotMax;
-			text->axe = axeRot;
 		}
 		else if (!rotStatic)
 		{
 			SetPosDim(text, xPos, yPos, 1, 1, 0, 0, Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(angleRotMin, axeRot)));
 			text->rotationType = Sprite::RotType::continuousRot;
-			text->rotAngleMin = angleRotMin;
-			text->actualRot = angleRotMin;
-			text->axe = axeRot;
 		}
 		else
 		{
 			SetPosDim(text, xPos, yPos, 1, 1, 0, 0, Matrix4x4<>::FromRotation(Quaternion<>::FromDirection(angleRotMin, axeRot)));
 		}
-
+		
+		text->rotAngleMin = angleRotMin;
+		text->actualRot = angleRotMax;
+		text->axe = axeRot;
+		
 		sprites.push_back(text);
 
 		return text;
 	}
 
-	Button* GuiManager::newButton(const std::string& textureBackgroung, const std::string& textureOver, int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, std::function<void()> action, int offsetTextBoutonX, int offsetTextBoutonY, float angleRotMin, Vector3<> axeRot, bool rotStatic, float angleRotMax)
+	Button* GuiManager::newButton(const std::string& textureBackgroung, const std::string& textureOver, int width, int height, Gdiplus::Font* pFont, const std::wstring& text_, int xPos, int yPos, std::function<void()> action, Gdiplus::Color color, int offsetTextBoutonX, int offsetTextBoutonY, float angleRotMin, Vector3<> axeRot, bool rotStatic, float angleRotMax)
 	{
 		if (textureBackgroung != "" && textureOver != "")
 		{
@@ -280,7 +281,7 @@ namespace Cookie
 			button->xMax = xPos + width;
 			button->yMin = yPos;
 			button->yMax = yPos + height;
-			button->text = newText(width, height, pFont, text_, xPos + offsetTextBoutonX, yPos + offsetTextBoutonY, angleRotMin, axeRot, rotStatic, angleRotMax);
+			button->text = newText(width, height, pFont, text_, xPos + offsetTextBoutonX, yPos + offsetTextBoutonY, color, angleRotMin, axeRot, rotStatic, angleRotMax);
 			button->OnClick(action);
 			
 			buttons.push_back(button);
@@ -308,13 +309,15 @@ namespace Cookie
 		}
 	}
 
-	void GuiManager::addSwapTextureSprite(const std::string& textureName, Sprite* sprite) const
+	void GuiManager::addSwapTextureSprite(const std::string& textureName, Sprite* sprite, bool specialPredicate,std::function<bool()> predicate) const
 	{
 		if (textureName != "")
 		{
 			std::wstring ws(textureName.begin(), textureName.end());
 
 			sprite->pTextureSwap = textureManager->GetNewTexture(ws, device)->GetD3DTexture();
+			sprite->specialPredicate = specialPredicate;
+			sprite->predicate = predicate;
 		}
 	}
 	
@@ -394,8 +397,10 @@ namespace Cookie
 			switch (sprite->rotationType)
 			{
 			case Sprite::RotType::staticRot:
+				sprite->actualRot = sprite->rotAngleMin;
+				ActualizeRot(sprite);
 				break;
-
+				
 			case Sprite::RotType::randomRot:
 			{
 				if (frameNumber == 10)
@@ -414,8 +419,15 @@ namespace Cookie
 			if(frameNumber == 10 && sprite == sprites.back())
 				frameNumber = 0;
 
-			if(frameNumber % 2 == 0)
-				sprite->Swap();
+			if(sprite->specialPredicate)
+			{
+				if (sprite->predicate())
+					sprite->Swap();
+			} else
+			{
+				if(frameNumber % 2 == 0)
+					sprite->Swap();
+			}
 		}
 
 		

@@ -1,12 +1,11 @@
 #pragma once
 #include "Matrix4x4.h"
+#include <functional>
 
 namespace Cookie
 {
 	struct COOKIE_API Sprite
 	{
-		ID3D11ShaderResourceView* pTextureD3D;
-		ID3D11ShaderResourceView* pTextureSwap;
 		
 		enum class RotType
 		{
@@ -15,6 +14,12 @@ namespace Cookie
 			continuousRot
 		};
 
+		ID3D11ShaderResourceView* pTextureD3D;
+		ID3D11ShaderResourceView* pTextureSwap;
+
+		std::function<bool()> predicate;
+		bool specialPredicate = false;
+		
 		RotType rotationType;
 
 		Vector3<> axe;
@@ -25,6 +30,7 @@ namespace Cookie
 
 		Matrix4x4<> Translation;
 		Matrix4x4<> Scale;
+		Matrix4x4<> ScaleScreen;
 		
 		Matrix4x4<> matPosDim;
 		Sprite() : pTextureD3D{ nullptr }, pTextureSwap{ nullptr }, rotationType{ RotType::staticRot } {}
