@@ -17,6 +17,7 @@ class Teleport;
 class Goal;
 class Prefab;
 class Skybox;
+class Cargo;
 
 class ScenarioLoader
 {
@@ -31,4 +32,5 @@ private:
 	static void InitSkyboxObject(Cookie::SceneManager* smgr, Cookie::MaterialManager *materialManager, Skybox* obj);
 	static void InitTeleportObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Teleport* obj);
 	static void InitGoalObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Goal* obj);
+	static void InitCargoObject(Cookie::SceneManager* smgr, Cookie::MaterialManager* materialManager, Cargo* obj);
 };

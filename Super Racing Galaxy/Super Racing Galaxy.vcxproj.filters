@@ -60,7 +60,10 @@
     <ClCompile Include="Landing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Billboard.cpp">
+    <ClCompile Include="BillboardToggler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cargo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -160,7 +163,10 @@
     <ClInclude Include="Landing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Billboard.h">
+    <ClInclude Include="BillboardToggler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cargo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

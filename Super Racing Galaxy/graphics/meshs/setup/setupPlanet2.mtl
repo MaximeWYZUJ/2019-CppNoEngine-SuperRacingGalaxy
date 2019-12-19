@@ -1,0 +1,78 @@
+# Blender MTL File: 'setupPlanet2.blend'
+# Material Count: 7
+
+newmtl Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.800000 0.000251
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\pisteAtterrissageTexture.png
+
+newmtl Material.017
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.001677 0.800000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\bonhommeNeigeTexture.png
+
+newmtl Material.019
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.800000 0.004108
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\iglooTexture.png
+
+newmtl Material.021
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.800000 0.003899
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\panneauTexture.png
+
+newmtl Material.022
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000409 0.800000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\stalagmiteTexture.png
+
+newmtl Material.023
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.800000 0.000443
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\teleporteurTexture.png
+
+newmtl Material.025
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.000000
+d 1.000000
+illum 2

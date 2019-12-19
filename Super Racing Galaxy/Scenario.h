@@ -12,6 +12,7 @@ class Skybox;
 class Teleport;
 class Landing;
 class Goal;
+class Cargo;
 
 struct TeleportLinksParams {
 	Teleport* teleport;
@@ -32,4 +33,5 @@ public:
 	Vehicle* vehicle;
 	Goal* goal;
 	Skybox *skybox;
+	Cargo *cargo;
 };

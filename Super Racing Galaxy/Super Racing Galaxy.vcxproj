@@ -162,8 +162,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Billboard.cpp" />
+    <ClCompile Include="BillboardToggler.cpp" />
     <ClCompile Include="CameraLogic.cpp" />
+    <ClCompile Include="Cargo.cpp" />
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="HUDLogic.cpp" />
@@ -308,10 +309,11 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BillboardToggler.h" />
     <ClInclude Include="CameraLogic.h" />
+    <ClInclude Include="Cargo.h" />
     <ClInclude Include="DemoScenario.h" />
     <ClInclude Include="Goal.h" />
-    <ClInclude Include="Billboard.h" />
     <ClInclude Include="HUDLogic.h" />
     <ClInclude Include="Landing.h" />
     <ClInclude Include="pch.h" />
