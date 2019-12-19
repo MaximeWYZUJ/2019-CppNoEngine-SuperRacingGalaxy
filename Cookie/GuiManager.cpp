@@ -335,7 +335,17 @@ namespace Cookie
 	{
 		changeSpriteTexture(textureName, button->background);
 	}
-	
+
+	void GuiManager::changeTextColor(Text* text, const Gdiplus::Color color)
+	{
+		text->pBrush->SetColor(color);
+	}
+
+	void GuiManager::changeTextFont(Text* text, Gdiplus::Font* font)
+	{
+		text->pFont = font;
+	}
+
 	void GuiManager::Write(const std::wstring& s, Text* text) const
 	{
 		if(text != nullptr)

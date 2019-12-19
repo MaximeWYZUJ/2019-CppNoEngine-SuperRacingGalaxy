@@ -30,6 +30,10 @@ class HUDLogic
 	CameraLogic& cameraLogic;
 	Cookie::Engine* engine;
 
+	Gdiplus::Font* font;
+	Gdiplus::Font* font2;
+	Gdiplus::Font* font3;
+	
 	Cookie::Vector3<> vehicleForward;
 	Cookie::Vector3<> vehicleRight;
 	Cookie::Vector4<> vehicleUp;
@@ -41,6 +45,7 @@ class HUDLogic
 	Cookie::Sprite* fondVitessometre;
 	Cookie::Sprite* aiguilleVitessometre;
 	Cookie::Text* speedCounter;
+	Cookie::Sprite* timeBackground;
 	Cookie::Text* timeCounter;
 	bool ultraSpeed = false;
 	

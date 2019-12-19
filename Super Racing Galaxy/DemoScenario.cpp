@@ -138,10 +138,6 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.5457000136375427f, 0.25434109568595886f, -0.12620043754577637f }, { 0.26839596033096313f, 0.11257746070623398f, 0.2626619338989258f }, { 0.5896610021591187, -0.2812567949295044, -0.7547404766082764, 0.059677038341760635 }), "graphics/meshs/plante1.obj", L"graphics/textureDDS/plante1Texture.dds", "graphics/meshs/hitBox/hitBoxplante1.obj"));
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.46322014927864075f, 0.007641967386007309f, -0.33108294010162354f }, { 0.1864050030708313f, 0.09016617387533188f, 0.18643617630004883f }, { 0.18618708848953247, 0.663882315158844, -0.608388364315033, -0.3930117189884186 }), "graphics/meshs/plante1.obj", L"graphics/textureDDS/plante1Texture.dds", "graphics/meshs/hitBox/hitBoxplante1.obj"));
 		planete1->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.16769395768642426f, 0.23193588852882385f, 0.4705516993999481f }, { 0.13207483291625977f, 0.06702768802642822f, 0.13505035638809204f }, { 0.3580869436264038, -0.2976779043674469, -0.19337821006774902, -0.8635777235031128 }), "graphics/meshs/plante1.obj", L"graphics/textureDDS/plante1Texture.dds", "graphics/meshs/hitBox/hitBoxplante1.obj"));
-
-		Goal *goal = new Goal(Transform<>({ -0.21949639916419983f, -0.3839835822582245f, -0.16273409128189087f }, { 0.04449579119682312f, 0.07121192663908005f, 0.08899158239364624f }, { 0.6414487957954407, 0.7015249133110046, -0.2820320725440979, -0.1298622190952301 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
-		planete1->addGoal(goal);
-		scenario.goal = goal;
 	}
 
 	
@@ -189,7 +185,10 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.3440187871456146f, 0.17229580879211426f, 0.32038068771362305f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.333414226770401, 0.28278207778930664, 0.31636613607406616, 0.8418917655944824 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.29444950819015503f, -0.3542361855506897f, -0.2263995110988617f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.41182371973991394, 0.8487450480461121, 0.013431957922875881, 0.3314402997493744 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.1568656712770462f, 0.1912076324224472f, 0.45743024349212646f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.777387797832489, -0.05911627411842346, -0.23806792497634888, -0.5792211890220642 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
-		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.507727324962616f, 0.09038947522640228f, -0.10643826425075531f }, { 0.1184428334236145f, 0.1184428334236145f, 0.04737712815403938f }, { 0.6566708087921143, -0.0, -0.7541773319244385, -0.0 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/teleporteur.obj"));
+
+		Goal *goal = new Goal(Transform<>({ -0.5107772350311279f, 0.0743277445435524f, -0.0541926845908165f }, { 0.020039429888129234f, 0.029156958684325218f, 0.03356218710541725f }, { 0.7071068286895752, 0.0, -0.7071067690849304, 0.0 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
+		planete3->addGoal(goal);
+		scenario.goal = goal;
 	}
 
 	Planet *planete4 = new Planet(Transform<>({ 500.0f, -500.0f, -500.0f }, { 300.0f, 300.0f, 300.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, "graphics/meshs/planete4.obj", L"graphics/textureDDS/planete4/planete4Texture1.dds", L"graphics/textureDDS/planete4/planete4Texture2.dds", L"graphics/textureDDS/planete4/planete4Alpha.dds", L"graphics/textureDDS/planete4/billboard.dds");
@@ -235,10 +234,6 @@ Scenario ScenarioCreator::CreateDemoScenario()
 
 	Teleport *teleporteur3 = new Teleport(Transform<>::BlenderToCookie({ 0.08071883022785187f, 0.0829712525010109f, 0.07322761416435242f }, { 0.2999899983406067f, 0.2999902367591858f, 0.11999598145484924f }, { 0.8121207356452942, -0.5750795602798462, -0.04842349886894226, -0.08601487427949905 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
 	planete2->addTeleport(teleporteur3);
-
-	
-	Teleport *teleporteur4 = new Teleport(Transform<>::BlenderToCookie({ -0.507727324962616f, 0.09038947522640228f, -0.10643826425075531f }, { 0.1184428334236145f, 0.1184428334236145f, 0.04737712815403938f }, { 0.6566708087921143, -0.0, -0.7541773319244385, -0.0 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
-	planete3->addTeleport(teleporteur4);
 	
 	Teleport *teleporteur5 = new Teleport(Transform<>::BlenderToCookie({ 1.1001501083374023f, 0.0f, 0.10701321810483932f }, { 0.35151922702789307f, 0.35151922702789307f, 0.14060766994953156f }, { 0.6464798450469971, 0.3285306692123413, 0.5789640545845032, 0.3727358877658844 }), "graphics/meshs/teleporteur.obj", L"graphics/textureDDS/teleporteurTexture.dds", "graphics/meshs/hitBox/hitBoxTriggerTeleporteur.obj");
 	planete4->addTeleport(teleporteur5);
@@ -246,10 +241,6 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	Landing *piste1 = new Landing(Transform<>::BlenderToCookie({ -0.04780895262956619f, 0.19801679253578186f, 0.4536110758781433f }, { 0.14850157499313354f, 0.14850157499313354f, 0.02970030903816223f }, { 0.9790792465209961, -0.20340189337730408, 0.0053962902165949345, 0.0015553263947367668 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete1->addElement(piste1);
 
-	Landing *piste2 = new Landing(Transform<>::BlenderToCookie({ 0.5022356510162354f, 0.06358853727579117f, 0.027239730581641197f }, { 0.09634342044591904f, 0.09634342044591904f, 0.019268682226538658f }, { 0.705961287021637, -0.040233463048934937, 0.7059612274169922, 0.04023345932364464 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
-	planete2->addElement(piste2);
-
-	
 	Landing *piste3 = new Landing(Transform<>::BlenderToCookie({ 0.042957089841365814f, -0.4742722511291504f, 0.093037910759449f }, { 0.14733728766441345f, 0.14733728766441345f, 0.029467454180121422f }, { 0.8070926666259766, 0.5891563296318054, 0.031198911368846893, 0.022866763174533844 }), "graphics/meshs/pisteAtterrissage.obj", L"graphics/textureDDS/pisteAtterrissageTexture.dds");
 	planete3->addElement(piste3);
 
@@ -260,7 +251,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	planete4->addElement(piste5);
 	
 
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-55.0f, 13.86f, 113.21f)}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/});
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur1, planete1, piste3, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur2, planete1, piste5, planete4, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur5, planete4, piste4, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
