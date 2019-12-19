@@ -259,7 +259,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 
 	scenario.cargo = new Cargo(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds");
 
-	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 117.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
+	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 118.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 
 	return scenario;
 }

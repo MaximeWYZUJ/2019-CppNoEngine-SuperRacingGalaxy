@@ -17,13 +17,13 @@ namespace Srg
 		Vector3<> force = Vector3<>::Normalize(-raycast);
 		float heightInv = 1.0f - hitDistance / maxHitDistance;
 		float forceFactor = heightInv * heightInv * heightInv * heightInv * heightInv; // x^5
-		float maxPulsion = planetGravity * -1.0f; // 1 times the gravity
+		float maxPulsion = planetGravity * -1.4f; // 1 times the gravity
 		Vector3<> repulsion = force * forceFactor * maxPulsion;
 		auto projection = Vector3<>::Projection(curVelocity, repulsion);
 
 		if (projection.first > 0.0f)
 		{
-			repulsion *= 0.5f;
+			repulsion *= 0.7f;
 		}
 
 		return repulsion;
@@ -34,10 +34,11 @@ namespace Srg
 	{
 	}
 
-	void VehicleHovering::Update(Vehicle* vehicle, float gravityValue, Vector3<> planetUp)
+	void VehicleHovering::Update(Vehicle* vehicle, float gravityValue, Vector3<> planetUp, bool isPlayerMoving)
 	{
 		static float rayDistance = 10.0f;
 		static float expectedHeight = 2.0f;
+		static float cut = 5.0f;
 		
 		Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
 		Vector3<> vehicleScale = vehicle->root->localTransform.GetScale();
@@ -53,20 +54,22 @@ namespace Srg
 		Vector3<> frRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
 		Vector3<> blRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
 		Vector3<> brRay = vehicleRot * Vector3<>(0.0f, -1.0f, 0.0f);
+		
+		Vector3<> curVelocity = vehicle->root->physics->velocity;
 
 		auto a = physics->PlanetRaycast(flPoint, flRay, rayDistance);
 		auto b = physics->PlanetRaycast(frPoint, frRay, rayDistance);
 		auto c = physics->PlanetRaycast(blPoint, blRay, rayDistance);
 		auto d = physics->PlanetRaycast(brPoint, brRay, rayDistance);
-
-		Vector3<> curVelocity = vehicle->root->physics->velocity;
 		
+		float maxHitDistance = max(max(max(a.second, b.second), c.second), d.second);
+
 		if (a.first && b.first && c.first && d.first)
 		{
-			vehicle->root->physics->addForce(ComputeRepulsion(flRay, a.second, rayDistance, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(frRay, b.second, rayDistance, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(blRay, c.second, rayDistance, gravityValue, curVelocity));
-			vehicle->root->physics->addForce(ComputeRepulsion(brRay, d.second, rayDistance, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(flRay, clamp(a.second, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(frRay, clamp(b.second, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(blRay, clamp(c.second, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(brRay, clamp(d.second, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
 
 			float avgDistance = (a.second + b.second + c.second + d.second) / 4.0f;
 			float slerpTime = 1.0f;
@@ -75,10 +78,10 @@ namespace Srg
 			{
 				slerpTime = 1.0f - (avgDistance - expectedHeight) / (rayDistance - expectedHeight);
 			}
-			
+
 			Vector3<> forward = vehicleRot * Vector3<>::Forward();
 			Vector3<> right = vehicleRot * Vector3<>::Right();
-			
+
 			// X+ angle correction
 			float leftDiff = a.second - c.second;
 			float rightDiff = b.second - d.second;
@@ -87,7 +90,7 @@ namespace Srg
 			Quaternion<> addRot = Quaternion<>::FromDirection(radAngle, right);
 			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, addRot * vehicleRot, slerpTime));
 			vehicleRot = vehicle->root->localTransform.GetRotation();
-			
+
 			// Z+ angle change
 			float frontDiff = a.second - b.second;
 			float backDiff = c.second - d.second;
@@ -96,6 +99,13 @@ namespace Srg
 			addRot = Quaternion<>::FromDirection(radAngle, forward);
 			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, addRot * vehicleRot, slerpTime));
 		}
+		else if (a.first || b.first || c.first || d.first)
+		{
+			vehicle->root->physics->addForce(ComputeRepulsion(flRay, clamp(maxHitDistance, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(frRay, clamp(maxHitDistance, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(blRay, clamp(maxHitDistance, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+			vehicle->root->physics->addForce(ComputeRepulsion(brRay, clamp(maxHitDistance, 0.0f, cut), rayDistance - cut, gravityValue, curVelocity));
+		}
 		else
 		{
 			// Align ship with planet up axis
@@ -103,6 +113,12 @@ namespace Srg
 			Vector3<> up = vehicleRot * Vector3<>::Up();
 			Quaternion<> rot = Quaternion<>::FromVectorToVector(up, planetUp);
 			vehicle->root->localTransform.SetRotation(Quaternion<>::Slerp(vehicleRot, rot * vehicleRot, slerpTime));
+		}
+		
+		if (!isPlayerMoving && maxHitDistance > 0.0f && maxHitDistance < 4.0f)
+		{
+			// Dampening
+			vehicle->root->physics->addForce(curVelocity * gravityValue * 0.01f);
 		}
 
 		vehicle->root->physics->SetAngularVelocity(Vector3<>::Zero());
