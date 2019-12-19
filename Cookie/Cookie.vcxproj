@@ -254,6 +254,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderParams.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="ShakingParams.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Sprite.h" />

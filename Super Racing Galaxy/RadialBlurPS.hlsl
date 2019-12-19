@@ -40,7 +40,7 @@ float4 RadialBlurPS(VS_Sortie vs) : SV_Target
 	{
 		ct = textureEntree.Sample(SampleState, tc);
 		couleur = couleur * 0.6 + ct * 0.4; // Vous pouvez « jouer » avec les % 
-	
+		
 		x = x + dx;
 		y = y + dy;
 	

@@ -98,6 +98,12 @@
     <FxCompile Include="RadialBlurVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="ShakingPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ShakingVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="MiniPhongAlphaBlendingPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>

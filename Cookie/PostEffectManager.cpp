@@ -5,6 +5,7 @@
 #include "DeviceD3D11.h"
 #include "ShaderParams.h"
 #include "RadialBlurParams.h"
+#include "ShakingParams.h"
 
 namespace Cookie {
 	// Definir l’organisation de notre sommet
@@ -36,7 +37,8 @@ namespace Cookie {
 		device(device),
 		pVertexBuffer(nullptr),
 		shaderNUL{ {device, L"PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements), false}, true },
-		radialBlur{ {device, L"RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, true }
+		radialBlur{ {device, L"RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, false },
+		shaking{ {device, L"Shaking", sizeof ShakingParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, false }
 	{
 		ID3D11Device* d3dDevice = device->GetD3DDevice();
 		
@@ -154,8 +156,11 @@ namespace Cookie {
 		case PostEffectType::NUL :
 			shaderNUL.second = true;
 			break;
-		case PostEffectType::RadialBlur:
+		case PostEffectType::RadialBlur :
 			radialBlur.second = true;
+			break;
+		case PostEffectType::Shaking :
+			shaking.second = true;
 			break;
 		}
 	}
@@ -170,17 +175,28 @@ namespace Cookie {
 		case PostEffectType::RadialBlur:
 			radialBlur.second = false;
 			break;
+		case PostEffectType::Shaking:
+			shaking.second = false;
+			break;
 		}
 	}
 	
 	void PostEffectManager::Draw()
 	{
+		if (time == 6)
+			time = 0;
+		
 		ShadersParams* sp = new ShadersParams;
 		RadialBlurParams* rbp = new RadialBlurParams;
 		rbp->distance = 0.03f;
 		rbp->remplissage1 = 0;
 		rbp->remplissage2 = 0;
 		rbp->remplissage3 = 0;
+		ShakingParams* shp = new ShakingParams;
+		shp->temps = time;
+		shp->remplissage1 = 0;
+		shp->remplissage2 = 0;
+		shp->remplissage3 = 0;
 		
 		// Obtenir le contexte
 		ID3D11DeviceContext* pImmediateContext;
@@ -195,12 +211,16 @@ namespace Cookie {
 		pImmediateContext->IASetVertexBuffers( 0, 1, &pVertexBuffer, &stride, &offset );
 
 		if(shaderNUL.second)
-			shaderNUL.first.Activate(sp, { pResourceView }, false);
-		if(radialBlur.second)
-			radialBlur.first.Activate(rbp, { pResourceView });
+			shaderNUL.first.Activate(sp, pResourceView, false);
+		if (shaking.second)
+			shaking.first.Activate(shp, pResourceView);
+		if (radialBlur.second)
+			radialBlur.first.Activate(rbp, pResourceView);
 		
 		// **** Rendu de l’objet
 		pImmediateContext->Draw( 6, 0 );
+
+		time++;
 	}
 
 }
