@@ -7,8 +7,8 @@ using namespace std;
 using namespace Cookie;
 
 Planet::Planet(Transform<> transform, float gravityValue, bool isUpVectorDynamic,
-	           string meshPath, std::wstring texture1Path, std::wstring texture2Path, std::wstring textureAlphaPath, wstring billboardTexturePath)
-	  : gravityCenter(transform.GetPosition()), gravityValue(gravityValue), isUpVectorDynamic(isUpVectorDynamic), billboard(nullptr), billboardTexturePath(billboardTexturePath)
+	           string meshPath, std::wstring texture1Path, std::wstring texture2Path, std::wstring textureAlphaPath)
+	  : gravityCenter(transform.GetPosition()), gravityValue(gravityValue), isUpVectorDynamic(isUpVectorDynamic)
 {
 	initialTransform = transform;
 	type_ = Type::PLANET;

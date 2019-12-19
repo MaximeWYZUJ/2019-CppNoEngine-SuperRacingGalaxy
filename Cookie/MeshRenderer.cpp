@@ -13,8 +13,8 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	MeshRenderer::MeshRenderer(Mesh* mesh, Material* material, Device* device, int priority)
-		: mesh{ mesh }, material{ material }, device{ device }, isEnabled(true), priority(priority)
+	MeshRenderer::MeshRenderer(Mesh* mesh, Material* material, Device* device)
+		: mesh{ mesh }, material{ material }, device{ device }
 	{
 		BufferDescription desc;
 		
@@ -119,20 +119,5 @@ namespace Cookie
 	Material* MeshRenderer::GetMaterial() const noexcept
 	{
 		return material;
-	}
-	
-	void MeshRenderer::Disable() noexcept
-	{
-		isEnabled = false;
-	}
-	
-	void MeshRenderer::Enable() noexcept
-	{
-		isEnabled = true;
-	}
-	
-	bool MeshRenderer::IsEnabled() const noexcept
-	{
-		return isEnabled;
 	}
 }

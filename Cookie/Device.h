@@ -84,12 +84,6 @@ namespace Cookie
 		virtual void Clear(Color const& clearColor) = 0;
 		virtual void Present() = 0;
 
-		virtual void EnableAlphaBlend() = 0;
-		virtual void DisableAlphaBlend() = 0;
-
-		virtual void enableZBuffer() = 0;
-		virtual void disableZBuffer() = 0;
-		
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 	protected:

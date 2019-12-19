@@ -41,14 +41,14 @@ namespace Cookie
 		ID3D11Device* GetD3DDevice() const;
 		IDXGISwapChain* GetSwapChain() const;
 
-		void EnableAlphaBlend() override;
-		void DisableAlphaBlend() override;
+		void EnableAlphaBlend();
+		void DisableAlphaBlend();
 		
 		HMODULE GetModule() const;
 		HWND GetWindow() const;
 
-		void enableZBuffer() override;
-		void disableZBuffer() override;
+		void enableZBuffer();
+		void disableZBuffer();
 
 		ID3D11RenderTargetView* GetRenderTargetView();
 		ID3D11DepthStencilView* GetDepthStencilView();

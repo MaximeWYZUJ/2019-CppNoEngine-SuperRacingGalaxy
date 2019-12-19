@@ -36,13 +36,12 @@ float4 MiniPhongPS(VS_Sortie vs) : SV_Target0
 	// Puissance de 4 - pour l’exemple
 	float S = pow(saturate(dot(R, V)), 256);
 
-	float4 textureFullColor = textureInput.Sample(samplerState, vs.texCoord).rgba;
-	float3 textureColor = float3(textureFullColor.rgb);
+	float3 textureColor = textureInput.Sample(samplerState, vs.texCoord).rgb;
 	// I = A + D * N.L + (R.V)n
 	couleur = textureColor * vAEcl.rgb * vAMat.rgb +
 		textureColor * vDEcl.rgb * vDMat.rgb * diff;
 
 	//couleur += S;
 
-	return float4(couleur, textureFullColor.a);
+	return float4(couleur, 1.0f);
 }

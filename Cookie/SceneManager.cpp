@@ -13,7 +13,6 @@
 #include "MiniPhongParams.h"
 #include "Layout.h"
 #include "Material.h"
-#include "Billboard.h"
 
 #undef max
 
@@ -51,30 +50,11 @@ namespace Cookie
 
 	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent)
 	{
-		return AddMeshRenderer(mesh, mat, parent, 1);
-	}
-
-	MeshRenderer* SceneManager::AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent, int priority)
-	{
-		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device, priority));
+		MeshRenderer* renderer = meshRenderers.emplace_back(new MeshRenderer(mesh, mat, device));
 
 		parent->components.push_back(renderer);
-		parent->meshRenderer = renderer;
 		renderer->sceneNode = parent;
 		renderer->matrix = &parent->matrix;
-
-		if (priority < 0)
-		{
-			firstPassMeshRenderers.push_back(renderer);
-		}
-		else if (priority == 0)
-		{
-			billboardPassMeshRenderers.push_back(renderer);
-		}
-		else if (priority > 0)
-		{
-			finalPassMeshRenderers.push_back(renderer);
-		}
 
 		return renderer;
 	}
@@ -143,16 +123,6 @@ namespace Cookie
 		cam->sceneNode = parent;
 		cam->matrix = &parent->matrix;
 		return cam;
-	}
-
-	Billboard* SceneManager::AddBillboard(SceneNode* parent)
-	{
-		Billboard* billboard = billboards.emplace_back(new Billboard());
-		parent->components.push_back(billboard);
-		parent->billboard = billboard;
-		billboard->sceneNode = parent;
-		billboard->matrix = &parent->matrix;
-		return billboard;
 	}
 
 	auto SceneManager::GetRoot() -> SceneNodePtr
@@ -229,16 +199,6 @@ namespace Cookie
 		// Update main camera
 		if (mainCamera)
 		{
-			// Todo: billboard cannot be nested (can only be on scene root)
-			for (auto& billboard : billboards)
-			{
-				// Manually update billboard matrix
-				billboard->Update(mainCamera->sceneNode->localTransform.GetRotation());
-				billboard->sceneNode->localMatrix = Matrix4x4<>::FromTransform(billboard->sceneNode->localTransform);
-				billboard->sceneNode->matrix = billboard->sceneNode->localMatrix;
-				billboard->sceneNode->localTransform.ResetDirty();
-			}
-			
 			mainCamera->UpdateMatrices();
 		}
 	}
@@ -250,40 +210,7 @@ namespace Cookie
 			// Todo: should have access to globalTransform here (there is only localTransform)
 			Vector3<> camPos = Vector3<>(mainCamera->sceneNode->matrix._14, mainCamera->sceneNode->matrix._24, mainCamera->sceneNode->matrix._34);
 
-			sort(begin(billboardPassMeshRenderers), end(billboardPassMeshRenderers), [&camPos](MeshRenderer const* lhs, MeshRenderer const* rhs)
-			{
-				auto lhsDistance = Vector3<>::Distance(camPos, lhs->sceneNode->localTransform.GetPosition());
-				auto rhsDistance = Vector3<>::Distance(camPos, rhs->sceneNode->localTransform.GetPosition());
-				return lhsDistance > rhsDistance;
-			});
-
-			RenderPass(firstPassMeshRenderers, camPos);
-
-			engine.GetDevice()->EnableAlphaBlend();
-			engine.GetDevice()->disableZBuffer();
-			RenderPass(billboardPassMeshRenderers, camPos);
-			engine.GetDevice()->DisableAlphaBlend();
-			engine.GetDevice()->enableZBuffer();
-
-			RenderPass(finalPassMeshRenderers, camPos);
-		}
-	}
-
-	void SceneManager::UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt)
-	{
-		node->matrix = node->parent->matrix * node->localMatrix;
-
-		for (SceneNode* n : node->children)
-		{
-			insertIt = n;
-		}
-	}
-	
-	void SceneManager::RenderPass(std::vector<MeshRenderer*> const& renderers, Vector3<> const& camPos) const
-	{
-		for (auto& renderer : renderers)
-		{
-			if (renderer->IsEnabled())
+			for (auto& renderer : meshRenderers)
 			{
 				if (renderer->GetMaterial()->textures.size() > 1)
 				{
@@ -294,6 +221,16 @@ namespace Cookie
 					renderer->Draw(mainCamera->GetProjView(), camPos, shaders);
 				}
 			}
+		}
+	}
+
+	void SceneManager::UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt)
+	{
+		node->matrix = node->parent->matrix * node->localMatrix;
+
+		for (SceneNode* n : node->children)
+		{
+			insertIt = n;
 		}
 	}
 }

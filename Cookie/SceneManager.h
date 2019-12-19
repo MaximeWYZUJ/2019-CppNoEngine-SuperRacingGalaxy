@@ -11,7 +11,6 @@
 #include "Shaders.h"
 #include "PhysicsComponent.h"
 #include "DeferredShadingPipeline.h"
-#include "BillBoard.h"
 
 namespace Cookie
 {
@@ -28,7 +27,6 @@ namespace Cookie
 
 		// Components
 		MeshRenderer* AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent);
-		MeshRenderer* AddMeshRenderer(Mesh* mesh, Material* mat, SceneNode* parent, int priority);
 		PhysicsComponent* AddPhysicsBoxComponent(
 			PhysicMaterial mat,
 			PhysicsComponent::BodyType type,
@@ -46,7 +44,6 @@ namespace Cookie
 			SceneNode* parent,
 			bool trigger = false);
 		Camera* AddCamera(SceneNode* parent);
-		Billboard* AddBillboard(SceneNode* parent);
 		
 		SceneNodePtr GetRoot();
 		SceneNodePtr AddSceneNode(SceneNodePtr parent);
@@ -65,7 +62,6 @@ namespace Cookie
 
 	private:
 		static void UpdateNodeAndStackChildren(SceneNode* node, StackInsertIterator<std::stack<SceneNode*, std::vector<SceneNode*>>> insertIt);
-		void RenderPass(std::vector<MeshRenderer*> const& renderers, Vector3<> const& camPos) const;
 		Device* device;
 		SceneNode root;
 		
@@ -79,11 +75,6 @@ namespace Cookie
 		std::vector<SceneNode*> nodes;
 		std::vector<MeshRenderer*> meshRenderers;
 		std::vector<Camera*> cameras;
-		std::vector<Billboard*> billboards;
-
-		std::vector<MeshRenderer*> firstPassMeshRenderers;
-		std::vector<MeshRenderer*> billboardPassMeshRenderers;
-		std::vector<MeshRenderer*> finalPassMeshRenderers;
 	};
 	
 	template<class T>

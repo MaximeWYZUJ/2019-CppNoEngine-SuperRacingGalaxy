@@ -60,7 +60,7 @@
     <ClCompile Include="Landing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BillboardToggler.cpp">
+    <ClCompile Include="Billboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Cargo.cpp">
@@ -163,7 +163,7 @@
     <ClInclude Include="Landing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BillboardToggler.h">
+    <ClInclude Include="Billboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cargo.h">

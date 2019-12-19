@@ -274,7 +274,6 @@
     <ClCompile Include="ActionDescriptor.cpp" />
     <ClCompile Include="ActionManager.cpp" />
     <ClCompile Include="ActionRunner.cpp" />
-    <ClCompile Include="BillBoard.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapReader.cpp" />
     <ClCompile Include="BitmapToMeshAdapter.cpp" />

@@ -23,8 +23,6 @@ public:
 	CameraLogic(Cookie::SceneManager& sceneManager, Cookie::ActionManager& actionManager);
 
 	void SetActiveCamera(CameraType cameraType);
-
-	Cookie::Vector3<> GetActivateCameraPosition() const noexcept;
 	
 	// First person
 	std::pair<float, float> ThirdGetRotations() const noexcept;

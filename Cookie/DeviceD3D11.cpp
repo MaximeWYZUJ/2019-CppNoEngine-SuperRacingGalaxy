@@ -12,7 +12,7 @@ namespace Cookie
 	
 	DeviceD3D11::DeviceD3D11()
 	{
-		Init(CdsMode::FullScreen);
+		Init(CdsMode::Windowed);
 	}
 
 	DeviceD3D11::~DeviceD3D11()
@@ -93,8 +93,8 @@ namespace Cookie
 		ZeroMemory(&sd, sizeof(sd));
 		// Obtenir les informations de l’adaptateur de défaut
 		DeviceInfo Dispo0(DeviceInfo::CURRENT_ADAPTER);
-		largeur = 1920;
-		hauteur = 1080;
+		largeur = 1024;
+		hauteur = 768;
 		switch (cdsMode)
 		{
 		case CdsMode::Windowed:

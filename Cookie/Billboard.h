@@ -1,11 +1,12 @@
 #pragma once
-#include "Component.h"
+#include "Sprite.h"
 
 namespace Cookie
 {
-	class Billboard : public Component
+	struct Billboard : public Sprite
 	{
-	public:
-		void Update(Quaternion<> cameraRot);
+
+		
 	};
+
 }

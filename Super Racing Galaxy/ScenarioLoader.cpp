@@ -130,7 +130,6 @@ void ScenarioLoader::CreateObject(SceneManager* smgr, MaterialManager* materialM
 		Planet* p = static_cast<Planet*>(obj);
 		p->texture2 = textureManager->GetNewTexture(p->texture2Path, device);
 		p->textureAlpha = textureManager->GetNewTexture(p->textureAlphaPath, device);
-		p->billboardTexture = textureManager->GetNewTexture(p->billboardTexturePath, device);
 	}
 
 	// (Begin Hack) Place scenery object in the scene root but as if they were children of root, work only for 1 depth (planet->scenery)
@@ -195,21 +194,6 @@ void ScenarioLoader::InitPlanetObject(SceneManager* smgr, MaterialManager* mater
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
 	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
-
-	// (Hack Begin) attach billboard in root with planet position
-	obj->billboard = smgr->AddSceneNode(obj->root->parent);
-	obj->billboard->localTransform = obj->initialTransform;
-	obj->billboard->localTransform.SetDirty();
-	auto billboardMesh = smgr->GetMesh("graphics/meshs/billboard.obj");
-	mat = materialManager->GetNewMaterial(
-		"billboard " + to_string(obj->initialTransform.GetPosition().x) + to_string(obj->initialTransform.GetPosition().y) + to_string(obj->initialTransform.GetPosition().z),
-		{ obj->billboardTexture },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 0.8f, 0.8f, 0.8f, 1.0f },
-		{ 0.0f, 0.0f, 0.0f, 1.0f });
-	smgr->AddMeshRenderer(billboardMesh, mat, obj->billboard, 0);
-	smgr->AddBillboard(obj->billboard);
-	// (Hack End)
 
 	obj->root->physics = smgr->AddPhysicsMeshComponent(PhysicMaterial(0.0f, 0.5f, 0.6f), PhysicsComponent::STATIC, *obj->mesh, obj->root);
 	obj->root->physics->userData = obj;
@@ -278,7 +262,7 @@ void ScenarioLoader::InitSkyboxObject(SceneManager* smgr, MaterialManager* mater
 		{ 0.8f, 0.8f, 0.8f, 1.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f });
 
-	smgr->AddMeshRenderer(obj->mesh, mat, obj->root, -1);
+	smgr->AddMeshRenderer(obj->mesh, mat, obj->root);
 }
 
 void ScenarioLoader::InitTeleportObject(SceneManager* smgr, MaterialManager* materialManager, Teleport* obj)
