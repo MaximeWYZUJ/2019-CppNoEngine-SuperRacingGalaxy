@@ -212,11 +212,13 @@ namespace Cookie {
 
 		if(shaderNUL.second)
 			shaderNUL.first.Activate(&sp, { pResourceView }, false);
-		if (shaking.second)
-			shaking.first.Activate(&shp, { pResourceView });
+		
 		if (radialBlur.second)
 			radialBlur.first.Activate(&rbp, { pResourceView });
 		
+		if (shaking.second)
+			shaking.first.Activate(&shp, { pResourceView });
+
 		// **** Rendu de l’objet
 		pImmediateContext->Draw( 6, 0 );
 

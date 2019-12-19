@@ -1,10 +1,13 @@
+#include "pch.h"
 #include "Teleport.h"
 #include <assert.h>
 #include <algorithm>
-
 #include "SceneNode.h"
 #include "PhysicsComponent.h"
 #include "Landing.h"
+
+#include "EntryPoint.h" // post effect manager
+
 
 using namespace std;
 using namespace chrono;
@@ -36,6 +39,11 @@ void Teleport::linkTo(Landing* landing, vector<Cookie::Vector3<>> contP)
 	controlPoints.push_back(landing->root->localTransform.GetPosition());
 }
 
+void Teleport::setShaderManager(Cookie::PostEffectManager* postEffectManager)
+{
+	shaderManager = postEffectManager;
+}
+
 void Teleport::resetCooldown()
 {
 	lastUse = system_clock::now();
@@ -63,6 +71,7 @@ void Teleport::run()
 			// Keep on animating
 			objToTeleport->root->localTransform.SetPosition(animateTeleport(realTimeTravel / timeTravel));
 			objToTeleport->root->physics->isDirty = true;
+			objToTeleport->root->physics->resetAcceleration = true;
 		}
 	}
 }
@@ -92,11 +101,19 @@ Cookie::Vector3<> Teleport::animateTeleport(double t)
 		return objToTeleport->root->localTransform.GetPosition();
 
 	if (index == 0 || index == N - 1) {
+		if (shaderManager) {
+			shaderManager->deactivatePostEffect(Cookie::PostEffectManager::PostEffectType::Shaking);
+		}
+
 		// Interpolation linéaire
 		double ratio = N * t - index;
 		return controlPoints[index] * (1 - ratio) + controlPoints[index + 1] * ratio;
 	}
 	else {
+		if (shaderManager) {
+			shaderManager->activatePostEffect(Cookie::PostEffectManager::PostEffectType::Shaking);
+		}
+
 		// Interpolation par hermite
 		auto P0 = controlPoints[index];
 		auto P1 = controlPoints[index + 1];
