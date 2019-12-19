@@ -381,7 +381,9 @@ void HUDLogic::Update()
 		std::wstring fill;
 		std::wstring fill2;
 
-		if (vehicleSpeed * 180 / 142 <= 100.4f)
+		if (vehicleSpeed * 180 / 142 > 100)
+			guiManager->Write(L"100 %", speedCounter);
+		else
 			guiManager->Write(fill + std::to_wstring(static_cast<int>(round(vehicleSpeed * 180 / 142))) + L" %", speedCounter);
 		
 		if (timer == 60)

@@ -13,6 +13,7 @@ class Landing;
 class Teleport : public Prefab
 {
 	std::vector<Cookie::Vector3<>> controlPoints; // useful to interpolate the curve between two teleports
+	std::vector<double> timeParams;
 	std::chrono::system_clock::time_point lastUse{};
 	float cooldown;
 	double timeTravel;
