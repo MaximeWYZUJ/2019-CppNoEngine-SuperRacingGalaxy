@@ -16,7 +16,11 @@ HUDLogic::HUDLogic(GuiManager* guiManager, ActionManager* actionManager, CameraL
 	actionManager{ actionManager },
 	cameraLogic{ cameraLogic },
 	engine{engine},
+	avantVitessometre{ nullptr },
+	aiguilleVitessometre{ nullptr },
+	fondVitessometre{ nullptr },
 	speedCounter{ nullptr },
+	timeBackground{ nullptr },
 	timeCounter{ nullptr },
 	fondMenu{ nullptr },
 	effetVitesse{ nullptr },
@@ -155,9 +159,10 @@ void HUDLogic::createFont()
 void HUDLogic::setActiveHUD(HUDType hudType)
 {
 	pFontFamily[0].GetFamilyName(familyName);
-	Gdiplus::Font* font = new Gdiplus::Font(familyName, 12.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel, &privateFontCollection);
+	font = new Gdiplus::Font(familyName, 12.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel, &privateFontCollection);
+	font3 = new Gdiplus::Font(familyName, 12.0f, Gdiplus::FontStyleItalic, Gdiplus::UnitPixel, &privateFontCollection);
 	pFontFamily[1].GetFamilyName(familyName);
-	Gdiplus::Font* font2 = new Gdiplus::Font(familyName, 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel, &privateFontCollection);
+	font2 = new Gdiplus::Font(familyName, 40.0f, Gdiplus::FontStyleBold, Gdiplus::UnitPixel, &privateFontCollection);
 
 	switch (hudType)
 	{
@@ -189,7 +194,7 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 			{
 				std::exit(0);
 			});
-		play = guiManager->newButton("graphics/sprite/dds/boutonPlay2.dds", "graphics/sprite/dds/boutonPlay2.dds", widthButton, heightButton, font, L"", guiManager->ScreenWidth / 2 - widthButton/2, guiManager->ScreenHeight * 3 / 4 - heightButton / 2, [this, &font]()
+		play = guiManager->newButton("graphics/sprite/dds/boutonPlay2.dds", "graphics/sprite/dds/boutonPlay2.dds", widthButton, heightButton, font, L"", guiManager->ScreenWidth / 2 - widthButton/2, guiManager->ScreenHeight * 3 / 4 - heightButton / 2, [this]()
 			{
 				guiManager->deleteGuiElement(fondMenu);
 				guiManager->deleteGuiElement(play);
@@ -208,25 +213,29 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 	{
 		engine->pauseGameSwitch();
 		actionManager->SetState(oldState);
-		int widthVitessometre = 300;
-		int heightVitessometre = 300;
+		int widthVitessometre = 200;
+		int heightVitessometre = 200;
 		if(fondVitessometre == nullptr)
-			fondVitessometre = guiManager->newSprite("graphics/sprite/dds/fondVitessometre.dds", 50, 50, 1, 1, widthVitessometre, heightVitessometre);
+			fondVitessometre = guiManager->newSprite("graphics/sprite/dds/fondVitessometre.dds", 0, 0, 1, 1, widthVitessometre, heightVitessometre);
 		if (aiguilleVitessometre == nullptr)
-			aiguilleVitessometre = guiManager->newSprite("graphics/sprite/dds/aiguilleVitessometre.dds", 50, 50, 1, 1, widthVitessometre, heightVitessometre, Math::Pi/6, Vector3<>{0.0f, 0.0f, 1.0f}, true);
+			aiguilleVitessometre = guiManager->newSprite("graphics/sprite/dds/aiguilleVitessometre.dds", 0, 0, 1, 1, widthVitessometre, heightVitessometre, Math::Pi/6, Vector3<>{0.0f, 0.0f, 1.0f}, true);
 		if (avantVitessometre == nullptr)
 		{
-			avantVitessometre = guiManager->newSprite("graphics/sprite/dds/avantVitessometre.dds", 50, 50, 1, 1, widthVitessometre, heightVitessometre);
+			avantVitessometre = guiManager->newSprite("graphics/sprite/dds/avantVitessometre.dds", 0, 0, 1, 1, widthVitessometre, heightVitessometre);
 			guiManager->addSwapTextureSprite("graphics/sprite/dds/avantBleuVitessometre.dds", avantVitessometre, true, [this]()
 				{
 				
 					float vehicleSpeed = scenario.vehicle->root->physics->velocity.Length();
 					if(vehicleSpeed * 180 / 142 > 99 && !ultraSpeed)
 					{
+						guiManager->changeTextColor(speedCounter, Gdiplus::Color(255, 0, 255, 255));
+						guiManager->changeTextFont(speedCounter, font3);
 						ultraSpeed = true;
 						return true;
 					} if(vehicleSpeed * 180 / 142 < 99 && ultraSpeed)
 					{
+						guiManager->changeTextColor(speedCounter, Gdiplus::Color(255, 255, 255, 255));
+						guiManager->changeTextFont(speedCounter, font);
 						ultraSpeed = false;
 						return true;
 					}
@@ -238,8 +247,10 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		
 		if (speedCounter == nullptr)
 			speedCounter = guiManager->newText(60, 50, font, L" 000 %", 50 + widthVitessometre / 2 - 60 / 2, 50 + widthVitessometre * 3 / 5);
+		if(timeBackground == nullptr)
+			timeBackground = guiManager->newSprite("graphics/sprite/dds/fondChrono.dds", (guiManager->ScreenWidth - 120) / 2, 0, 1, 1, 125, 50);
 		if (timeCounter == nullptr)
-			timeCounter = guiManager->newText(120, 50, font2, L" 00 : 00", (guiManager->ScreenWidth - 120) / 2, 0, Gdiplus::Color(255, 0, 255, 0));
+			timeCounter = guiManager->newText(120, 50, font2, L" 00 : 00", (guiManager->ScreenWidth - 120) / 2, 5, Gdiplus::Color(255, 0, 255, 0));
 		actualHUD = HUDType::InGameHUD;
 		break;
 	}
@@ -255,23 +266,28 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		float widthBouton = 500 * guiManager->ScreenWidth / 1920;
 		float heightBouton = 300 * guiManager->ScreenHeight / 1080;
 		pauseText = guiManager->newSprite("graphics/sprite/dds/pause.dds", (guiManager->ScreenWidth - widthText) / 2, guiManager->ScreenHeight/3 - heightText / 2, 1, 1, widthText, heightText);
-		reprendre = guiManager->newButton("graphics/sprite/dds/boutonReprendre1.dds", "graphics/sprite/dds/boutonReprendre2.dds", widthBouton, heightBouton, font, L"", guiManager->ScreenWidth * 2/8 - widthBouton / 2, guiManager->ScreenHeight * 3/4 - heightBouton, [this]()
+		reprendre = guiManager->newButton("graphics/sprite/dds/boutonReprendre2.dds", "graphics/sprite/dds/boutonReprendre1.dds", widthBouton, heightBouton, font, L"", guiManager->ScreenWidth * 2/8 - widthBouton / 2, guiManager->ScreenHeight * 3/4 - heightBouton, [this]()
 			{
 				guiManager->deleteGuiElement(mainMenuButton);
 				guiManager->deleteGuiElement(pauseText);
 				guiManager->deleteGuiElement(reprendre);
 				setActiveHUD(HUDType::InGameHUD);
 			});
-		mainMenuButton = guiManager->newButton("graphics/sprite/dds/boutonRetourMenu1.dds", "graphics/sprite/dds/boutonRetourMenu2.dds", widthBouton, heightBouton, font, L"", guiManager->ScreenWidth * 6 / 8 - widthBouton / 2, guiManager->ScreenHeight * 3 / 4 - heightBouton, [this]()
+		mainMenuButton = guiManager->newButton("graphics/sprite/dds/boutonRetourMenu2.dds", "graphics/sprite/dds/boutonRetourMenu1.dds", widthBouton, heightBouton, font, L"", guiManager->ScreenWidth * 6 / 8 - widthBouton / 2, guiManager->ScreenHeight * 3 / 4 - heightBouton, [this]()
 			{
 				guiManager->deleteGuiElement(pauseText);
 				guiManager->deleteGuiElement(reprendre);
 				guiManager->deleteGuiElement(mainMenuButton);
 				guiManager->deleteGuiElement(speedCounter);
+				guiManager->deleteGuiElement(timeBackground);
+				timeBackground = nullptr;
 				guiManager->deleteGuiElement(timeCounter);
 				guiManager->deleteGuiElement(avantVitessometre);
+				avantVitessometre = nullptr;
 				guiManager->deleteGuiElement(aiguilleVitessometre);
+				aiguilleVitessometre = nullptr;
 				guiManager->deleteGuiElement(fondVitessometre);
+				fondVitessometre = nullptr;
 				setActiveHUD(HUDType::MainMenuHUD);
 			});
 		actualHUD = HUDType::PauseMenuHUD;
@@ -290,15 +306,20 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 			
 		// End Menu
 		victoryText = guiManager->newSprite("graphics/sprite/dds/victoire.dds", (guiManager->ScreenWidth - widthText) / 2, guiManager->ScreenHeight / 3 - heightText / 2, 1, 1, widthText, heightText);
-		mainMenuButton = guiManager->newButton("graphics/sprite/dds/boutonRetourMenu1.dds", "graphics/sprite/dds/boutonRetourMenu2.dds", widthBouton, heightBouton, font, L"", guiManager->ScreenWidth / 2 - widthBouton / 2, guiManager->ScreenHeight * 3 / 4 - heightBouton, [this]()
+		mainMenuButton = guiManager->newButton("graphics/sprite/dds/boutonRetourMenu2.dds", "graphics/sprite/dds/boutonRetourMenu1.dds", widthBouton, heightBouton, font, L"", guiManager->ScreenWidth / 2 - widthBouton / 2, guiManager->ScreenHeight * 3 / 4 - heightBouton, [this]()
 			{
 				guiManager->deleteGuiElement(victoryText);
 				guiManager->deleteGuiElement(mainMenuButton);
 				guiManager->deleteGuiElement(speedCounter);
+				guiManager->deleteGuiElement(timeBackground);
+				timeBackground = nullptr;
 				guiManager->deleteGuiElement(timeCounter);
 				guiManager->deleteGuiElement(avantVitessometre);
+				avantVitessometre = nullptr;
 				guiManager->deleteGuiElement(aiguilleVitessometre);
+				aiguilleVitessometre = nullptr;
 				guiManager->deleteGuiElement(fondVitessometre);
+				fondVitessometre = nullptr;
 				setActiveHUD(HUDType::MainMenuHUD);
 			});
 		actualHUD = HUDType::EndMenuHUD;
