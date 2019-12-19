@@ -30,7 +30,8 @@ namespace Cookie
 		enum class PostEffectType
 		{
 			NUL,
-			RadialBlur
+			RadialBlur,
+			Shaking
 		};
 		
 		explicit PostEffectManager(DeviceD3D11* device);
@@ -64,7 +65,9 @@ namespace Cookie
 
 		std::pair<Shaders, bool> shaderNUL;
 		std::pair<Shaders, bool> radialBlur;
-
+		std::pair<Shaders, bool> shaking;
+		int time;
+		
 		// Texture de rendu pour effets
 		ID3D11Texture2D* pTextureScene;
 		ID3D11ShaderResourceView* pResourceView;
