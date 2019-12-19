@@ -37,6 +37,24 @@ void Teleport::linkTo(Landing* landing, vector<Cookie::Vector3<>> contP)
 		controlPoints.push_back(t);
 	});
 	controlPoints.push_back(landing->root->localTransform.GetPosition());
+
+	// Paramétrisation
+	timeParams = { 0 };
+	for (int i = 1; i < controlPoints.size(); i++) {
+		auto p0 = controlPoints[i - 1];
+		auto p1 = controlPoints[i];
+
+		auto deltaT = p0.distance(p1);
+		if (i == 1 || i == controlPoints.size() - 1) {
+			deltaT = deltaT * 5;
+		}
+
+		timeParams.push_back(timeParams[i - 1] + deltaT);
+	}
+	double totalT = timeParams.back();
+	for (int i = 0; i < controlPoints.size(); i++) {
+		timeParams[i] = timeParams[i] / totalT;
+	}
 }
 
 void Teleport::setShaderManager(Cookie::PostEffectManager* postEffectManager)
@@ -96,9 +114,22 @@ Cookie::Vector3<> hermite(Cookie::Vector3<> P0, Cookie::Vector3<> m0, Cookie::Ve
 Cookie::Vector3<> Teleport::animateTeleport(double t)
 {
 	int N = controlPoints.size() - 1; // indice de fin [P0, PN]
-	int index = floor(t / (1.0/N));
+	
+	//int index = floor(t / (1.0/N));
+	int index = 0;
+	for (int i = 0; i < timeParams.size(); i++) {
+		if (timeParams[i] <= t) {
+			index = i;
+		}
+		else {
+			break;
+		}
+	}
+	
 	if (index == N)
 		return objToTeleport->root->localTransform.GetPosition();
+
+	double ratio = (t - timeParams[index]) / (timeParams[index + 1] - timeParams[index]);
 
 	if (index == 0 || index == N - 1) {
 		if (shaderManager) {
@@ -106,7 +137,7 @@ Cookie::Vector3<> Teleport::animateTeleport(double t)
 		}
 
 		// Interpolation linéaire
-		double ratio = N * t - index;
+		//double ratio = N * t - index;
 		return controlPoints[index] * (1 - ratio) + controlPoints[index + 1] * ratio;
 	}
 	else {
@@ -120,6 +151,6 @@ Cookie::Vector3<> Teleport::animateTeleport(double t)
 		auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1]);
 		auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2] - P0);
 	
-		return hermite(P0, m0, P1, m1, N * t - index);
+		return hermite(P0, m0, P1, m1, ratio);
 	}
 }

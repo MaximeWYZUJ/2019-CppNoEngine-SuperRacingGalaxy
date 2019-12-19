@@ -251,10 +251,10 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	planete4->addElement(piste5);
 	
 
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur1, planete1, piste3, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur2, planete1, piste5, planete4, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur5, planete4, piste4, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur1, planete1, piste3, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur2, planete1, piste5, planete4, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur5, planete4, piste4, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargo/billboard.dds"));
