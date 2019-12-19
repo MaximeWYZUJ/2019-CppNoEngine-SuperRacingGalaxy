@@ -175,7 +175,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete2->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.42955711483955383f, 0.3114015460014343f, -0.2056649923324585f }, { 0.08318579941987991f, 0.16637162864208221f, 0.16637156903743744f }, { 0.4183803200721741, 0.09335704147815704, 0.8272531032562256, 0.36317312717437744 }), "graphics/meshs/stalagmite.obj", L"graphics/textureDDS/stalagmiteTexture.dds", "graphics/meshs/hitBox/hitBoxstalagmite.obj"));
 	}
 	
-	Planet *planete3 = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, "graphics/meshs/planete3.obj", L"graphics/textureDDS/planete3/planete3Texture2.dds");
+	Planet *planete3 = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f * 10, true, "graphics/meshs/planete3.obj", L"graphics/textureDDS/planete3/planete3Texture1.dds", L"graphics/textureDDS/planete3/planete3Texture2.dds", L"graphics/textureDDS/planete3/planete3Alpha.dds");
 	
 	{
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.5244293212890625f, 0.0356634221971035f, -0.07825712114572525f }, { 0.3799402415752411f, 0.3799402415752411f, 0.18997012078762054f }, { 0.6848219633102417, 0.003416382009163499, -0.7285568714141846, -0.014563476666808128 }), "graphics/meshs/pyramide.obj", L"graphics/textureDDS/pyramideTexture.dds", "graphics/meshs/hitBox/hitBoxpyramide.obj"));
@@ -225,6 +225,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	
 
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>(-55.0f, 13.86f, 113.21f)}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/});
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur1, planete1, piste3, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
 
 	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
 										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds"));
