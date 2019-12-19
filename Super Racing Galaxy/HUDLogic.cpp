@@ -120,8 +120,8 @@ void HUDLogic::createInGameContext()
 				auto vPos = scenario.vehicle->root->localTransform.GetPosition();
 				auto direction = vPos - scenario.vehicle->gravityApplied;
 				direction.Normalize();
-				scenario.vehicle->root->physics->addImpulse(direction * 30);
-				scenario.vehicle->root->localTransform.SetPosition(vPos + direction * 0.3);
+				scenario.vehicle->root->physics->addImpulse(direction * 40);
+				scenario.vehicle->root->localTransform.SetPosition(vPos + direction * 0.5);
 
 				scenario.vehicle->root->physics->isDirty = true;
 				scenario.vehicle->useImpulse();

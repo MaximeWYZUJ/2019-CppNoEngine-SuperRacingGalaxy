@@ -9,6 +9,7 @@
 #include "Skybox.h"
 #include "Landing.h"
 #include "Goal.h"
+#include "PostEffectManager.h"
 
 using namespace std;
 using namespace Cookie;
@@ -78,7 +79,9 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	CreateObject(smgr, materialManager, textureManager, device, root, scenario.skybox);
 
 	// Linkage des teleporteurs avec leur piste d'atterissage, et définition des points de contrôle
-	for_each(scenario.tpLinks.begin(), scenario.tpLinks.end(), [](TeleportLinksParams params) {
+	for_each(scenario.tpLinks.begin(), scenario.tpLinks.end(), [&engine](TeleportLinksParams params) {
+		params.teleport->setShaderManager(engine->GetPostEffectManager());
+		
 		vector<Cookie::Vector3<>> controlPoints;
 
 		// Premier point de contrôle
