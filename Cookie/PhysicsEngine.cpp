@@ -327,8 +327,9 @@ namespace Cookie
 		Vector3<> scaling = modifs->transform.GetScale();
 
 		int nbShapes = toBeModified->getNbShapes();
-		PxShape** shapes = new PxShape * [nbShapes];
-		toBeModified->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		shapes.clear();
+		shapes.resize(nbShapes);
+		toBeModified->getShapes(shapes.data(), sizeof(PxShape*) * nbShapes);
 
 		for (int i = 0; i < nbShapes; i++) {
 			shapes[i]->setGeometry(PxBoxGeometry(modifs->dx / 2 * scaling.x, modifs->dy / 2 * scaling.y, modifs->dz / 2 * scaling.z));
@@ -340,8 +341,9 @@ namespace Cookie
 		Vector3<> scaling = modifs->transform.GetScale();
 
 		int nbShapes = toBeModified->getNbShapes();
-		PxShape** shapes = new PxShape * [nbShapes];
-		toBeModified->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		shapes.clear();
+		shapes.resize(nbShapes);
+		toBeModified->getShapes(shapes.data(), sizeof(PxShape*) * nbShapes);
 
 		for (int i = 0; i < nbShapes; i++) {
 			shapes[i]->setGeometry(PxSphereGeometry(scaling.x * modifs->radius));
@@ -391,15 +393,16 @@ namespace Cookie
 		}
 
 		int nbShapes = actor->getNbShapes();
-		PxShape** shapes = new PxShape * [nbShapes];
-		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		shapes.clear();
+		shapes.resize(nbShapes);
+		actor->getShapes(shapes.data(), sizeof(PxShape*) * nbShapes);
 		PxShape* shape = shapes[0];
 
-		PxMaterial** materials = new PxMaterial * [1];
-		shape->getMaterials(materials, sizeof(PxMaterial*));
+		PxMaterial* materials;
+		shape->getMaterials(&materials, sizeof(PxMaterial*));
 
 		toBeModified->trigger = shape->getFlags().isSet(PxShapeFlag::eTRIGGER_SHAPE);
-		toBeModified->material = PhysicMaterial(materials[0]->getRestitution(), materials[0]->getStaticFriction(), materials[0]->getDynamicFriction());
+		toBeModified->material = PhysicMaterial(materials->getRestitution(), materials->getStaticFriction(), materials->getDynamicFriction());
 
 		toBeModified->actor = actor;
 	}
@@ -407,8 +410,9 @@ namespace Cookie
 	void PhysicsEngine::UpdateBoxComponent(ActorPtr actor, PhysicsBoxComponent* toBeModified)
 	{
 		int nbShapes = actor->getNbShapes();
-		PxShape** shapes = new PxShape * [nbShapes];
-		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		shapes.clear();
+		shapes.resize(nbShapes);
+		actor->getShapes(shapes.data(), sizeof(PxShape*) * nbShapes);
 
 		PxBoxGeometry geom;
 		shapes[0]->getBoxGeometry(geom);
@@ -420,8 +424,9 @@ namespace Cookie
 	void PhysicsEngine::UpdateSphereComponent(ActorPtr actor, PhysicsSphereComponent* toBeModified)
 	{
 		int nbShapes = actor->getNbShapes();
-		PxShape** shapes = new PxShape * [nbShapes];
-		actor->getShapes(shapes, sizeof(PxShape*) * nbShapes);
+		shapes.clear();
+		shapes.resize(nbShapes);
+		actor->getShapes(shapes.data(), sizeof(PxShape*) * nbShapes);
 
 		PxSphereGeometry geom;
 		shapes[0]->getSphereGeometry(geom);

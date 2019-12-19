@@ -84,16 +84,16 @@ namespace Cookie
 		z += 0.01f;
 
 
-		MiniPhongParams* sp = new MiniPhongParams;
+		MiniPhongParams sp{};
 
-		sp->matProjViewWorld = projView * *matrix;
-		sp->matWorld = *matrix;
-		sp->vLumiere = XMVectorSet(x, 25.0f, z, 0.0f);
-		sp->vCamera = XMVectorSet(camPos.x, camPos.y, camPos.z, 1.0f);
-		sp->vAEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
-		sp->vAMat = XMVectorSet(material->ambient.x, material->ambient.y, material->ambient.z, material->ambient.w);
-		sp->vDEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
-		sp->vDMat = XMVectorSet(material->diffuse.x, material->diffuse.y, material->diffuse.z, material->diffuse.w);
+		sp.matProjViewWorld = projView * *matrix;
+		sp.matWorld = *matrix;
+		sp.vLumiere = XMVectorSet(x, 25.0f, z, 0.0f);
+		sp.vCamera = XMVectorSet(camPos.x, camPos.y, camPos.z, 1.0f);
+		sp.vAEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
+		sp.vAMat = XMVectorSet(material->ambient.x, material->ambient.y, material->ambient.z, material->ambient.w);
+		sp.vDEcl = XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f);
+		sp.vDMat = XMVectorSet(material->diffuse.x, material->diffuse.y, material->diffuse.z, material->diffuse.w);
 		
 		ID3D11DeviceContext* pImmediateContext;
 		dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice()->GetImmediateContext(&pImmediateContext);
@@ -111,7 +111,7 @@ namespace Cookie
 		}
 		
 		UINT size = sizeof(MiniPhongParams);
-		shader.Activate(sp, textures);
+		shader.Activate(&sp, textures);
 		
 		pImmediateContext->DrawIndexed(mesh->GetTrianglesDx().size() * 3, 0, 0);
 	}
