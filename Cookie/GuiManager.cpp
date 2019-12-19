@@ -442,7 +442,7 @@ namespace Cookie
 			SpriteParams* sp = new SpriteParams;
 			sp->matWVP = sprite->matPosDim;
 			
-			shader.Activate(sp, sprite->pTextureD3D);
+			shader.Activate(sp, { sprite->pTextureD3D });
 
 			// **** Rendu de l’objet
 			device->EnableAlphaBlend();

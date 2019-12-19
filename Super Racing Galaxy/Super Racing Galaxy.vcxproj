@@ -215,6 +215,22 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
     </FxCompile>
+    <FxCompile Include="MiniPhongAlphaBlendingPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="MiniPhongAlphaBlendingVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</EntryPointName>
+    </FxCompile>
     <FxCompile Include="MiniPhongPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -314,7 +330,7 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DllToDeploy Include="$(SolutionDir)Cookie\lib_PhysX*.dll">
+    <DllToDeploy Include="$(SolutionDir)Cookie\lib_PhysX\*.dll">
     </DllToDeploy>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

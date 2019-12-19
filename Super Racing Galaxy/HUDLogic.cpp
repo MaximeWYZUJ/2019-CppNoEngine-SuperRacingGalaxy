@@ -106,6 +106,22 @@ void HUDLogic::createInGameContext()
 		{
 			setActiveHUD(HUDType::PauseMenuHUD);
 		},
+		[]() {})),
+		ActionDescriptor(Key::E, StateType::Pressed, std::chrono::milliseconds(0), std::chrono::milliseconds(0), ActionDescriptor::Callbacks(
+		[]() {},
+		[this]()
+		{
+			if (scenario.vehicle->mayUseImpulse()) {
+				auto vPos = scenario.vehicle->root->localTransform.GetPosition();
+				auto direction = vPos - scenario.vehicle->gravityApplied;
+				direction.Normalize();
+				scenario.vehicle->root->physics->addImpulse(direction * 30);
+				scenario.vehicle->root->localTransform.SetPosition(vPos + direction * 0.3);
+
+				scenario.vehicle->root->physics->isDirty = true;
+				scenario.vehicle->useImpulse();
+			}
+		},
 		[]() {}))
 		});
 }
@@ -224,6 +240,10 @@ void HUDLogic::setActiveHUD(HUDType hudType)
 		break;
 	}
 	}	
+}
+
+HUDType HUDLogic::getActiveHUD() const {
+	return actualHUD;
 }
 
 void HUDLogic::Update()

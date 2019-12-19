@@ -11,7 +11,7 @@ for obj in objects:
 
 planete = objPlanete.name
 f = open("E:/Cours/Projet-Automne/Super Racing Galaxy/graphics/blenderFiles/" + planete + ".txt", "w+")
-f.write("Planet *" + planete + " = new Planet(Transform<>({ 0.0f, 0.0f, 0.0f }, { 200.0f, 200.0f, 200.0f }, { 0.0f, 0.0f, 0.707f, 0.707f }), -9.81f * 10, true, \"graphics/meshs/" + planete + ".obj\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture2.dds\");\n\n{\n")
+f.write("Planet *" + planete + " = new Planet(Transform<>({ -500.0f, 250.0f, 300.0f }, { 400.0f, 400.0f, 400.0f }, { 0.0f, 0.0f, 0.0f, 0.1f }), -9.81f * 10, true, \"graphics/meshs/" + planete + ".obj\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture1.dds\", L\"graphics/textureDDS/" + planete + "/" + planete + "Texture2.dds\", L\"graphics/textureDDS/" + planete + "/" + planete + "Alpha.dds\");\n\n{\n")
               
 cptTeleport = 0
 cptAtterrissage = 0
@@ -21,10 +21,10 @@ for obj in objects:
         objName, other = obj.name.split('.')
         if(objName == "pisteAtterrissage"):
             cptAtterrissage += 1
-            f.write("\n\tLanding* piste" + str(cptAtterrissage) + " = new Landing(Transform<>::BlenderToCookie({" + str(obj.location[0]) + "f, " + str(obj.location[1]) + "f, " + str(obj.location[2]) + "f }, { " + str(obj.scale[0]) + "f, " + str(obj.scale[1]) + "f, " + str(obj.scale[2]) + "f }, { " + str(obj.rotation_quaternion[0]) + ", " + str(obj.rotation_quaternion[1]) + ", " + str(obj.rotation_quaternion[2]) + ", " + str(obj.rotation_quaternion[3]) + " }), \"graphics/meshs/pisteAtterrissage.obj\", L\"graphics/textureDDS/pisteAtterrissageTexture.dds\", \"graphics/meshs/pisteAtterrissage.obj\");\n")
-            f.write("\t" + planete + "->addTeleport(piste" + str(cptAtterrissage) + ");\n\n")
+            f.write("\n\tLanding* piste" + str(cptAtterrissage) + " = new Landing(Transform<>::BlenderToCookie({" + str(obj.location[0]) + "f, " + str(obj.location[1]) + "f, " + str(obj.location[2]) + "f }, { " + str(obj.scale[0]) + "f, " + str(obj.scale[1]) + "f, " + str(obj.scale[2]) + "f }, { " + str(obj.rotation_quaternion[0]) + ", " + str(obj.rotation_quaternion[1]) + ", " + str(obj.rotation_quaternion[2]) + ", " + str(obj.rotation_quaternion[3]) + " }), \"graphics/meshs/pisteAtterrissage.obj\", L\"graphics/textureDDS/pisteAtterrissageTexture.dds\");\n")
+            f.write("\t" + planete + "->addElement(piste" + str(cptAtterrissage) + ");\n\n")
         elif(objName == "trophee"):
-            f.write("\tGoal *goal = new Goal(Transform<>({ " + str(obj.location[0]) + "f, " + str(obj.location[1]) + "f, " + str(obj.location[2]) + "f }, { " + str(obj.scale[0]) + "f, " + str(obj.scale[1]) + "f, " + str(obj.scale[2]) + "f }, { " + str(obj.rotation_quaternion[0]) + ", " + str(obj.rotation_quaternion[1]) + ", " + str(obj.rotation_quaternion[2]) + ", " + str(obj.rotation_quaternion[3]) + " }), \"graphics/meshs/trophee.obj\", L\"graphics/textureDDS/tropheeTexture.dds\", \"graphics/meshs/hitBoxTrophee.obj\");\n")
+            f.write("\tGoal *goal = new Goal(Transform<>({ " + str(obj.location[0]) + "f, " + str(obj.location[1]) + "f, " + str(obj.location[2]) + "f }, { " + str(obj.scale[0]) + "f, " + str(obj.scale[1]) + "f, " + str(obj.scale[2]) + "f }, { " + str(obj.rotation_quaternion[0]) + ", " + str(obj.rotation_quaternion[1]) + ", " + str(obj.rotation_quaternion[2]) + ", " + str(obj.rotation_quaternion[3]) + " }), \"graphics/meshs/trophee.obj\", L\"graphics/textureDDS/tropheeTexture.dds\", \"graphics/meshs/hitBox/hitBoxTrophee.obj\");\n")
             f.write("\t" + planete + "->addGoal(goal);\n")
             f.write("\t" + "scenario.goal = goal;\n")
         elif(objName == "teleporteur"):

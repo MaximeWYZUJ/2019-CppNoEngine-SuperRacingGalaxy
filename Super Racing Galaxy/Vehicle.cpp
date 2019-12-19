@@ -9,3 +9,15 @@ Vehicle::Vehicle(Cookie::Transform<> transform, std::string meshPath, std::wstri
 	mesh = nullptr;
 	texture = nullptr;
 }
+
+void Vehicle::useImpulse()
+{
+	lastImpulse = std::chrono::system_clock::now();
+}
+
+bool Vehicle::mayUseImpulse()
+{
+	auto now = std::chrono::system_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - lastImpulse).count();
+	return duration > cooldownImpulse;
+}

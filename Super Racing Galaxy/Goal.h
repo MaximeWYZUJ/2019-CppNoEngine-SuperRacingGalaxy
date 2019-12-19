@@ -5,6 +5,7 @@
 class Goal : public Prefab
 {
 	HUDLogic* hud;
+	bool alreadyUsed = false;
 public:
 	Goal(Cookie::Transform<> transform, std::string meshPath, std::wstring texturePath, std::string hitBoxPath);
 

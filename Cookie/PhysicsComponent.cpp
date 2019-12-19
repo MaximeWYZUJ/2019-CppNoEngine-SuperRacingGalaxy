@@ -18,6 +18,15 @@ namespace Cookie
 		isDirty = true;
 	}
 
+	void PhysicsComponent::addImpulse(Vector3<PhysicsComponent_t> impulse)
+	{
+		if (type == STATIC)
+			return;
+		this->isDirty;
+		addedImpulses.push_back(impulse);
+		isDirty = true;
+	}
+
 	void PhysicsComponent::SetAngularVelocity(Vector3<PhysicsComponent_t> velocity)
 	{
 		if (type == STATIC)

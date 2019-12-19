@@ -103,10 +103,21 @@ namespace Cookie
 		pImmediateContext->IASetVertexBuffers(0, 1, reinterpret_cast<ID3D11Buffer* const*>(&pVertexBuffer), &stride, &offset);
 		pImmediateContext->IASetIndexBuffer(reinterpret_cast<ID3D11Buffer*>(pIndexBuffer.p), DXGI_FORMAT_R32_UINT, 0);
 
-		ID3D11ShaderResourceView* texture = material->textures[0]->GetD3DTexture();
+		vector<ID3D11ShaderResourceView*> textures;
+
+		for (int i = 0; i < material->textures.size(); ++i)
+		{
+			textures.push_back(material->textures[i]->GetD3DTexture());
+		}
+		
 		UINT size = sizeof(MiniPhongParams);
-		shader.Activate(sp, texture);
+		shader.Activate(sp, textures);
 		
 		pImmediateContext->DrawIndexed(mesh->GetTrianglesDx().size() * 3, 0, 0);
+	}
+	
+	Material* MeshRenderer::GetMaterial() const noexcept
+	{
+		return material;
 	}
 }

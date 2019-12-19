@@ -18,5 +18,8 @@ void Goal::bindHUD(HUDLogic* hud_)
 
 void Goal::showEndingScreen()
 {
-	hud->setActiveHUD(HUDType::EndMenuHUD);
+	if (!alreadyUsed) {
+		hud->setActiveHUD(HUDType::EndMenuHUD);
+		alreadyUsed = true;
+	}
 }

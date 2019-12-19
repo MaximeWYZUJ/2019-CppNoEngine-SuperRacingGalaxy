@@ -55,7 +55,7 @@ void Teleport::run()
 		if (abs(realTimeTravel - timeTravel) < 1.0 / 60.0) {
 			// Stop animation
 			isActive = false;
-			root->physics->resetAcceleration = true;
+			objToTeleport->root->physics->resetAcceleration = true;
 			objToTeleport = nullptr;
 			realTimeTravel = 0.0;
 		}
@@ -63,8 +63,6 @@ void Teleport::run()
 			// Keep on animating
 			objToTeleport->root->localTransform.SetPosition(animateTeleport(realTimeTravel / timeTravel));
 			objToTeleport->root->physics->isDirty = true;
-
-			//linkedTeleport->resetCooldown();
 		}
 	}
 }
@@ -93,12 +91,18 @@ Cookie::Vector3<> Teleport::animateTeleport(double t)
 	if (index == N)
 		return objToTeleport->root->localTransform.GetPosition();
 
-	auto P0 = controlPoints[index];
-	auto P1 = controlPoints[index + 1];
-	auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1]);
-	auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2] - P0);
-
-	auto newPos = hermite(P0, m0, P1, m1, N * t - index);
-
-	return newPos;
+	if (index == 0 || index == N - 1) {
+		// Interpolation linéaire
+		double ratio = N * t - index;
+		return controlPoints[index] * (1 - ratio) + controlPoints[index + 1] * ratio;
+	}
+	else {
+		// Interpolation par hermite
+		auto P0 = controlPoints[index];
+		auto P1 = controlPoints[index + 1];
+		auto m0 = index == 0 ? P1 - P0 : 0.5*(P1 - controlPoints[index - 1]);
+		auto m1 = index == N-1 ? P1 - P0 : 0.5*(controlPoints[index + 2] - P0);
+	
+		return hermite(P0, m0, P1, m1, N * t - index);
+	}
 }
