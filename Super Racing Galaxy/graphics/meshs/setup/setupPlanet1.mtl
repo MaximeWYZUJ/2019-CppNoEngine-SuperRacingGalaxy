@@ -1,0 +1,111 @@
+# Blender MTL File: 'setupPlanet1.blend'
+# Material Count: 10
+
+newmtl Material.000
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\pisteAtterrissageTexture.png
+
+newmtl Material.001
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Material.003
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\champi3Texture.png
+
+newmtl Material.004
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\plante1Texture.png
+
+newmtl Material.005
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\champi2Texture.png
+
+newmtl Material.007
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\teleporteurTexture.png
+
+newmtl Material.063
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\panneauTexture.png
+
+newmtl Material.258
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\champi1Texture.png
+
+newmtl Material.263
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\rocher1Texture.png
+
+newmtl Material.266
+Ns 900.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd E:\\Cours\\Projet-Automne\\Super Racing Galaxy\\graphics\\texturePNG\\rocher2Texture.png

@@ -1,7 +1,7 @@
 # Blender v2.80 (sub 75) OBJ File: 'trophee.blend'
 # www.blender.org
 mtllib trophee.mtl
-o trophee
+o trophee_Plane.002
 v -0.018233 0.340086 0.327661
 v 0.017707 0.405822 0.324830
 v 0.021800 0.360906 0.491930
