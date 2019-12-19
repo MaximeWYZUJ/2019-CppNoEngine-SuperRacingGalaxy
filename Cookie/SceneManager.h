@@ -73,7 +73,7 @@ namespace Cookie
 
 		Shaders shaders; // standard shader
 		Shaders planetShader; // blending 2 textures shader based on alpha (3rd texture)
-		DeferredShadingPipeline shading;
+		//DeferredShadingPipeline shading;
 		
 		std::vector<MeshPtr> meshes;
 		std::vector<SceneNode*> nodes;

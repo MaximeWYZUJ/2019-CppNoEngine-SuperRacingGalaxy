@@ -1,16 +1,18 @@
 #pragma once
 #include <vector>
-#include "TextureManager.h"
 #include <gdiplus.h>
 #include "Shaders.h"
 #include "Button.h"
 #include <random>
+#include "Vector2.h"
 
 #pragma comment(lib, "gdiplus.lib")
 
 namespace Cookie
 {
 	class InputManager;
+	class TextureManager;
+	class DeviceD3D11;
 	struct Text;
 	class Sprite;
 

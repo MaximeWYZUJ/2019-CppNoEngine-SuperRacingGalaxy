@@ -8,6 +8,7 @@
 #include "Button.h"
 #include "SpriteParams.h"
 #include "InputManager.h"
+#include "TextureManager.h"
 #include <random>
 
 namespace Cookie
@@ -39,7 +40,7 @@ namespace Cookie
 		ScreenWidth{ device->GetWidth() },
 		ScreenHeight{ device->GetHeight() },
 		pVertexBuffer{ nullptr },
-		shader{device, L"Sprite", sizeof SpriteParams, SommetSprite::layout, SommetSprite::numElements}
+		shader{device, "Sprite", sizeof SpriteParams, SommetSprite::layout, SommetSprite::numElements}
 	{
 		// SPRITES
 		

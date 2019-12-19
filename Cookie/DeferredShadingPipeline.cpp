@@ -9,7 +9,7 @@ namespace Cookie
 	DeferredShadingPipeline::DeferredShadingPipeline(Device* device, int width, int height)
 		: device(device), firstPass(device)
 	{
-		auto d = dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice();
+		/*auto d = dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice();
 		
 		D3D11_TEXTURE2D_DESC textureDesc;
 		D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -53,12 +53,12 @@ namespace Cookie
 			renderTargetTextures.push_back(device->CreateTexture2D({ static_cast<float>(width), static_cast<float>(height) }));
 			renderTargets.push_back(device->CreateRenderTarget(renderTargetTextures[i]));
 			shaderResources.push_back(device->CreateShaderResource(renderTargetTextures[i]));
-		}
+		}*/
 	}
 
 	DeferredShadingPipeline::~DeferredShadingPipeline()
 	{
-		for (int i = 0; i < NbBuffers; ++i)
+		/*for (int i = 0; i < NbBuffers; ++i)
 		{
 			device->Release(shaderResources[i]);
 			device->Release(renderTargets[i]);
@@ -66,7 +66,7 @@ namespace Cookie
 		}
 
 		depthStencilView->Release();
-		depthStencilBuffer->Release();
+		depthStencilBuffer->Release();*/
 	}
 	
 	void DeferredShadingPipeline::BeginFirstPass()
