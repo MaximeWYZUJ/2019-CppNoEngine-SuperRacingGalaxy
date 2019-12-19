@@ -16,6 +16,7 @@
 #include "Vector3.h"
 #include "GuiManager.h"
 #include "CompilerFlags.h"
+#include "BillboardToggler.h"
 
 #undef max
 
@@ -50,7 +51,7 @@ int main(int argc, char* argv[])
 		Scenario scenario = ScenarioCreator::CreateDemoScenario();
 		ScenarioLoader::LoadScenario(engine.get(), scenario);
 
-
+		BillboardToggler billboardToggler(scenario.gravityGenerators);
 
 		HUDLogic hudLogic(guiManager, actionManager, cameraLogic, scenario, engine.get());
 		hudLogic.setActiveHUD(HUDType::MainMenuHUD);
@@ -59,7 +60,7 @@ int main(int argc, char* argv[])
 		
 		Planet* lastClosestPlanet = nullptr;
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
-		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &lastClosestPlanet, &lastForward, scenario, &hudLogic, &postEffectManager]() {
+		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &billboardToggler, &lastClosestPlanet, &lastForward, &scenario, &hudLogic, &postEffectManager]() {
 
 			Vector3<> up(0.0f, 1.0f, 0.0f);
 
@@ -145,7 +146,9 @@ int main(int argc, char* argv[])
 					});
 				});
 			}
-		}));
+
+			billboardToggler.Update(cameraLogic.GetActivateCameraPosition(), 500.0f);
+		})){}
 
 		return (int)1;
 	}
