@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="CameraLogic.cpp" />
     <ClCompile Include="DemoScenario.cpp" />
     <ClCompile Include="Goal.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="CameraLogic.h" />
     <ClInclude Include="DemoScenario.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="HUDLogic.h" />
     <ClInclude Include="Landing.h" />
     <ClInclude Include="pch.h" />

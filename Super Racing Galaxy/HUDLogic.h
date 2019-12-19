@@ -36,9 +36,13 @@ class HUDLogic
 	
 	std::vector<std::string> menuState;
 	Cookie::ActionManager::StateType oldState;
-	
+
+	Cookie::Sprite* avantVitessometre;
+	Cookie::Sprite* fondVitessometre;
+	Cookie::Sprite* aiguilleVitessometre;
 	Cookie::Text* speedCounter;
 	Cookie::Text* timeCounter;
+	bool ultraSpeed = false;
 	
 	Cookie::Sprite* fondMenu;
 	Cookie::Sprite* effetVitesse;
@@ -53,6 +57,10 @@ class HUDLogic
 	Cookie::Button* mainMenuButton;
 
 	Scenario scenario;
+
+	Gdiplus::FontFamily* pFontFamily;
+	Gdiplus::PrivateFontCollection privateFontCollection;
+	WCHAR familyName[LF_FACESIZE] = {};
 	
 	int timer = 0;
 	
@@ -63,7 +71,7 @@ class HUDLogic
 	HUDType actualHUD;
 
 	void createInGameContext();
-	
+	void createFont();
 public:
 	
 	HUDLogic(Cookie::GuiManager* guiManager, Cookie::ActionManager* actionManager, CameraLogic& cameraLogic, Scenario& scenario, Cookie::Engine* engine);

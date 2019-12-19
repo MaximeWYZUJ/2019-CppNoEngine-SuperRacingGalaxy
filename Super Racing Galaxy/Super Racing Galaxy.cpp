@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 			Planet* closestPlanet = nullptr;
 
 			Vehicle* vehicle = scenario.vehicle;
-			if (vehicle->root->physics->velocity.Length() * 1.5 > 141.62f)
+			if (vehicle->root->physics->velocity.Length() * 1.8 > 141.62f)
 				postEffectManager->activatePostEffect(PostEffectManager::PostEffectType::RadialBlur);
 			else postEffectManager->deactivatePostEffect(PostEffectManager::PostEffectType::RadialBlur);
 

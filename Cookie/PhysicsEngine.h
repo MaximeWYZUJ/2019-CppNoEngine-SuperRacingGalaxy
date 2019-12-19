@@ -10,7 +10,6 @@
 #include "PhysicsComponent.h"
 #include "Mesh.h"
 #include "PhysicsTask.h"
-#include "PhysicCollisionCallback.h"
 
 namespace physx {
 	class PxDefaultAllocator;
@@ -84,6 +83,7 @@ namespace Cookie
 		// Manipulation de la file de taches
 	private:
 		std::queue<PhysicsTask> tasks; // pas encore thread safe
+		std::vector<physx::PxShape*> shapes;
 	public:
 		void AddTask(PhysicsComponent* taskOrigin, PhysicsComponent* taskDestination, PhysicsCollisionCallback* callback) {
 			tasks.push(PhysicsTask{ taskOrigin, taskDestination, callback });
