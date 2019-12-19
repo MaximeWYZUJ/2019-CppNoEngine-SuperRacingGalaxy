@@ -8,6 +8,7 @@
 #include "Skybox.h"
 #include "Goal.h"
 #include "Landing.h"
+#include "Cargo.h"
 #include <utility>
 
 using namespace Cookie;
@@ -186,7 +187,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.29444950819015503f, -0.3542361855506897f, -0.2263995110988617f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.41182371973991394, 0.8487450480461121, 0.013431957922875881, 0.3314402997493744 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.1568656712770462f, 0.1912076324224472f, 0.45743024349212646f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.777387797832489, -0.05911627411842346, -0.23806792497634888, -0.5792211890220642 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 
-		Goal *goal = new Goal(Transform<>({ -0.5107772350311279f, 0.0743277445435524f, -0.0541926845908165f }, { 0.020039429888129234f, 0.029156958684325218f, 0.03356218710541725f }, { 0.7071068286895752, 0.0, -0.7071067690849304, 0.0 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
+		Goal *goal = new Goal(Transform<>({ -0.5121502876281738f, 0.0770370364189148f, -0.03948397934436798f }, { 0.021663449704647064f, 0.03533276915550232f, 0.03069201111793518f }, { 0.5073574185371399, 0.49264204502105713, -0.49941858649253845, 0.500473141670227 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
 		planete3->addGoal(goal);
 		scenario.goal = goal;
 	}
@@ -256,8 +257,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur2, planete1, piste5, planete4, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
 	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur5, planete4, piste4, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
 
-	scenario.gravityGenerators.push_back(new Planet(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), 
-										   -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds", L"graphics/textureDDS/cargoTexture.dds"));
+	scenario.cargo = new Cargo(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds");
 
 	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 117.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 
