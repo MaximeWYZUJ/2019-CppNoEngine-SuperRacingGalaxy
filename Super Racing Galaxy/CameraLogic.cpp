@@ -42,6 +42,21 @@ void CameraLogic::SetActiveCamera(CameraType cameraType)
 	activeCameraType = cameraType;
 }
 
+Vector3<> CameraLogic::GetActivateCameraPosition() const noexcept
+{
+	switch(activeCameraType)
+	{
+	case CameraType::FirstPerson:
+		return firstCam->sceneNode->localTransform.GetPosition();
+	case CameraType::ThirdPerson:
+		return thirdCam->sceneNode->localTransform.GetPosition();
+	case CameraType::FreeCam:
+		return freeCam->sceneNode->localTransform.GetPosition();
+	default:
+		throw exception();
+	}
+}
+
 std::pair<float, float> CameraLogic::ThirdGetRotations() const noexcept
 {
 	return { thirdTargetRotY, thirdTargetRotX };
