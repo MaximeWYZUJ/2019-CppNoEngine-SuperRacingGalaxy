@@ -68,6 +68,8 @@ namespace Cookie
 		void addSwapTextureSprite(const std::string& textureName, Sprite* sprite, bool specialPredicate = false, std::function<bool()> predicate = []() {return true; }) const;
 		void changeSpriteTexture(const std::string& textureName, Sprite* sprite) const;
 		void changeButtonBackground(const std::string& textureName, Button* button) const;
+		void changeTextColor(Text* text, const Gdiplus::Color color);
+		void changeTextFont(Text* text, Gdiplus::Font* font);
 		
 		void Write(const std::wstring& s, Text* text) const;
 		
