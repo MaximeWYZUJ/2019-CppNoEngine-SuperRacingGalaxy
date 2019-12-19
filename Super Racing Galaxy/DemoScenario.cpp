@@ -187,7 +187,7 @@ Scenario ScenarioCreator::CreateDemoScenario()
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ 0.29444950819015503f, -0.3542361855506897f, -0.2263995110988617f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.41182371973991394, 0.8487450480461121, 0.013431957922875881, 0.3314402997493744 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 		planete3->addElement(new Scenery(Transform<>::BlenderToCookie({ -0.1568656712770462f, 0.1912076324224472f, 0.45743024349212646f }, { 0.022854391485452652f, 0.022854391485452652f, 0.030578652396798134f }, { 0.777387797832489, -0.05911627411842346, -0.23806792497634888, -0.5792211890220642 }), "graphics/meshs/cactus2.obj", L"graphics/textureDDS/cactus2Texture.dds", "graphics/meshs/hitBox/hitBoxcactus2.obj"));
 
-		Goal *goal = new Goal(Transform<>({ -0.5106359124183655f, 0.1878826767206192f, -0.12487165629863739f }, { 0.021663449704647064f, 0.03533276915550232f, 0.03069201111793518f }, { 0.5073574185371399, 0.49264204502105713, -0.49941858649253845, 0.500473141670227 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
+		Goal *goal = new Goal(Transform<>::BlenderToCookie({ -0.5060809254646301f, 0.07568416744470596f, -0.07082146406173706f }, { 0.016065090894699097f, 0.02301243506371975f, 0.02551579475402832f }, { 0.6869598031044006, -0.0, -0.7266954183578491, -0.0 }), "graphics/meshs/trophee.obj", L"graphics/textureDDS/tropheeTexture.dds", "graphics/meshs/hitBox/hitBoxTrophee.obj");
 		planete3->addGoal(goal);
 		scenario.goal = goal;
 	}
