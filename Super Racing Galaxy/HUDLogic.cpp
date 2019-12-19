@@ -6,6 +6,8 @@
 #include "ActionDescriptor.h"
 #include "Vehicle.h"
 #include "SceneManager.h"
+#include "Planet.h"
+#include "Cargo.h"
 
 #undef max
 
@@ -83,7 +85,7 @@ void HUDLogic::createInGameContext()
 		[]() {},
 		[this]()
 		{
-			auto rot = Quaternion<>::FromDirection(-Math::Pi / 90.0f, vehicleUp);
+			auto rot = Quaternion<>::FromDirection(-Math::Pi / 45.0f, vehicleUp);
 				scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 				scenario.vehicle->root->physics->isDirty = true;
 		},
@@ -100,7 +102,7 @@ void HUDLogic::createInGameContext()
 		[]() {},
 		[this]()
 		{
-			auto rot = Quaternion<>::FromDirection(Math::Pi / 90.0f, vehicleUp);
+			auto rot = Quaternion<>::FromDirection(Math::Pi / 45.0f, vehicleUp);
 			scenario.vehicle->root->localTransform.SetRotation(rot * scenario.vehicle->root->localTransform.GetRotation());
 			scenario.vehicle->root->physics->isDirty = true;
 		},
@@ -117,6 +119,37 @@ void HUDLogic::createInGameContext()
 		[this]()
 		{
 			if (scenario.vehicle->mayUseImpulse()) {
+
+				Planet* closestPlanet = nullptr;
+
+				Vehicle* vehicle = scenario.vehicle;
+				Vector3<> vehiclePos = vehicle->root->localTransform.GetPosition();
+
+				float distanceMin = std::numeric_limits<float>::max();
+				for (auto& planet : scenario.gravityGenerators)
+				{
+					auto planetPos = planet->root->localTransform.GetPosition();
+					auto planetRadius = planet->root->localTransform.GetScale().x / 2;
+					auto distance = Vector3<>::Distance(vehiclePos, planetPos) - planetRadius;
+
+					if (distance < distanceMin)
+					{
+						distanceMin = distance;
+						closestPlanet = planet;
+					}
+				}
+
+				auto cargoDistance = Vector3<>::Distance(vehiclePos, scenario.cargo->root->localTransform.GetPosition());
+				bool isCargoClosest = cargoDistance < distanceMin;
+
+				auto gravityDir = Vector3<>(0.0f, 1.0f, 0.0f);
+				if (!isCargoClosest)
+				{
+					gravityDir = vehiclePos - closestPlanet->gravityCenter;
+					gravityDir.Normalize();
+				}
+				
+				scenario.vehicle->root->localTransform.SetRotation(Quaternion<>::FromVectorToVector(Vector3<>::Forward(), gravityDir));
 				auto vPos = scenario.vehicle->root->localTransform.GetPosition();
 				auto direction = vPos - scenario.vehicle->gravityApplied;
 				direction.Normalize();
@@ -348,7 +381,9 @@ void HUDLogic::Update()
 		std::wstring fill;
 		std::wstring fill2;
 
-		if (vehicleSpeed * 180 / 142 <= 100.4f)
+		if (vehicleSpeed * 180 / 142 > 100)
+			guiManager->Write(L"100 %", speedCounter);
+		else
 			guiManager->Write(fill + std::to_wstring(static_cast<int>(round(vehicleSpeed * 180 / 142))) + L" %", speedCounter);
 		
 		if (timer == 60)

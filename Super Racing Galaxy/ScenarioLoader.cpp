@@ -95,7 +95,7 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 		else {
 			auto direction1 = params.teleport->root->localTransform.GetPosition() - params.teleportPlanet->root->localTransform.GetPosition();
 			direction1.Normalize();
-			pc1 = params.teleport->root->localTransform.GetPosition() + direction1 * 50;
+			pc1 = params.teleport->root->localTransform.GetPosition() + direction1 * 150;
 		}
 		controlPoints.push_back(pc1);
 
@@ -111,7 +111,7 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 		} else {
 			auto direction2 = params.landing->root->localTransform.GetPosition() - params.landingPlanet->root->localTransform.GetPosition();
 			direction2.Normalize();
-			pc2 = params.landing->root->localTransform.GetPosition() + direction2 * 50;
+			pc2 = params.landing->root->localTransform.GetPosition() + direction2 * 150;
 		}
 		controlPoints.push_back(pc2);
 

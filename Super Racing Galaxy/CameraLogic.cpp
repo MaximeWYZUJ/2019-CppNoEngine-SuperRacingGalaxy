@@ -114,7 +114,7 @@ void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Transfor
 		vehicleUp.Normalize();
 
 		firstCam->SetUpVector(vehicleUp);
-		firstCam->sceneNode->localTransform.SetPosition(shipTransform.GetPosition() + vehicleUp / 2.0);
+		firstCam->sceneNode->localTransform.SetPosition(shipTransform.GetPosition() + vehicleUp / 1.7 - vehicleForward / 1.7);
 		firstCam->sceneNode->localTransform.SetRotation(shipTransform.GetRotation());
 	}
 	else if (activeCameraType == CameraType::ThirdPerson)

@@ -17,6 +17,7 @@
 #include "GuiManager.h"
 #include "CompilerFlags.h"
 #include "BillboardToggler.h"
+#include "Cargo.h"
 
 #undef max
 
@@ -62,8 +63,6 @@ int main(int argc, char* argv[])
 		Vector3<> lastForward(0.0f, 0.0f, 1.0f);
 		while (engine->Run([inputManager, physics, &hovering, &cameraLogic, &billboardToggler, &lastClosestPlanet, &lastForward, &scenario, &hudLogic, &postEffectManager]() {
 
-			Vector3<> up(0.0f, 1.0f, 0.0f);
-
 			Planet* closestPlanet = nullptr;
 
 			Vehicle* vehicle = scenario.vehicle;
@@ -88,18 +87,25 @@ int main(int argc, char* argv[])
 				}
 			}
 
+			auto cargoDistance = Vector3<>::Distance(vehiclePos, scenario.cargo->root->localTransform.GetPosition());
+			bool isCargoClosest = cargoDistance < distanceMin;
+
 			vehicle->gravityApplied = Vector3<>(0.0f, 1.0f, 0.0f);
-			if (closestPlanet->isUpVectorDynamic)
+			if (!isCargoClosest)
 			{
 				vehicle->gravityApplied = vehiclePos - closestPlanet->gravityCenter;
 			}
 
-			vehicle->gravityApplied.Normalize();
-			up = vehicle->gravityApplied;
-			vehicle->gravityApplied *= closestPlanet->gravityValue;
-			vehicle->root->physics->addForce(vehicle->gravityApplied);
+			auto gravityValue = isCargoClosest ? scenario.cargo->gravityValue : closestPlanet->gravityValue;
 
-			hovering.Update(vehicle, closestPlanet->gravityValue, up);
+			vehicle->gravityApplied.Normalize();
+			Vector3<> up = vehicle->gravityApplied;
+			vehicle->gravityApplied *= gravityValue;
+			vehicle->root->physics->addForce(vehicle->gravityApplied);
+			
+			bool isPlayerMoving = inputManager->IsKeyPressed(Key::W) || inputManager->IsKeyPressed(Key::A) || inputManager->IsKeyPressed(Key::S) || inputManager->IsKeyPressed(Key::D);
+
+			hovering.Update(vehicle, gravityValue, up, isPlayerMoving);
 
 			if (lastClosestPlanet != closestPlanet)
 			{
@@ -147,7 +153,7 @@ int main(int argc, char* argv[])
 				});
 			}
 
-			billboardToggler.Update(cameraLogic.GetActivateCameraPosition(), 500.0f);
+			billboardToggler.Update(cameraLogic.GetActivateCameraPosition(), 750.0f);
 		})){}
 
 		return (int)1;

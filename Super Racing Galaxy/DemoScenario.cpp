@@ -252,15 +252,14 @@ Scenario ScenarioCreator::CreateDemoScenario()
 	planete4->addElement(piste5);
 	
 
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur1, planete1, piste3, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur2, planete1, piste5, planete4, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
-	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur5, planete4, piste4, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {}/* Cookie::Vector3<>(-24.7681f, 15.5f, 40.7471f) }*/ });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur3, planete2, piste1, planete1, {true, Cookie::Vector3<>{18.0f, 16.0f, 19.0f} +2 * Cookie::Vector3<>{12.0f,25.0f,40.0f}}, {false, Cookie::Vector3<>{}}, {} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur1, planete1, piste3, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur2, planete1, piste5, planete4, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
+	scenario.tpLinks.push_back(TeleportLinksParams{ teleporteur5, planete4, piste4, planete3, {false, Cookie::Vector3<>{}}, {false, Cookie::Vector3<>{}}, {} });
 
 	scenario.cargo = new Cargo(Transform<>({ 0.0f, 115.0f, -30.0f }, { 20.0f, 10.0f, 30.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), -9.81f, false, "graphics/meshs/cargo.obj", L"graphics/textureDDS/cargoTexture.dds");
 
-	//scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 117.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
-	scenario.vehicle = new Vehicle(Transform<>({ -500.0f, 550.0f, 300.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
+	scenario.vehicle = new Vehicle(Transform<>({ 0.0f, 118.0f, -30.0f }, { 4.0f, 1.6f, 4.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }), "graphics/meshs/spaceship.obj", L"graphics/textureDDS/spaceshipTexture.dds");
 
 	return scenario;
 }
