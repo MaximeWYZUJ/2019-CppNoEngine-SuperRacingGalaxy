@@ -4,7 +4,7 @@
 namespace Cookie
 {
 	Camera::Camera(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
-		: fieldOfView(fieldOfView), aspectRatio(aspectRatio), nearPlane(nearPlane), farPlane(farPlane), isProjectionDirty(true)
+		: fieldOfView(fieldOfView), aspectRatio(aspectRatio), nearPlane(nearPlane), farPlane(farPlane), up(0.0f, 1.0f, 0.0f), isProjectionDirty(true)
 	{
 	}
 
@@ -40,6 +40,11 @@ namespace Cookie
 	void Camera::SetUpVector(Vector3<> const& up)
 	{
 		this->up = up;
+	}
+
+	Vector3<> const& Camera::GetUpVector() const
+	{
+		return up;
 	}
 	
 	void Camera::UpdateMatrices()

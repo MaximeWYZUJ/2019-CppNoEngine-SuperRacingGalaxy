@@ -127,12 +127,14 @@ namespace Cookie
 	{
 		PxRaycastBuffer buf;
 		RaycastCallback callback;
+		PxQueryFilterData filterData{};
+		filterData.flags |= PxQueryFlag::ePREFILTER | PxQueryFlag::ePOSTFILTER;
 		
 		auto r = gScene->raycast(
 			PxVec3(origin.x, origin.y, origin.z),
 			PxVec3(unitDir.x, unitDir.y, unitDir.z),
 			distance, buf,
-			PxHitFlags(PxHitFlag::eDEFAULT), PxQueryFilterData(), &callback);
+			PxHitFlags(PxHitFlag::eDEFAULT), filterData, &callback);
 
 		if (!r)
 		{

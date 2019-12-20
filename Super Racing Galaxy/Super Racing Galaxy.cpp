@@ -107,17 +107,25 @@ int main(int argc, char* argv[])
 
 			hovering.Update(vehicle, gravityValue, up, isPlayerMoving);
 
+			float changingPlanet = 1.0f;
 			if (lastClosestPlanet != closestPlanet)
 			{
 				Quaternion<> rot = scenario.vehicle->root->localTransform.GetRotation();
 				Vector3<> vehicleForward = rot * Vector3<>{ 0.0f, 0.0f, 1.0f };
 				Vector3<> refRight = Vector3<>::CrossProduct(up, vehicleForward);
 				lastForward = Vector3<>::CrossProduct(refRight, up);
+				changingPlanet = 0.1f;
 			}
 			else
 			{
 				Vector3<> planeRight = Vector3<>::CrossProduct(up, lastForward);
 				lastForward = Vector3<>::CrossProduct(planeRight, up);
+			}
+
+			changingPlanet += 0.01f;
+			if (changingPlanet >= 1.0f)
+			{
+				changingPlanet = 1.0f;
 			}
 
 			lastForward.Normalize();
@@ -131,16 +139,17 @@ int main(int argc, char* argv[])
 				cameraLogic.ThirdSetRotations(rotations.first, rotations.second);
 			}
 			camDistance += -inputManager->GetMouseWheelDelta() * 4.0f;
-			if (camDistance < 8.0f)
+			if (camDistance < 4.0f)
 			{
-				camDistance = 8.0f;
+				camDistance = 4.0f;
 			}
 			if (camDistance > 100.0f)
 			{
 				camDistance = 100.0f;
 			}
 			cameraLogic.ThirdSetDistance(camDistance);
-			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform, 0.2f);
+			cameraLogic.Update(up, lastForward, scenario.vehicle->root->localTransform, 0.15f * changingPlanet);
+
 
 			lastClosestPlanet = closestPlanet;
 
@@ -153,7 +162,7 @@ int main(int argc, char* argv[])
 				});
 			}
 
-			billboardToggler.Update(cameraLogic.GetActivateCameraPosition(), 750.0f);
+			billboardToggler.Update(cameraLogic.GetActivateCameraPosition(), 800.0f);
 		})){}
 
 		return (int)1;
