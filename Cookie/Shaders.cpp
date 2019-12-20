@@ -11,23 +11,16 @@ namespace Cookie
 	using namespace std;
 	using namespace DirectX;
 
-	Shaders::Shaders(Device* device, const wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nbElements, bool hasConstantBuffer, bool hasVertexShader)
+	Shaders::Shaders(Device* device, const string& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nbElements, bool hasConstantBuffer, bool hasVertexShader)
 		: device{ device }
 	{
-		char* entrypointVS = new char[shaderName.size() + 1];
-		char* entrypointPS = new char[shaderName.size() + 1];
-		for(int i = 0; i < shaderName.length(); ++i)
-		{
-			entrypointVS[i] = shaderName[i];
-			entrypointPS[i] = shaderName[i];
-			
-		}
-		entrypointVS[shaderName.size()] = 'V';
-		entrypointVS[shaderName.size() + 1] = 'S';
-		entrypointVS[shaderName.size() + 2] = '\0';
-		entrypointPS[shaderName.size()] = 'P';
-		entrypointPS[shaderName.size() + 1] = 'S';
-		entrypointPS[shaderName.size() + 2] = '\0';
+		string entryPointVS = shaderName + "VS";
+		string entryPointPS = shaderName + "PS";
+
+		string t = entryPointVS + ".hlsl";
+		wstring shaderFileNameVS = wstring(begin(t), end(t));
+		t = entryPointPS + ".hlsl";
+		wstring shaderFileNamePS = wstring(begin(t), end(t));
 
 		ID3D11Device* pD3DDevice = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
 		
@@ -35,9 +28,9 @@ namespace Cookie
 		{
 			
 			ID3DBlob* pVSBlob = nullptr;
-			DXEssayer(D3DCompileFromFile((shaderName + L"VS.hlsl").c_str(),
+			DXEssayer(D3DCompileFromFile(shaderFileNameVS.c_str(),
 				nullptr, nullptr,
-				entrypointVS,
+				entryPointVS.c_str(),
 				"vs_5_0",
 				D3DCOMPILE_ENABLE_STRICTNESS,
 				0,
@@ -71,9 +64,9 @@ namespace Cookie
 		}
 		
 		ID3DBlob* pPSBlob = nullptr;
-		DXEssayer(D3DCompileFromFile((shaderName + L"PS.hlsl").c_str(),
+		DXEssayer(D3DCompileFromFile(shaderFileNamePS.c_str(),
 			nullptr, nullptr,
-			entrypointPS,
+			entryPointPS.c_str(),
 			"ps_5_0",
 			D3DCOMPILE_ENABLE_STRICTNESS,
 			0,

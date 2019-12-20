@@ -85,10 +85,10 @@ void ScenarioLoader::LoadScenario(Engine* engine, Scenario const& scenario)
 	for_each(scenario.tpLinks.begin(), scenario.tpLinks.end(), [&engine](TeleportLinksParams params) {
 		params.teleport->setShaderManager(engine->GetPostEffectManager());
 		
-		vector<Cookie::Vector3<>> controlPoints;
+		vector<Vector3<>> controlPoints;
 
 		// Premier point de contrôle
-		Cookie::Vector3<> pc1;
+		Vector3<> pc1;
 		if (params.firstDefinedControlPoint.first) {
 			pc1 = params.firstDefinedControlPoint.second;
 		}
@@ -267,6 +267,11 @@ void ScenarioLoader::InitSceneryObject(SceneManager* smgr, MaterialManager* mate
 
 	// Filter group
 	obj->root->physics->addFilterGroup(FilterGroup::DEFAULT);
+	auto isLanding = dynamic_cast<Landing*>(obj);
+	if (isLanding != nullptr)
+	{
+		obj->root->physics->addFilterGroup(FilterGroup::LANDING);
+	}
 
 	// Mask
 	obj->root->physics->addFilterMask(FilterGroup::DEFAULT);

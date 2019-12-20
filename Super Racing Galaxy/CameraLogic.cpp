@@ -102,7 +102,7 @@ std::pair<float, float> CameraLogic::FreeGetRotations()
 	return { thirdTargetRotY, thirdTargetRotX };
 }
 
-void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Transform<> const& shipTransform, float smooth)
+void CameraLogic::Update(Vector3<> up, Vector3<> const& forward, Transform<> const& shipTransform, float smooth)
 {
 	if (activeCameraType == CameraType::FirstPerson)
 	{
@@ -119,7 +119,12 @@ void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Transfor
 	}
 	else if (activeCameraType == CameraType::ThirdPerson)
 	{
-		thirdCam->SetUpVector(up);
+		Vector3<> curUp = thirdCam->GetUpVector();
+		Vector3<> lerpUp = Vector3<>::Lerp(curUp, up, 0.05f);
+		lerpUp.Normalize();
+		thirdCam->SetUpVector(lerpUp);
+		up = thirdCam->GetUpVector();
+		
 		Vector3<> right = Vector3<>::CrossProduct(up, forward);
 
 		Vector3<> back(0.0f, 0.0f, -1.0f);
@@ -140,7 +145,7 @@ void CameraLogic::Update(Vector3<> const& up, Vector3<> const& forward, Transfor
 		thirdCam->sceneNode->localTransform.SetPosition(targetPos);
 
 		Vector3<> front(0.0f, 0.0f, 1.0f);
-		Quaternion<> camRot = Quaternion<>::FromVectorToVector(front, Vector3<>::Normalize(shipTransform.GetPosition() -targetPos));
+		Quaternion<> camRot = Quaternion<>::FromVectorToVector(front, Vector3<>::Normalize(shipTransform.GetPosition() - targetPos));
 		thirdCam->sceneNode->localTransform.SetRotation(camRot);
 	}
 	else if (activeCameraType == CameraType::FreeCam)

@@ -153,6 +153,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Cookie;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -352,6 +353,7 @@
     </ShaderToDeploy2>
   </ItemGroup>
   <ItemGroup>
+    <GraphicsToDeploy0 Include="$(SolutionDir)Super Racing Galaxy\graphics\fonts\*.ttf" />
     <GraphicsToDeploy1 Include="$(SolutionDir)Super Racing Galaxy\graphics\meshs\*.obj" />
     <GraphicsToDeploy2 Include="$(SolutionDir)Super Racing Galaxy\graphics\meshs\hitBox\*.obj" />
     <GraphicsToDeploy3 Include="$(SolutionDir)Super Racing Galaxy\graphics\skybox\*.*" />
@@ -359,11 +361,18 @@
     <GraphicsToDeploy5 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\*.dds" />
     <GraphicsToDeploy6 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete1\*.dds" />
     <GraphicsToDeploy7 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete2\*.dds" />
+    <GraphicsToDeploy8 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete3\*.dds" />
+    <GraphicsToDeploy9 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete4\*.dds" />
+    <GraphicsToDeploy10 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\cargo\*.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <RedistToDeploy Include="$(SolutionDir)Super Racing Galaxy\VC_redist.x64.exe" />
   </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(DllToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
     <Copy SourceFiles="@(ShaderToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
     <Copy SourceFiles="@(ShaderToDeploy2)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy0)" DestinationFolder="$(OutputPath)graphics\fonts" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy1)" DestinationFolder="$(OutputPath)graphics\meshs" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy2)" DestinationFolder="$(OutputPath)graphics\meshs\hitBox" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy3)" DestinationFolder="$(OutputPath)graphics\skybox" ContinueOnError="true" />
@@ -371,5 +380,9 @@
     <Copy SourceFiles="@(GraphicsToDeploy5)" DestinationFolder="$(OutputPath)graphics\textureDDS" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy6)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete1" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy7)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete2" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy8)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete3" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy9)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete4" ContinueOnError="true" />
+    <Copy SourceFiles="@(GraphicsToDeploy10)" DestinationFolder="$(OutputPath)graphics\textureDDS\cargo" ContinueOnError="true" />
+    <Copy SourceFiles="@(RedistToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
   </Target>
 </Project>

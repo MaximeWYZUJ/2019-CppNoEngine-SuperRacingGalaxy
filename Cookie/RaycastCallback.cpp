@@ -12,22 +12,22 @@ namespace Cookie
 		PxRigidActor const* actor, PxHitFlags& queryFlags)
 	{
 		auto simFilter = shape->getSimulationFilterData();
-		if (simFilter.word0 != PLANET)
+		if (simFilter.word0 & (PLANET | LANDING))
 		{
-			return PxQueryHitType::eNONE;
+			return PxQueryHitType::eBLOCK;
 		}
 
-		return PxQueryHitType::eBLOCK;
+		return PxQueryHitType::eNONE;
 	}
 	
 	PxQueryHitType::Enum RaycastCallback::postFilter(const PxFilterData& filterData, const PxQueryHit& hit)
 	{
 		auto simFilter = hit.shape->getSimulationFilterData();
-		if (simFilter.word0 != PLANET)
+		if (simFilter.word0 & (PLANET | LANDING))
 		{
-			return PxQueryHitType::eNONE;
+			return PxQueryHitType::eBLOCK;
 		}
 
-		return PxQueryHitType::eBLOCK;
+		return PxQueryHitType::eNONE;
 	}
 }

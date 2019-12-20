@@ -25,9 +25,9 @@ namespace Cookie
 
 	SceneManager::SceneManager(Device* device)
 		: device{ device },
-		shaders{ device, L"MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements },
-		planetShader{ device, L"MiniPhongAlphaBlending", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements },
-		shading(device, 1024, 768)
+		shaders{ device, "MiniPhong", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements },
+		planetShader{ device, "MiniPhongAlphaBlending", sizeof MiniPhongParams, VertexData::layout, VertexData::nbElements }
+		//shading(device, 1024, 768)
 	{
 		meshes.reserve(1024);
 		root.localMatrix = Matrix4x4<>::FromTransform(root.localTransform);

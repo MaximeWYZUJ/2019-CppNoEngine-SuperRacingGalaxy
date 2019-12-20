@@ -36,9 +36,9 @@ namespace Cookie {
 	PostEffectManager::PostEffectManager(DeviceD3D11* device) :
 		device(device),
 		pVertexBuffer(nullptr),
-		shaderNUL{ {device, L"PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements), false}, true },
-		radialBlur{ {device, L"RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, false },
-		shaking{ {device, L"Shaking", sizeof ShakingParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, false }
+		shaderNUL{ {device, "PostEffectNul", sizeof ShadersParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements), false}, true },
+		radialBlur{ {device, "RadialBlur", sizeof RadialBlurParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, false },
+		shaking{ {device, "Shaking", sizeof ShakingParams, CSommetPanneauPE::layout, static_cast<int32_t>(CSommetPanneauPE::numElements)}, false }
 	{
 		ID3D11Device* d3dDevice = device->GetD3DDevice();
 		

@@ -8,9 +8,10 @@ namespace Cookie {
 	*/
 
 	enum FilterGroup {
-		DEFAULT = (1 << 0),
-		VEHICULE = (1 << 1),
-		PLANET = (1 << 2),
-		TELEPORT = (1 << 3)
+		DEFAULT = 1 << 0,
+		VEHICULE = 1 << 1,
+		PLANET = 1 << 2,
+		TELEPORT = 1 << 3,
+		LANDING = 1 << 4
 	};
 }

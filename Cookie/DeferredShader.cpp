@@ -14,10 +14,10 @@ namespace Cookie
 	DeferredShader::DeferredShader(Device* device)
 		: device(device)
 	{
-		string vEntryPoint = "DeferredVS";
+		/*string vEntryPoint = "DeferredVS";
 		wstring vFileName = ToWide(vEntryPoint + ".hlsl");
 		string pEntryPoint = "DeferredPS";
-		wstring pFileName = ToWide(pEntryPoint + ".hlsl");
+		wstring pFileName = ToWide(pEntryPoint + ".hlsl");*/
 
 		/*ID3D11Device* d = static_cast<DeviceD3D11*>(device)->GetD3DDevice();
 		ID3DBlob* pVSBlob = nullptr;
@@ -87,7 +87,7 @@ namespace Cookie
 	
 	void DeferredShader::Activate(DeferredShaderParams const& p)
 	{
-		ID3D11DeviceContext* c;
+		/*ID3D11DeviceContext* c;
 		auto d = dynamic_cast<DeviceD3D11*>(device)->GetD3DDevice();
 		d->GetImmediateContext(&c);
 
@@ -100,7 +100,7 @@ namespace Cookie
 		c->GSSetShader(nullptr, nullptr, 0);
 		c->PSSetShader(pixelShader, nullptr, 0);
 		c->PSSetConstantBuffers(0, 1, &matrixBuffer);
-		c->PSSetSamplers(0, 1, &samplerState);
+		c->PSSetSamplers(0, 1, &samplerState);*/
 		//c->PSSetShaderResources(0, 1, &texture);
 	}
 }

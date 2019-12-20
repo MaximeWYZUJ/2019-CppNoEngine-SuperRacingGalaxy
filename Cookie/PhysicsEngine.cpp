@@ -5,6 +5,7 @@
 #include <vector>
 #include "RaycastCallback.h"
 #include <algorithm>
+#include "CompilerFlags.h"
 
 using namespace physx;
 
@@ -44,6 +45,8 @@ PxFilterFlags filterShader(
 
 namespace Cookie
 {
+	using namespace std;
+	
 	PhysicsEngine::PhysicsEngine()
 	{
 		init();
@@ -57,12 +60,15 @@ namespace Cookie
 	{
 		static PxDefaultAllocator gAllocator{};
 		static PxDefaultErrorCallback gErrorCallback{};
-		
+
 		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
-		gPvd = PxCreatePvd(*gFoundation);
-		PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-		gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+		if constexpr (isDebug)
+		{
+			gPvd = PxCreatePvd(*gFoundation);
+			PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+			gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+		}
 
 		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
@@ -84,12 +90,15 @@ namespace Cookie
 
 		gScene = gPhysics->createScene(sceneDesc);
 
-		PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-		if (pvdClient)
+		if constexpr (isDebug)
 		{
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+			PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+			if (pvdClient)
+			{
+				pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+				pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+				pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+			}
 		}
 	}
 
@@ -118,12 +127,14 @@ namespace Cookie
 	{
 		PxRaycastBuffer buf;
 		RaycastCallback callback;
+		PxQueryFilterData filterData{};
+		filterData.flags |= PxQueryFlag::ePREFILTER | PxQueryFlag::ePOSTFILTER;
 		
 		auto r = gScene->raycast(
 			PxVec3(origin.x, origin.y, origin.z),
 			PxVec3(unitDir.x, unitDir.y, unitDir.z),
 			distance, buf,
-			PxHitFlags(PxHitFlag::eDEFAULT), PxQueryFilterData(), &callback);
+			PxHitFlags(PxHitFlag::eDEFAULT), filterData, &callback);
 
 		if (!r)
 		{

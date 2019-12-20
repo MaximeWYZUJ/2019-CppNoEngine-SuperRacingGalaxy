@@ -22,7 +22,7 @@ namespace Cookie
 	class COOKIE_API Shaders
 	{
 	public:
-		Shaders(Device* device, const std::wstring& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nmElements, bool hasConstantBuffer = true, bool hasVertexShader = true);
+		Shaders(Device* device, const std::string& shaderName, UINT paramSize, D3D11_INPUT_ELEMENT_DESC* layout, int32_t nmElements, bool hasConstantBuffer = true, bool hasVertexShader = true);
 		void Activate(ShadersParams* sp, std::vector<ID3D11ShaderResourceView*> textures, bool hasConstantBuffer = true, bool hasVertexShader = true) const;
 
 	private:

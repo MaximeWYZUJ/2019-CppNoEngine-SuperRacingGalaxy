@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 namespace Cookie {
 
@@ -10,6 +9,6 @@ namespace Cookie {
 	public:
 		PhysicsCollisionCallback() = default;
 		~PhysicsCollisionCallback() = default;
-		virtual void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) { std::cout << "no specific callback" << std::endl; };
+		virtual void operator()(PhysicsComponent* selfComponent, PhysicsComponent* otherComponent) { };
 	};
 }

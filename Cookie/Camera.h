@@ -17,6 +17,7 @@ namespace Cookie
 		void SetNearPlane(float nearPlane);
 		void SetFarPlane(float farPlane);
 		void SetUpVector(Vector3<> const& up);
+		Vector3<> const& GetUpVector() const;
 
 		void UpdateMatrices();
 	private:
