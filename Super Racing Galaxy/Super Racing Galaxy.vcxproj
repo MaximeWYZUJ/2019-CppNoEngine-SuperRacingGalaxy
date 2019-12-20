@@ -365,6 +365,9 @@
     <GraphicsToDeploy9 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\planete4\*.dds" />
     <GraphicsToDeploy10 Include="$(SolutionDir)Super Racing Galaxy\graphics\textureDDS\cargo\*.dds" />
   </ItemGroup>
+  <ItemGroup>
+    <RedistToDeploy Include="$(SolutionDir)Super Racing Galaxy\VC_redist.x64.exe" />
+  </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(DllToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
     <Copy SourceFiles="@(ShaderToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
@@ -380,5 +383,6 @@
     <Copy SourceFiles="@(GraphicsToDeploy8)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete3" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy9)" DestinationFolder="$(OutputPath)graphics\textureDDS\planete4" ContinueOnError="true" />
     <Copy SourceFiles="@(GraphicsToDeploy10)" DestinationFolder="$(OutputPath)graphics\textureDDS\cargo" ContinueOnError="true" />
+    <Copy SourceFiles="@(RedistToDeploy)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
   </Target>
 </Project>
